@@ -9,20 +9,25 @@ public class Player {
     private final String name;
     private final String description;
     private List<Item> Inventory;
-//    private Room currRoom;
+
+    private Rooms currRoom;
 
 
     //CONSTRUCTORS
-    public Player() {
+    public Player(Rooms currRoom) {
+        this.currRoom = currRoom;
         this.name = "playerOne";
         this.description = "You are a middle age man who is trapped in a Mysterious and spooky Mansion";
         this.Inventory = new ArrayList<>();
     }
-    public Player(String name, String description) {
+
+    public Player(Rooms currRoom,String name, String description) {
         this.name = name;
+        this.currRoom = currRoom;
         this.description = description;
         this.Inventory = new ArrayList<>();
     }
+
     //BUSINESS METHODS
     public void addToInventory(String item, String type, String description) {
         this.Inventory.add(new Item(item, type, description ));
@@ -42,9 +47,14 @@ public class Player {
         return description;
     }
 
-//    public Room getCurrRoom() {
-//        return currRoom;
-//    }
+    public Rooms getCurrRoom() {
+        System.out.println("you are currently in " + currRoom.getRoomName());
+        System.out.println(" This is a "+currRoom.getRoomDescription());
+        return currRoom;
+    }
 
+    public void setCurrRoom(Rooms currRoom) {
+        this.currRoom = currRoom;
+    }
 
 }

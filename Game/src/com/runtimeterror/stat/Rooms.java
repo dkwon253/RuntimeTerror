@@ -23,10 +23,6 @@ public class Rooms {
         return roomName;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
     public String getRoomDescription() {
         return roomDescription;
     }
