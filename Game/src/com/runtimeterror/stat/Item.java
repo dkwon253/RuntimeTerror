@@ -16,6 +16,18 @@ public class Item {
         this.description = description;
     }
 
+    //GETTER
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     @Override
     public String toString() {

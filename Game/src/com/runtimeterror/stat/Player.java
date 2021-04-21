@@ -29,11 +29,19 @@ public class Player {
     }
 
     //BUSINESS METHODS
-    public void addToInventory(String item, String type, String description) {
-        this.Inventory.add(new Item(item, type, description ));
-        System.out.println("You added a " + item + " to your inventory");
+    public void addToInventory(Item item) {
+        this.Inventory.add(item);
+        System.out.println("You added a " + item.getName() + " to your inventory");
+    }
+    public void getLocation(){
+        System.out.println("you are currently in a "+currRoom.getRoomDescription());
     }
 
+    public void getCurrentStatus(){
+        this.getLocation();
+        this.getCurrRoom().getHidingLocation();
+        this.getCurrRoom().getRoomItem();
+    }
     //GETTERS AND SETTERS
     public void getInventory() {
         System.out.println(this.Inventory);
@@ -48,8 +56,6 @@ public class Player {
     }
 
     public Rooms getCurrRoom() {
-        System.out.println("you are currently in " + currRoom.getRoomName());
-        System.out.println(" This is a "+currRoom.getRoomDescription());
         return currRoom;
     }
 
