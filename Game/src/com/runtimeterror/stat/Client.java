@@ -14,10 +14,11 @@ public class Client {
         player.addToInventory("axe", "weapon", "old rusty axe");
         player.getInventory();
 
-
-
         System.out.println("You see a key.");
         player.addToInventory("key", "weapon", "old rusty axe");
+        player.getInventory();
+
+
     }
 
 }

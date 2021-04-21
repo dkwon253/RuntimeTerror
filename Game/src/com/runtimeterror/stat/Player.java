@@ -26,6 +26,7 @@ public class Player {
     //BUSINESS METHODS
     public void addToInventory(String item, String type, String description) {
         this.Inventory.add(new Item(item, type, description ));
+        System.out.println("You added a " + item + " to your inventory");
     }
 
     //GETTERS AND SETTERS
