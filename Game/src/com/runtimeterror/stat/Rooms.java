@@ -8,13 +8,13 @@ public class Rooms {
     //Fields
     private String roomName;
     private String roomDescription;
-    private String[] roomNeighbors;
+    private HashMap<String, Rooms> roomNeighbors = null;
     private String hidingLocation;
     private Item item;
 
 
     //Constructor
-    public Rooms(String roomName, String roomDescription, String[] roomNeighbors, String hidingLocation,Item item) {
+    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.roomNeighbors = roomNeighbors;
@@ -44,11 +44,12 @@ public class Rooms {
         this.roomDescription = roomDescription;
     }
 
-    public String[] getRoomNeighbors() {
+
+    public HashMap<String, Rooms> getRoomNeighbors() {
         return roomNeighbors;
     }
 
-    public void setRoomNeighbors(String[] roomNeighbors) {
+    public void setRoomNeighbors(HashMap<String, Rooms> roomNeighbors) {
         this.roomNeighbors = roomNeighbors;
     }
 
