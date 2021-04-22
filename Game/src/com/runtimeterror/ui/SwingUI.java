@@ -46,6 +46,8 @@ public class SwingUI extends JFrame{
         inventoryInfoTA = new JTextArea(5,40);
         inventoryInfoTA.setBounds(25,400,430,75);
         inventoryInfoTA.setEditable(false);
+        inventoryInfoTA.setLineWrap(true);
+        inventoryInfoTA.setWrapStyleWord(true);
         inventoryInfoTA.setText(controller.getInventory());
         add(inventoryInfoTA);
 
@@ -55,6 +57,7 @@ public class SwingUI extends JFrame{
 
         playerInputTF = new JTextField();
         playerInputTF.setBounds(25,500,430,25);
+        playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
         add(playerInputTF);
 
         submitCommandBtn = new JButton();
@@ -62,20 +65,30 @@ public class SwingUI extends JFrame{
         submitCommandBtn.setText("Do it");
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
         add(submitCommandBtn);
+    }
 
+    private void processSubmitInput(){
+        String inputText = playerInputTF.getText().toLowerCase();
+        String result = controller.processInput(inputText);
+        playerMessageLbl.setText(result);
+        String roomData = controller.getRoomDesc();
+        roomInfoTA.setText(roomData);
+        String invData = controller.getInventory();
+        inventoryInfoTA.setText(invData);
+        playerInputTF.setText("");
     }
 
     private class HandleSubmitBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String inputText = playerInputTF.getText().toLowerCase();
-            String result = controller.processInput(inputText);
-            playerMessageLbl.setText(result);
-            String roomData = controller.getRoomDesc();
-            roomInfoTA.setText(roomData);
-            String invData = controller.getInventory();
-            inventoryInfoTA.setText(invData);
-            playerInputTF.setText("");
+            processSubmitInput();
+        }
+    }
+
+    private class HandleEnterPressOnPlayerInputTF implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            processSubmitInput();
         }
     }
 
