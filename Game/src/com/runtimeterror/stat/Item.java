@@ -2,8 +2,6 @@ package com.runtimeterror.stat;
 
 public class Item {
 
-
-
     // FIELDS
     private final String name;
     private final String type;
