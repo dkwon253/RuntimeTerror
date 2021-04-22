@@ -44,11 +44,12 @@ public class Rooms {
         this.roomDescription = roomDescription;
     }
 
-    public String[] getRoomNeighbors() {
+
+    public HashMap<String, Rooms> getRoomNeighbors() {
         return roomNeighbors;
     }
 
-    public void setRoomNeighbors(String[] roomNeighbors) {
+    public void setRoomNeighbors(HashMap<String, Rooms> roomNeighbors) {
         this.roomNeighbors = roomNeighbors;
     }
 
