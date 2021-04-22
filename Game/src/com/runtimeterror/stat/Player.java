@@ -33,6 +33,20 @@ public class Player {
         this.Inventory.add(item);
         System.out.println("You added a " + item.getName() + " to your inventory");
     }
+
+    public void changeRoom(String direction){
+
+        if(this.getCurrRoom().getRoomNeighbors().containsKey(direction)){
+            this.currRoom = getCurrRoom().getRoomNeighbors().get(direction);
+            this.getCurrentStatus();
+        }else{
+            System.out.println("You cant go this way");
+        }
+
+    }
+
+
+
     public void getLocation(){
         System.out.println("you are currently in a "+currRoom.getRoomDescription());
     }
