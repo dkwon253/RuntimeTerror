@@ -24,7 +24,6 @@ public class FauxGame implements GameInterface {
     public String getPLayerInventory() {
         String result = "Inventory:\n";
         result += String.join(", ",inv);
-        System.out.println(result);
         return result;
     }
 
@@ -56,7 +55,6 @@ public class FauxGame implements GameInterface {
         else if("get".equals(splitString[0])) {
             if(splitString[1] != null || !splitString[1].isEmpty()){
                 inv.add(splitString[1]);
-                System.out.println(inv);
                 result = "You got the " + splitString[1];
             }
             else {
@@ -67,7 +65,6 @@ public class FauxGame implements GameInterface {
             if(splitString[1] != null || !splitString[1].isEmpty()){
                 if (inv.contains(splitString[1])){
                     inv.remove(splitString[1]);
-                    System.out.println(inv);
                     result = "You dropped the " + splitString[1];
                 }
                 else{
