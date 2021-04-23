@@ -28,7 +28,5 @@ public class Client {
             player.changeRoom(choices[1]);
 
         }
-
-
     }
 }
