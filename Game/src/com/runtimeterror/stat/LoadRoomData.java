@@ -10,7 +10,7 @@ public class LoadRoomData {
     public static HashMap<String, Rooms> load() throws IOException{//This method loads data from csv file and creates rooms
         HashMap<String, Rooms> roomList = new HashMap<>();
 
-        Files.lines(Path.of("RoomData/data.csv")).forEach(line -> {
+        Files.lines(Path.of("Game/RoomData/data.csv")).forEach(line -> {
             String[] tokens = line.split(",");
             String roomName = tokens[0];
             String itemName = "null".equals(tokens[1]) ? null : tokens[1];
@@ -23,7 +23,7 @@ public class LoadRoomData {
 
         });
 
-        Files.lines(Path.of("RoomData/data.csv")).forEach(line -> {
+        Files.lines(Path.of("Game/RoomData/data.csv")).forEach(line -> {
             String[] tokens = line.split(",");
             String roomName = tokens[0];
             String east = "null".equals(tokens[5]) ? null : tokens[5];
@@ -39,9 +39,6 @@ public class LoadRoomData {
 
             roomList.get(roomName).setRoomNeighbors(neigborbor);
         });
-
-
-
 
         return roomList;
     }

@@ -17,7 +17,6 @@ public class Rooms {
     public Rooms(String roomName, String roomDescription, String hidingLocation, Item item) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
-        this.roomNeighbors = roomNeighbors;
         this.hidingLocation = hidingLocation;
         this.item = item;
     }
@@ -35,7 +34,6 @@ public class Rooms {
         return item;
     }
 
-
     public String getRoomDescription() {
         return roomDescription;
     }
@@ -43,7 +41,6 @@ public class Rooms {
     public void setRoomDescription(String roomDescription) {
         this.roomDescription = roomDescription;
     }
-
 
     public HashMap<String, Rooms> getRoomNeighbors() {
         return roomNeighbors;
