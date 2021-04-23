@@ -36,11 +36,11 @@ public class Player {
 
     public void changeRoom(String direction){
 
-        if(this.getCurrRoom().getRoomNeighbors().containsKey(direction)){
+        if(this.getCurrRoom().getRoomNeighbors().get(direction) == null || !this.getCurrRoom().getRoomNeighbors().containsKey(direction)){
+            System.out.println("You cant go this way");
+        }else{
             this.currRoom = getCurrRoom().getRoomNeighbors().get(direction);
             this.getCurrentStatus();
-        }else{
-            System.out.println("You cant go this way");
         }
 
     }
