@@ -47,7 +47,7 @@ public class Player {
 
 
     public void getLocation(){
-        System.out.println("you are currently in a "+currRoom.getRoomDescription());
+        System.out.println(currRoom.getRoomDescription());
     }
 
     public void getCurrentStatus(){
