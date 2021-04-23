@@ -34,15 +34,14 @@ public class Player {
         System.out.println("You added a " + item.getName() + " to your inventory");
     }
 
-    public void changeRoom(String direction){
-
+    public String changeRoom(String direction){
+        String result = "";
         if(this.getCurrRoom().getRoomNeighbors().get(direction) == null || !this.getCurrRoom().getRoomNeighbors().containsKey(direction)){
-            System.out.println("You cant go this way");
+            result = "You cant go this way";
         }else{
             this.currRoom = getCurrRoom().getRoomNeighbors().get(direction);
-            this.getCurrentStatus();
         }
-
+        return result;
     }
 
 
@@ -57,8 +56,8 @@ public class Player {
         this.getCurrRoom().getRoomItem();
     }
     //GETTERS AND SETTERS
-    public void getInventory() {
-        System.out.println(this.Inventory);
+    public List<Item> getInventory() {
+        return this.Inventory;
     }
 
     public String getName() {
