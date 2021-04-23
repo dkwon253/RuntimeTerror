@@ -7,7 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Locale;
 
-class SwingUI extends JFrame{
+public class SwingUI extends JFrame{
     private final int FRAME_X_SIZE = 480;
     private final int FRAME_Y_SIZE = 640;
 
@@ -21,7 +21,7 @@ class SwingUI extends JFrame{
 
 
     // CTOR
-    SwingUI(String title, SwingController controller){
+    public SwingUI(String title, SwingController controller){
         super(title);
         this.controller = controller;
 
@@ -36,19 +36,19 @@ class SwingUI extends JFrame{
         roomInfoTA.setEditable(false);
         roomInfoTA.setLineWrap(true);
         roomInfoTA.setWrapStyleWord(true);
-        roomInfoTA.setText("Location:\nMaster Bathroom\n\nDescription:\nYou wake up in a strange bathroom.  You have no " +
-                "idea whose house you are in or how you got here.  You hear water dripping in the shower in the corner " +
-                "of the room.  There is a door to the east.");
+        roomInfoTA.setText(controller.getRoomDesc());
         add(roomInfoTA);
 
-        playerMessageLbl = new JLabel("Message", SwingConstants.CENTER);
+        playerMessageLbl = new JLabel("", SwingConstants.CENTER);
         playerMessageLbl.setBounds(25,360,430,25);
         add(playerMessageLbl);
 
         inventoryInfoTA = new JTextArea(5,40);
         inventoryInfoTA.setBounds(25,400,430,75);
         inventoryInfoTA.setEditable(false);
-        inventoryInfoTA.setText("Inventory:\nKey\tHammer\tCoin\nCrowbar\tTacocat");
+        inventoryInfoTA.setLineWrap(true);
+        inventoryInfoTA.setWrapStyleWord(true);
+        inventoryInfoTA.setText(controller.getInventory());
         add(inventoryInfoTA);
 
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
@@ -57,6 +57,7 @@ class SwingUI extends JFrame{
 
         playerInputTF = new JTextField();
         playerInputTF.setBounds(25,500,430,25);
+        playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
         add(playerInputTF);
 
         submitCommandBtn = new JButton();
@@ -66,14 +67,28 @@ class SwingUI extends JFrame{
         add(submitCommandBtn);
     }
 
+    private void processSubmitInput(){
+        String inputText = playerInputTF.getText().toLowerCase();
+        String result = controller.processInput(inputText);
+        playerMessageLbl.setText(result);
+        String roomData = controller.getRoomDesc();
+        roomInfoTA.setText(roomData);
+        String invData = controller.getInventory();
+        inventoryInfoTA.setText(invData);
+        playerInputTF.setText("");
+    }
+
     private class HandleSubmitBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String inputText = playerInputTF.getText().toLowerCase();
-            String result = controller.processInput(inputText);
-            playerMessageLbl.setText(result);
-            String roomData = controller.getRoomDesc();
-            roomInfoTA.setText(roomData);
+            processSubmitInput();
+        }
+    }
+
+    private class HandleEnterPressOnPlayerInputTF implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            processSubmitInput();
         }
     }
 
