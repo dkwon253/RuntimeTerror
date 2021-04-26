@@ -72,7 +72,7 @@ public class GameClient implements GameInterface {
         }
         // check if the player requested a look command.
         else if (LOOK.equals(parsedInput.getVerbType())) {
-            result = "LOOK commands not yet implemented";
+            result = processLook(parsedInput);
         }
         // check if the player requested a hide command.
         else if (HIDE.equals(parsedInput.getVerbType())) {
@@ -111,6 +111,28 @@ public class GameClient implements GameInterface {
         }
         else if(("lift".equals(data.getNoun()) || "elevator".equals(data.getNoun())) && data.getVerb().equals("use")){
             result = processUseElevator();
+        }
+        return result;
+    }
+
+    private String  processLook(InputData data) {
+        String result = "";
+        boolean found = false;
+        for (Item item : player.getInventory()){
+            if (item.getName().equals(data.getNoun())){
+                found = true;
+                this.addendumText = item.getDescription();
+                break;
+            }
+        }
+        if (!found && player.getCurrRoom().getItem() != null){
+            if (player.getCurrRoom().getItem().getName().equals(data.getNoun())){
+                found = true;
+                this.addendumText = player.getCurrRoom().getItem().getDescription();
+            }
+        }
+        if (!found){
+            result = "There is no " + data.getNoun() + ".";
         }
         return result;
     }
