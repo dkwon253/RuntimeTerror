@@ -57,7 +57,7 @@ public class GameClient implements GameInterface {
         InputData parsedInput = Parser.parseInput(inputString);
         // check if the player requested a get command.
         if  (parsedInput == null){
-            result = "I don't understand \"" + inputString + "\"";
+            result = processGet(parsedInput);
         }
         else if (GET.equals(parsedInput.getVerbType())){
             result = processGet(parsedInput);
@@ -68,7 +68,7 @@ public class GameClient implements GameInterface {
         }
         // check if the player requested a use command.
         else if (USE.equals(parsedInput.getVerbType())) {
-            result = "USE commands not yet implemented";
+            result = processUse(parsedInput);
         }
         // check if the player requested a look command.
         else if (LOOK.equals(parsedInput.getVerbType())) {
@@ -87,12 +87,64 @@ public class GameClient implements GameInterface {
 
     private String processGet(InputData data) {
         String result = "";
-        Item item = player.getCurrRoom().removeItemFromRoom(data.getNoun());
-        if (item != null) {
-            result = player.addToInventory(item);
+        if ("stairs".equals(data.getNoun()) && data.getVerb().equals("take")){
+            result = processUseStairs();
         }
-        else{
-            result = "Cannot not get " + data.getNoun() + ".";
+        else if(("lift".equals(data.getNoun()) || "elevator".equals(data.getNoun())) && data.getVerb().equals("take")){
+            result = processUseElevator();
+        }
+        else {
+            Item item = player.getCurrRoom().removeItemFromRoom(data.getNoun());
+            if (item != null) {
+                result = player.addToInventory(item);
+            } else {
+                result = "Cannot get " + data.getNoun() + ".";
+            }
+        }
+        return result;
+    }
+
+    private String processUse(InputData data) {
+        String result = "";
+        if ("stairs".equals(data.getNoun()) && data.getVerb().equals("use")){
+            result = processUseStairs();
+        }
+        else if(("lift".equals(data.getNoun()) || "elevator".equals(data.getNoun())) && data.getVerb().equals("use")){
+            result = processUseElevator();
+        }
+        return result;
+    }
+
+    private String processUseStairs(){
+        String result = "";
+        if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
+            player.setCurrRoom(rooms.get("Main Hall"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Main Hall")){
+            player.setCurrRoom(rooms.get("Floor Two Hall"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Kitchen")){
+            player.setCurrRoom(rooms.get("Basement"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Basement")){
+            player.setCurrRoom(rooms.get("Kitchen"));
+        }
+        else {
+            result = "There are no stairs to use.";
+        }
+        return result;
+    }
+
+    private String processUseElevator(){
+        String result = "";
+        if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
+            player.setCurrRoom(rooms.get("Basement"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Basement")){
+            player.setCurrRoom(rooms.get("Floor Two Hall"));
+        }
+        else {
+            result = "There is no elevator to use.";
         }
         return result;
     }
