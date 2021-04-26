@@ -2,6 +2,8 @@ package com.runtimeterror.stat;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Rooms {
 
@@ -56,5 +58,35 @@ public class Rooms {
 
     public void setHidingLocation(String hidingLocation) {
         this.hidingLocation = hidingLocation;
+    }
+
+    public String getRoomDescriptionText(){
+        String result = "Location:\n" + this.roomName;
+        result += "\n\n" + this.roomDescription;
+        if (this.item != null){
+            result += "\n\nItem: " + this.item.getName();
+        }
+        result += "\nExits:";
+        String[] directions = {"north","east","south","west"};
+        for (String direction : directions) {
+            if (roomNeighbors.get(direction) != null){
+                result += " " + direction;
+            }
+        }
+        return result;
+    }
+
+    public Item removeItemFromRoom(String itemName){
+        if (this.item != null) {
+            if (item.getName().equals(itemName)){
+                Item temp = this.item;
+                this.item = null;
+                return  temp;
+            }
+            else{
+                return null;
+            }
+        }
+        return null;
     }
 }
