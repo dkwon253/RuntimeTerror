@@ -26,16 +26,12 @@ public class GameClient implements GameInterface {
             System.out.printf("Failed to load the game files:");
             System.out.println(e.getMessage());
         }
-        player = new Player(rooms.get("MasterBathroom"));
+        player = new Player(rooms.get("Master Bathroom"));
     }
 
     @Override
     public String getRoomText() {
-        String result = "Location:\n";
-        Rooms room = player.getCurrRoom();
-        result += room.getRoomName();
-        result += "\n\n";
-        result += room.getRoomDescription();
+        String result = player.getCurrRoom().getRoomDescriptionText();
         if (!"".equals(addendumText)) {
             result += "\n\n";
             result += addendumText;
@@ -64,8 +60,7 @@ public class GameClient implements GameInterface {
             result = "I don't understand \"" + inputString + "\"";
         }
         else if (GET.equals(parsedInput.getVerbType())){
-            System.out.println("process get");
-            result = "GET commands not yet implemented";
+            result = processGet(parsedInput);
         }
         // check if the player requested a move command.
         else if (GO.equals(parsedInput.getVerbType())) {
@@ -88,5 +83,17 @@ public class GameClient implements GameInterface {
 
     private String processMove(InputData data){
         return player.changeRoom(data.getNoun());
+    }
+
+    private String processGet(InputData data) {
+        String result = "";
+        Item item = player.getCurrRoom().removeItemFromRoom(data.getNoun());
+        if (item != null) {
+            result = player.addToInventory(item);
+        }
+        else{
+            result = "Cannot not get " + data.getNoun() + ".";
+        }
+        return result;
     }
 }

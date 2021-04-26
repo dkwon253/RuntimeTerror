@@ -29,9 +29,9 @@ public class Player {
     }
 
     //BUSINESS METHODS
-    public void addToInventory(Item item) {
+    public String addToInventory(Item item) {
         this.Inventory.add(item);
-        System.out.println("You added a " + item.getName() + " to your inventory");
+        return "You added a(n) " + item.getName() + " to your inventory";
     }
 
     public String changeRoom(String direction){
