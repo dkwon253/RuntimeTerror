@@ -68,7 +68,15 @@ public class Player {
         }
     }
 
-
+    //instructions for the player
+    public String help(){
+        return "We are here to help. \n" +
+                "To change location: Input (verb + noun) . For example: 'Go East' or 'Move East'. \n" +
+                "To get an item: Input (verb + noun). For example: 'get pizza' or 'pick up pizza'. \n" +
+                "To examine an item of location: Input (verb + noun). For example: 'look masterBedRoom' or 'scan masterBedRoom'. \n" +
+                "To hide: Input (verb). For example: 'hide' or 'take cover'\n" +
+                "To use an item: input (verb + noun). For example: 'use key' or 'manipulate key'";
+    }
 
     public void getLocation(){
         System.out.println(currRoom.getRoomDescription());
