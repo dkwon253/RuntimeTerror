@@ -62,9 +62,9 @@ public class Rooms {
 
     public String getRoomDescriptionText(){
         String result = "Location:\n" + this.roomName;
-        result += "\n\n" + this.roomDescription;
+        result += "\n\n" + this.roomDescription + "\n";
         if (this.item != null){
-            result += "\n\nItem: " + this.item.getName();
+            result += "\nItem: " + this.item.getName();
         }
         result += "\nExits:";
         String[] directions = {"north","east","south","west"};
