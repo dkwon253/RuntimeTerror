@@ -11,7 +11,7 @@ public class Player {
     private List<Item> Inventory;
 
     private Rooms currRoom;
-
+    private boolean isHidden = false;
 
     //CONSTRUCTORS
     public Player(Rooms currRoom) {
@@ -42,6 +42,30 @@ public class Player {
             this.currRoom = getCurrRoom().getRoomNeighbors().get(direction);
         }
         return result;
+    }
+    //player to be able to hide in a room when hiding place is available
+    public String hide(){
+        String result = "";
+        if(this.getCurrRoom().getHidingLocation() == null){
+            System.out.println("There is no place to hide.");
+            result = "There is no place to hide.";
+        } else {
+            isHidden = true;
+            System.out.println("There is a hiding location.");
+            result = "There is a hiding location.";
+        }
+        return result;
+    }
+
+    public String unHide(){
+        if (isHidden){
+            isHidden = false;
+            System.out.println("You are no longer hiding.");
+            return "You are no longer hiding.";
+        }else{
+            System.out.println("You are not hidden.");
+            return "You are not hidden.";
+        }
     }
 
 
