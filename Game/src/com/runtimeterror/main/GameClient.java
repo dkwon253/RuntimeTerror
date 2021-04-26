@@ -16,6 +16,7 @@ import java.util.List;
 public class GameClient implements GameInterface {
     HashMap<String, Rooms> rooms;
     Player player;
+    String addendumText = "Test Addendum text";
 
     GameClient(){
         try {
@@ -35,7 +36,11 @@ public class GameClient implements GameInterface {
         result += room.getRoomName();
         result += "\n\n";
         result += room.getRoomDescription();
-
+        if (!"".equals(addendumText)) {
+            result += "\n\n";
+            result += addendumText;
+            addendumText = "";
+        }
         return result;
     }
 

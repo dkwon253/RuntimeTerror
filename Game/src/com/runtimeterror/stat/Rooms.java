@@ -50,11 +50,8 @@ public class Rooms {
         this.roomNeighbors = roomNeighbors;
     }
 
-    public void getHidingLocation() {
-        if (hidingLocation == null){
-            System.out.println("This room does not have any hiding locations.");
-        }else
-            {System.out.println("There is a hiding spot " + hidingLocation);}
+    public String getHidingLocation() {
+        return hidingLocation;
     }
 
     public void setHidingLocation(String hidingLocation) {
