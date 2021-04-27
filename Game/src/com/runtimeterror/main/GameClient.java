@@ -1,10 +1,7 @@
 package com.runtimeterror.main;
 
 import com.runtimeterror.controller.GameInterface;
-import com.runtimeterror.stat.Item;
-import com.runtimeterror.stat.LoadRoomData;
-import com.runtimeterror.stat.Player;
-import com.runtimeterror.stat.Rooms;
+import com.runtimeterror.stat.*;
 import com.runtimeterror.textparser.InputData;
 import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
@@ -57,7 +54,7 @@ public class GameClient implements GameInterface {
         InputData parsedInput = Parser.parseInput(inputString);
         // check if the player requested a get command.
         if  (parsedInput == null){
-            result = processGet(parsedInput);
+            result = "I don't understand \"" +inputString +"\"";
         }
         else if (GET.equals(parsedInput.getVerbType())){
             result = processGet(parsedInput);
@@ -112,6 +109,9 @@ public class GameClient implements GameInterface {
         else if(("lift".equals(data.getNoun()) || "elevator".equals(data.getNoun())) && data.getVerb().equals("use")){
             result = processUseElevator();
         }
+        else {
+            addendumText = UseInventoryItemProcessor.useItem(data,player,rooms);
+        }
         return result;
     }
 
@@ -160,9 +160,9 @@ public class GameClient implements GameInterface {
     private String processUseElevator(){
         String result = "";
         if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
-            player.setCurrRoom(rooms.get("Basement"));
+            player.setCurrRoom(rooms.get("Storage"));
         }
-        else if (player.getCurrRoom().getRoomName().equals("Basement")){
+        else if (player.getCurrRoom().getRoomName().equals("Storage")){
             player.setCurrRoom(rooms.get("Floor Two Hall"));
         }
         else {
