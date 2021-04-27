@@ -87,6 +87,16 @@ public class Player {
         this.getCurrRoom().getHidingLocation();
         this.getCurrRoom().getRoomItem();
     }
+
+    public boolean hasItem(String itemName){
+        for (Item item : Inventory){
+            if (item.getName().equals(itemName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     //GETTERS AND SETTERS
     public List<Item> getInventory() {
         return this.Inventory;
