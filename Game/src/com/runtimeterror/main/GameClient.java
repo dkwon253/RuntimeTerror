@@ -30,9 +30,6 @@ public class GameClient implements GameInterface, java.io.Serializable{
         monster = new Monster(rooms.get("Boiler"));
     }
 
-
-
-
     @Override
     public String getRoomText() {
         String result = player.getCurrRoom().getRoomDescriptionText(player);
@@ -54,6 +51,11 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
         String result = "Inventory: \n" + String.join(", ", invString);
         return result;
+    }
+
+    @Override
+    public boolean getPLayerStatus() {
+        return player.isHidden();
     }
 
     @Override
@@ -81,7 +83,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
         // check if the player requested a hide command.
         else if (HIDE.equals(parsedInput.getVerbType())) {
-            result = "HIDE commands not yet implemented";
+            result = processHide();
         }
         else if (SAVE.equals(parsedInput.getVerbType())) {
             result = saveGame();
@@ -94,12 +96,14 @@ public class GameClient implements GameInterface, java.io.Serializable{
 
     private String processMove(InputData data){
         monster.changeRoom(rooms);
+        player.unHide();
         return player.changeRoom(data.getNoun());
 
     }
 
     private String processGet(InputData data) {
         String result = "";
+        player.unHide();
         if ("stairs".equals(data.getNoun()) && data.getVerb().equals("take")){
             result = processUseStairs();
         }
@@ -119,6 +123,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
 
     private String processUse(InputData data) {
         String result = "";
+        player.unHide();
         if ("stairs".equals(data.getNoun()) && data.getVerb().equals("use")){
             result = processUseStairs();
         }
@@ -149,6 +154,19 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
         if (!found){
             result = "There is no " + data.getNoun() + ".";
+        }
+        return result;
+    }
+
+    private String processHide(){
+        String result = "";
+        String hidingSpot = player.getCurrRoom().getHidingLocation();
+        if (hidingSpot != null){
+            result = "Using the " + hidingSpot + ", you attempt to hide.";
+            player.hide();
+        }
+        else {
+            result = "There is no where to hide.";
         }
         return result;
     }

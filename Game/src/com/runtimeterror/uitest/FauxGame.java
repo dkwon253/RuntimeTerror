@@ -16,6 +16,11 @@ public class FauxGame implements GameInterface {
     }
 
     @Override
+    public boolean getPLayerStatus() {
+        return false;
+    }
+
+    @Override
     public String getRoomText() {
         return roomDesc;
     }

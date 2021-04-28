@@ -21,4 +21,6 @@ public class SwingController {
     public String getInventory(){
         return gi.getPLayerInventory();
     }
+
+    public boolean getStatus() { return gi.getPLayerStatus(); }
 }

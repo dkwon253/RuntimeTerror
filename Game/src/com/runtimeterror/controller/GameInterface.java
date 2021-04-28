@@ -7,6 +7,9 @@ public interface GameInterface {
     // Used to get a formatted string of the players items
     public String getPLayerInventory();
 
+    // Used to get a formatted string of the players items
+    public boolean getPLayerStatus();
+
     // Submit player input.  Pass the player entered string to the game and gets player message back.
     public String submitPlayerString(String inputString);
 }
