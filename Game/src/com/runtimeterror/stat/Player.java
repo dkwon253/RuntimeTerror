@@ -29,9 +29,9 @@ public class Player {
     }
 
     //BUSINESS METHODS
-    public void addToInventory(Item item) {
+    public String addToInventory(Item item) {
         this.Inventory.add(item);
-        System.out.println("You added a " + item.getName() + " to your inventory");
+        return "You added a(n) " + item.getName() + " to your inventory";
     }
 
     public String changeRoom(String direction){
@@ -43,6 +43,7 @@ public class Player {
         }
         return result;
     }
+
     //player to be able to hide in a room when hiding place is available
     public String hide(){
         String result = "";
@@ -68,8 +69,17 @@ public class Player {
         }
     }
 
+    //instructions for the player
+    public String help(){
+        return "We are here to help. \n" +
+                "To change location: Input (verb + noun) . For example: 'Go East' or 'Move East'. \n" +
+                "To get an item: Input (verb + noun). For example: 'get pizza' or 'pick up pizza'. \n" +
+                "To examine an item of location: Input (verb + noun). For example: 'look masterBedRoom' or 'scan masterBedRoom'. \n" +
+                "To hide: Input (verb). For example: 'hide' or 'take cover'\n" +
+                "To use an item: input (verb + noun). For example: 'use key' or 'manipulate key'";
+    }
 
-
+    //GETTERS & SETTERS
     public void getLocation(){
         System.out.println(currRoom.getRoomDescription());
     }
@@ -79,9 +89,23 @@ public class Player {
         this.getCurrRoom().getHidingLocation();
         this.getCurrRoom().getRoomItem();
     }
+
+    public boolean hasItem(String itemName){
+        for (Item item : Inventory){
+            if (item.getName().equals(itemName)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     //GETTERS AND SETTERS
     public List<Item> getInventory() {
         return this.Inventory;
+    }
+
+    public void removeItemFromInventory(String itemName){
+        Inventory.removeIf(item -> item.getName().equals(itemName));
     }
 
     public String getName() {
@@ -99,5 +123,6 @@ public class Player {
     public void setCurrRoom(Rooms currRoom) {
         this.currRoom = currRoom;
     }
+
 
 }

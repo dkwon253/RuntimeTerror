@@ -1,14 +1,12 @@
 package com.runtimeterror.main;
 
 import com.runtimeterror.controller.GameInterface;
-import com.runtimeterror.stat.Item;
-import com.runtimeterror.stat.LoadRoomData;
-import com.runtimeterror.stat.Player;
-import com.runtimeterror.stat.Rooms;
+import com.runtimeterror.stat.*;
 import com.runtimeterror.textparser.InputData;
 import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +14,7 @@ import java.util.List;
 public class GameClient implements GameInterface {
     HashMap<String, Rooms> rooms;
     Player player;
+    Monster monster;
     String addendumText = "Test Addendum text";
 
     GameClient(){
@@ -26,16 +25,14 @@ public class GameClient implements GameInterface {
             System.out.printf("Failed to load the game files:");
             System.out.println(e.getMessage());
         }
-        player = new Player(rooms.get("MasterBathroom"));
+        player = new Player(rooms.get("Master Bathroom"));
+        monster = new Monster(rooms.get("Boiler"));
     }
 
     @Override
     public String getRoomText() {
-        String result = "Location:\n";
-        Rooms room = player.getCurrRoom();
-        result += room.getRoomName();
-        result += "\n\n";
-        result += room.getRoomDescription();
+        String result = player.getCurrRoom().getRoomDescriptionText(player);
+
         if (!"".equals(addendumText)) {
             result += "\n\n";
             result += addendumText;
@@ -61,11 +58,10 @@ public class GameClient implements GameInterface {
         InputData parsedInput = Parser.parseInput(inputString);
         // check if the player requested a get command.
         if  (parsedInput == null){
-            result = "I don't understand \"" + inputString + "\"";
+            result = "I don't understand \"" +inputString +"\"";
         }
         else if (GET.equals(parsedInput.getVerbType())){
-            System.out.println("process get");
-            result = "GET commands not yet implemented";
+            result = processGet(parsedInput);
         }
         // check if the player requested a move command.
         else if (GO.equals(parsedInput.getVerbType())) {
@@ -73,11 +69,11 @@ public class GameClient implements GameInterface {
         }
         // check if the player requested a use command.
         else if (USE.equals(parsedInput.getVerbType())) {
-            result = "USE commands not yet implemented";
+            result = processUse(parsedInput);
         }
         // check if the player requested a look command.
         else if (LOOK.equals(parsedInput.getVerbType())) {
-            result = "LOOK commands not yet implemented";
+            result = processLook(parsedInput);
         }
         // check if the player requested a hide command.
         else if (HIDE.equals(parsedInput.getVerbType())) {
@@ -87,6 +83,97 @@ public class GameClient implements GameInterface {
     }
 
     private String processMove(InputData data){
+        monster.changeRoom(rooms);
         return player.changeRoom(data.getNoun());
     }
+
+    private String processGet(InputData data) {
+        String result = "";
+        if ("stairs".equals(data.getNoun()) && data.getVerb().equals("take")){
+            result = processUseStairs();
+        }
+        else if(("lift".equals(data.getNoun()) || "elevator".equals(data.getNoun())) && data.getVerb().equals("take")){
+            result = processUseElevator();
+        }
+        else {
+            Item item = player.getCurrRoom().removeItemFromRoom(data.getNoun());
+            if (item != null) {
+                result = player.addToInventory(item);
+            } else {
+                result = "Cannot get " + data.getNoun() + ".";
+            }
+        }
+        return result;
+    }
+
+    private String processUse(InputData data) {
+        String result = "";
+        if ("stairs".equals(data.getNoun()) && data.getVerb().equals("use")){
+            result = processUseStairs();
+        }
+        else if(("lift".equals(data.getNoun()) || "elevator".equals(data.getNoun())) && data.getVerb().equals("use")){
+            result = processUseElevator();
+        }
+        else {
+            addendumText = UseInventoryItemProcessor.useItem(data,player,rooms);
+        }
+        return result;
+    }
+
+    private String  processLook(InputData data) {
+        String result = "";
+        boolean found = false;
+        for (Item item : player.getInventory()){
+            if (item.getName().equals(data.getNoun())){
+                found = true;
+                this.addendumText = item.getDescription();
+                break;
+            }
+        }
+        if (!found && player.getCurrRoom().getItem() != null){
+            if (player.getCurrRoom().getItem().getName().equals(data.getNoun())){
+                found = true;
+                this.addendumText = player.getCurrRoom().getItem().getDescription();
+            }
+        }
+        if (!found){
+            result = "There is no " + data.getNoun() + ".";
+        }
+        return result;
+    }
+
+    private String processUseStairs(){
+        String result = "";
+        if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
+            player.setCurrRoom(rooms.get("Main Hall"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Main Hall")){
+            player.setCurrRoom(rooms.get("Floor Two Hall"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Kitchen")){
+            player.setCurrRoom(rooms.get("Basement"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Basement")){
+            player.setCurrRoom(rooms.get("Kitchen"));
+        }
+        else {
+            result = "There are no stairs to use.";
+        }
+        return result;
+    }
+
+    private String processUseElevator(){
+        String result = "";
+        if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
+            player.setCurrRoom(rooms.get("Storage"));
+        }
+        else if (player.getCurrRoom().getRoomName().equals("Storage")){
+            player.setCurrRoom(rooms.get("Floor Two Hall"));
+        }
+        else {
+            result = "There is no elevator to use.";
+        }
+        return result;
+    }
+
 }
