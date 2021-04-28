@@ -43,6 +43,7 @@ public class Player {
         }
         return result;
     }
+
     //player to be able to hide in a room when hiding place is available
     public String hide(){
         String result = "";
@@ -78,6 +79,7 @@ public class Player {
                 "To use an item: input (verb + noun). For example: 'use key' or 'manipulate key'";
     }
 
+    //GETTERS & SETTERS
     public void getLocation(){
         System.out.println(currRoom.getRoomDescription());
     }
