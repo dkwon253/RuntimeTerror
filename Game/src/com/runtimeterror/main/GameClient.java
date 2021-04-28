@@ -6,16 +6,17 @@ import com.runtimeterror.textparser.InputData;
 import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class GameClient implements GameInterface {
+public class GameClient implements GameInterface, java.io.Serializable{
     HashMap<String, Rooms> rooms;
     Player player;
     Monster monster;
     String addendumText = "Test Addendum text";
+    boolean gameLoaded = false;
 
     GameClient(){
         try {
@@ -28,6 +29,9 @@ public class GameClient implements GameInterface {
         player = new Player(rooms.get("Master Bathroom"));
         monster = new Monster(rooms.get("Boiler"));
     }
+
+
+
 
     @Override
     public String getRoomText() {
@@ -79,12 +83,19 @@ public class GameClient implements GameInterface {
         else if (HIDE.equals(parsedInput.getVerbType())) {
             result = "HIDE commands not yet implemented";
         }
+        else if (SAVE.equals(parsedInput.getVerbType())) {
+            result = saveGame();
+        }
+        else if (LOAD.equals(parsedInput.getVerbType())) {
+//            result = loadGame();
+        }
         return result;
     }
 
     private String processMove(InputData data){
         monster.changeRoom(rooms);
         return player.changeRoom(data.getNoun());
+
     }
 
     private String processGet(InputData data) {
@@ -175,5 +186,32 @@ public class GameClient implements GameInterface {
         }
         return result;
     }
+
+
+
+
+    private String saveGame(){
+        HashMap<String, Object> gameObjects = new HashMap<String, Object>();
+        gameObjects.put("rooms", rooms);
+        gameObjects.put("player", player);
+        gameObjects.put("monster", monster);
+        try {
+            FileOutputStream fos = new FileOutputStream("Game/gameData/savedGameData.txt");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(gameObjects);
+            oos.flush();
+            oos.close();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            System.out.printf("Failed to load the game files:");
+            System.out.println(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "game saved";
+    }
+
+
 
 }

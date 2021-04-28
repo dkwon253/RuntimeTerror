@@ -1,6 +1,6 @@
 package com.runtimeterror.stat;
 
-public class Item {
+public class Item implements java.io.Serializable{
 
     // FIELDS
     private final String name;
