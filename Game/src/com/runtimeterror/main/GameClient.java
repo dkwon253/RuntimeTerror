@@ -87,7 +87,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
             result = saveGame();
         }
         else if (LOAD.equals(parsedInput.getVerbType())) {
-//            result = loadGame();
+            result = loadGame();
         }
         return result;
     }
@@ -212,6 +212,34 @@ public class GameClient implements GameInterface, java.io.Serializable{
         return "game saved";
     }
 
+    private String loadGame(){
+        String result = "";
+        if(!gameLoaded){
+            try {
 
+                FileInputStream fis = new FileInputStream("Game/gameData/savedGameData.txt");
+                ObjectInputStream ois = new ObjectInputStream(fis);
+
+                HashMap<String,Object> data = (HashMap<String,Object>)ois.readObject();
+                fis.close();
+
+                rooms = (HashMap<String, Rooms>) data.get("rooms");
+                player = (Player) data.get("player");
+                monster = (Monster) data.get("monster");
+                gameLoaded = true;
+                result = "game loaded from last checkpoint";
+
+            } catch (FileNotFoundException | ClassNotFoundException e) {
+                return "game could not be loaded";
+            } catch (IOException e) {
+                return "game could not be loaded";
+            }catch (Exception e){
+                return "game could not be loaded";
+            }
+        }else {
+            result = "You have already loaded the game. You cannot do it again";
+        }
+        return result;
+    }
 
 }
