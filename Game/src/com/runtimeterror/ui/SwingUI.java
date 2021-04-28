@@ -4,6 +4,7 @@ import com.runtimeterror.controller.SwingController;
 import com.runtimeterror.sound.SoundManagerV2;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -20,6 +21,7 @@ public class SwingUI extends JFrame{
     private JTextArea inventoryInfoTA;
     private JTextField playerInputTF;
     private JLabel playerStateLbl;
+    private JLabel saveGameMsgLbl;
     private JLabel playerMessageLbl;
     private JButton submitCommandBtn;
 
@@ -58,6 +60,18 @@ public class SwingUI extends JFrame{
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
         playerStateLbl.setBounds(25,475,430,25);
         add(playerStateLbl);
+
+        saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
+        saveGameMsgLbl.setBounds(25,520,430,25);
+        JLabel label = new JLabel("I'm bold");
+        Font font = new Font("Courier", Font.BOLD,12);
+        saveGameMsgLbl.setFont(font);
+        Font f = label.getFont();
+        saveGameMsgLbl.setFont(f.deriveFont(f.getStyle() & ~Font.BOLD));
+        add(saveGameMsgLbl);
+
+
+
 
         playerInputTF = new JTextField();
         playerInputTF.setBounds(25,500,430,25);

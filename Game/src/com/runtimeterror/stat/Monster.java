@@ -17,17 +17,17 @@ public class Monster implements java.io.Serializable{
     }
 
     //BUSINESS METHODS
-    public void changeRoom(HashMap<String, Rooms> rooms){
-        this.setCurrRoom(getRandomRoom(rooms));
+    public void changeRoom(Rooms rooms){
+        this.setCurrRoom((rooms));
         System.out.println("Monster's current room " + currRoom.getRoomName());
     };
 
-    public Rooms getRandomRoom(HashMap<String, Rooms> rooms){
-        List<String> keysAsArray = new ArrayList<String>(rooms.keySet());
-        Random r = new Random();
-        Rooms randomRoom = rooms.get(keysAsArray.get(r.nextInt(keysAsArray.size())));
-        return randomRoom;
-    }
+//    public Rooms getRandomRoom(HashMap<String, Rooms> rooms){
+//        List<String> keysAsArray = new ArrayList<String>(rooms.keySet());
+//        Random r = new Random();
+//        Rooms randomRoom = rooms.get(keysAsArray.get(r.nextInt(keysAsArray.size())));
+//        return randomRoom;
+//    }
 
     //GETTERS & SETTERS
     public Rooms getCurrRoom() {
