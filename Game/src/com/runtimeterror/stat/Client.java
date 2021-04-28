@@ -1,32 +1,20 @@
 package com.runtimeterror.stat;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class Client {
 
 
-    public static void main(String[] args) throws IOException {
 
-        Scanner userInput = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
         HashMap<String, Rooms> rooms = LoadRoomData.load();
 
-        Player player = new Player(rooms.get("MasterBathroom"));
-        System.out.println(player.getDescription());
-        player.getCurrentStatus();
-        player.addToInventory(player.getCurrRoom().getItem());
+        List<String> keysAsArray = new ArrayList<String>(rooms.keySet());
+        Random r = new Random();
+        Rooms randomRoom = rooms.get(keysAsArray.get(r.nextInt(keysAsArray.size())));
 
-        String userChoice = "";
-        while (userChoice != "quit") {
-            System.out.println("\n>");
-            userChoice = userInput.nextLine();
-            String[] choices  = userChoice.split(" ");
+        System.out.println(randomRoom.getRoomName());
 
-            player.changeRoom(choices[1]);
-
-        }
     }
 }
