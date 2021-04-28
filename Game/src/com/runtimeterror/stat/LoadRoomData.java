@@ -42,5 +42,4 @@ public class LoadRoomData {
 
         return roomList;
     }
-
 }

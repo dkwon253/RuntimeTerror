@@ -102,6 +102,10 @@ public class Player {
         return this.Inventory;
     }
 
+    public void removeItemFromInventory(String itemName){
+        Inventory.removeIf(item -> item.getName().equals(itemName));
+    }
+
     public String getName() {
         return name;
     }
@@ -117,5 +121,6 @@ public class Player {
     public void setCurrRoom(Rooms currRoom) {
         this.currRoom = currRoom;
     }
+
 
 }

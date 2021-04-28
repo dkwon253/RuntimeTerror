@@ -28,7 +28,8 @@ public class GameClient implements GameInterface {
 
     @Override
     public String getRoomText() {
-        String result = player.getCurrRoom().getRoomDescriptionText();
+        String result = player.getCurrRoom().getRoomDescriptionText(player);
+
         if (!"".equals(addendumText)) {
             result += "\n\n";
             result += addendumText;
