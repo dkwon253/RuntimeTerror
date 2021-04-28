@@ -1,13 +1,17 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
+import com.runtimeterror.sound.SoundManagerV2;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Locale;
+
 
 public class SwingUI extends JFrame{
+    private SoundManagerV2 soundManagerV2 = new SoundManagerV2();
+    private String currentRoomName = "";
+
     private final int FRAME_X_SIZE = 480;
     private final int FRAME_Y_SIZE = 640;
 
@@ -65,6 +69,9 @@ public class SwingUI extends JFrame{
         submitCommandBtn.setText("Do it");
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
         add(submitCommandBtn);
+
+        soundManagerV2.playBGM("Game/Sounds/BGM.wav");
+        playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
     }
 
     private void processSubmitInput(){
@@ -76,6 +83,7 @@ public class SwingUI extends JFrame{
         String invData = controller.getInventory();
         inventoryInfoTA.setText(invData);
         playerInputTF.setText("");
+        playRoomSounds(roomData,result);
     }
 
     private class HandleSubmitBtnClick implements ActionListener {
@@ -92,4 +100,20 @@ public class SwingUI extends JFrame{
         }
     }
 
+    private void playRoomSounds(String roomText, String messageText){
+        String[] splitString = roomText.split("\n");
+        System.out.println(splitString[1]);
+        if (!currentRoomName.equals(splitString)) {
+            soundManagerV2.stopRoomSFX();
+            if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {
+                soundManagerV2.playRoomSFX("Game/Sounds/bathroom.wav", true);
+            }
+            if ("Courtyard".equals(splitString[1])) {
+                soundManagerV2.playRoomSFX("Game/Sounds/wind.wav", true);
+            }
+            if ("Theater".equals(splitString[1])) {
+                soundManagerV2.playRoomSFX("Game/Sounds/static.wav", true);
+            }
+        }
+    }
 }
