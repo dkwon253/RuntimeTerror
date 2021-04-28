@@ -3,7 +3,7 @@ package com.runtimeterror.stat;
 import java.io.IOException;
 import java.util.*;
 
-public class Rooms {
+public class Rooms implements java.io.Serializable{
 
     //Fields
     private String roomName;

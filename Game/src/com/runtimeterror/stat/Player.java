@@ -3,7 +3,7 @@ package com.runtimeterror.stat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player implements java.io.Serializable{
 
     //FIELDS
     private final String name;

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class Monster {
+public class Monster implements java.io.Serializable{
     //Fields
 
     private Rooms currRoom;
