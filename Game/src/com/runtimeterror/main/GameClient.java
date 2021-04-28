@@ -270,4 +270,20 @@ public class GameClient implements GameInterface, java.io.Serializable{
         return result;
     }
 
+
+    public void monsterRandomNeighboor(Rooms rooms){
+        Rooms currentRoom = monster.getCurrRoom();
+
+        String[] directions = {"north","east","south","west"};
+
+        for (String direction : directions) {
+            if (currentRoom.getRoomNeighbors().get(direction) != null){
+                System.out.println(direction);
+            }
+        }
+
+
+
+    }
+
 }
