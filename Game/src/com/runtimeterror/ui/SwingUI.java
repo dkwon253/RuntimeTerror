@@ -82,6 +82,12 @@ public class SwingUI extends JFrame{
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();
         inventoryInfoTA.setText(invData);
+        if (controller.getStatus()){
+            playerStateLbl.setText("Status: Hidden");
+        }
+        else{
+            playerStateLbl.setText("Status: Visible");
+        }
         playerInputTF.setText("");
         playRoomSounds(roomData,result);
     }
@@ -102,7 +108,7 @@ public class SwingUI extends JFrame{
 
     private void playRoomSounds(String roomText, String messageText){
         String[] splitString = roomText.split("\n");
-        System.out.println(splitString[1]);
+        //System.out.println(splitString[1]);
         if (!currentRoomName.equals(splitString)) {
             soundManagerV2.stopRoomSFX();
             if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {

@@ -1,17 +1,17 @@
-Master Bathroom,axe,tool,The axe is rusty and and stained with blood.,null,Master Bedroom,null,null,null,This is a bathroom.
-Master Bedroom,key,weapon,itemDescription,null,Floor Two Hall,Master Bathroom,Study,null,This is the master bedroom.
-Study,key,weapon,itemDescription,null,Bedroom Two,null,null,Master Bedroom,This is a study.
+Master Bathroom,axe,tool,The axe is rusty and and stained with blood.,shower,Master Bedroom,null,null,null,This is a bathroom.
+Master Bedroom,key,weapon,itemDescription,bed,Floor Two Hall,Master Bathroom,Study,null,This is the master bedroom.
+Study,key,weapon,itemDescription,desk,Bedroom Two,null,null,Master Bedroom,This is a study.
 Bedroom Two,key,weapon,itemDescription,null,Bathroom Two,Study,null,Floor Two Hall,You arrive in a small bedroom filled with eery shadows - and in of those shadows you see a cage. Inside that cage is an old man sleeping. His arms and legs all chained to the cage.
 Floor Two Hall,key,weapon,itemDescription,null,Bathroom Two,Master Bedroom,Bedroom Two,Theater,Second floor hall.  There is a small service elevator and stairs down.
-Bathroom Two,key,weapon,itemDescription,null,null,Floor Two Hall,Bedroom Two,Theater,This is a bathroom.
-Theater,key,weapon,itemDescription,null,BathroomTwo,null,Floor Two Hall,null,This is a theater.
+Bathroom Two,key,weapon,itemDescription,bed,null,Floor Two Hall,Bedroom Two,Theater,This is a bathroom.
+Theater,key,weapon,itemDescription,cabinet,BathroomTwo,null,Floor Two Hall,null,This is a theater.
 Main Hall,key,weapon,itemDescription,null,Dining Room,null,Bathroom Three,Library,This is the main hall.  The front door is chained blocking your escape.  There are stairs leading up.
-Bathroom Three,key,weapon,itemDescription,null,Kitchen,null,null,Main Hall,This is a bath room.
-Library,key,weapon,itemDescription,null,Parlor,null,Main Hall,null,This is a library.
-Kitchen,cake,food,the most scrumptious and delicios looking cake you have ever seen,null,null,Bathroom Three,null,Dining Room,This is the kitchen.  There are stairs leading down.
-Dining Room,key,weapon,itemDescription,null,Courtyard,Main Hall,Kitchen,Parlor,The is the dinning room.
-Parlor,key,weapon,itemDescription,null,null,Library,Dining Room,null,This is the parlor.
-Garden,key,weapon,itemDescription,null,Gazebo,null,null,Courtyard,This is the Garden.
+Bathroom Three,key,weapon,itemDescription,linen closet,Kitchen,null,null,Main Hall,This is a bath room.
+Library,key,weapon,itemDescription,bookcase,Parlor,null,Main Hall,null,This is a library.
+Kitchen,cake,food,the most scrumptious and delicios looking cake you have ever seen,pantry,null,Bathroom Three,null,Dining Room,This is the kitchen.  There are stairs leading down.
+Dining Room,key,weapon,itemDescription,table,Courtyard,Main Hall,Kitchen,Parlor,The is the dinning room.
+Parlor,key,weapon,itemDescription,cabinet,null,Library,Dining Room,null,This is the parlor.
+Garden,key,weapon,itemDescription,tool shed,Gazebo,null,null,Courtyard,This is the Garden.
 Courtyard,key,weapon,itemDescription,null,Gazebo,Dining Room,Garden,Maze,this is the courtyard.
 Gazebo,key,weapon,itemDescription,null,null,Courtyard,Garden,Maze,This is the gazebo.
 Maze,key,weapon,itemDescription,null,null,Courtyard,Gazebo,null,This is a hedge maze.
