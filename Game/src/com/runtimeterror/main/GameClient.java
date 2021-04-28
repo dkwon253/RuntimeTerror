@@ -6,6 +6,7 @@ import com.runtimeterror.textparser.InputData;
 import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class GameClient implements GameInterface {
     HashMap<String, Rooms> rooms;
     Player player;
+    Monster monster;
     String addendumText = "Test Addendum text";
 
     GameClient(){
@@ -24,6 +26,7 @@ public class GameClient implements GameInterface {
             System.out.println(e.getMessage());
         }
         player = new Player(rooms.get("Master Bathroom"));
+        monster = new Monster(rooms.get("Boiler"));
     }
 
     @Override
@@ -80,6 +83,7 @@ public class GameClient implements GameInterface {
     }
 
     private String processMove(InputData data){
+        monster.changeRoom(rooms);
         return player.changeRoom(data.getNoun());
     }
 
@@ -171,4 +175,5 @@ public class GameClient implements GameInterface {
         }
         return result;
     }
+
 }
