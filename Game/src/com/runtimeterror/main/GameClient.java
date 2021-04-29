@@ -93,10 +93,15 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
     private String processMove(InputData data){
+        String result = player.changeRoom(data.getNoun());
+        if (result == "You cant go this way"){
+            return result;
+        }
         monster.moveMonsterToRandomNeighbor();
+        checkAdjacentRoom();
+        monsterEncounter();
         player.unHide();
-        return player.changeRoom(data.getNoun());
-
+        return result;
     }
 
     private String processGet(InputData data) {
@@ -113,7 +118,8 @@ public class GameClient implements GameInterface, java.io.Serializable{
             if (item != null) {
                 result = player.addToInventory(item);
                 monster.moveMonsterToRandomNeighbor();
-
+                checkAdjacentRoom();
+                monsterEncounter();
             } else {
                 result = "Cannot get " + data.getNoun() + ".";
             }
@@ -165,6 +171,8 @@ public class GameClient implements GameInterface, java.io.Serializable{
             result = "Using the " + hidingSpot + ", you attempt to hide.";
             player.hide();
             monster.moveMonsterToRandomNeighbor();
+            checkAdjacentRoom();
+            monsterEncounter();
         }
         else {
             result = "There is no where to hide.";
@@ -270,9 +278,28 @@ public class GameClient implements GameInterface, java.io.Serializable{
         return result;
     }
 
+    public void monsterEncounter(){
+        if(monster.getCurrRoom().getRoomName() == player.getCurrRoom().getRoomName()){
+//            System.out.println(monster.getCurrRoom().getRoomName());
+//            System.out.println(player.getCurrRoom().getRoomName());
+            if (player.isHidden()){
+                System.out.println("Monster is here but you are hidden and safe.");
+            }
+            if(!player.isHidden()){
+                System.out.println("Monster caught you. You are now dead. \nGame Over...");
+                System.exit(0);
+            }
+        }
+    }
 
-
-
-
-
+    private void checkAdjacentRoom(){
+        String[] directions = {"north","east","south","west"};
+        for (String direction : directions) {
+            if (player.getCurrRoom().getRoomNeighbors().get(direction) != null){
+                if (monster.getCurrRoom() == player.getCurrRoom().getRoomNeighbors().get(direction)){
+                    System.out.println("Monster is nearby.");
+                }
+            }
+        }
+    }
 }

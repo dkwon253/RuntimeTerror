@@ -38,6 +38,7 @@ public class Monster implements java.io.Serializable{
     }
 
 
+
     //GETTERS & SETTERS
     public Rooms getCurrRoom() {
         return currRoom;
