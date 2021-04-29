@@ -3,10 +3,13 @@ package com.runtimeterror.ui;
 import com.runtimeterror.controller.SwingController;
 import com.runtimeterror.sound.SoundManagerV2;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 
 public class SwingUI extends JFrame{
@@ -24,7 +27,9 @@ public class SwingUI extends JFrame{
     private JLabel saveGameMsgLbl;
     private JLabel playerMessageLbl;
     private JButton submitCommandBtn;
-
+    private JLabel monsterInRoomLbl;
+    private JLabel monsterNearByLbl;
+    private JButton volumeControlsBtn;
 
     // CTOR
     public SwingUI(String title, SwingController controller){
@@ -70,9 +75,6 @@ public class SwingUI extends JFrame{
         saveGameMsgLbl.setFont(f.deriveFont(f.getStyle() & ~Font.BOLD));
         add(saveGameMsgLbl);
 
-
-
-
         playerInputTF = new JTextField();
         playerInputTF.setBounds(25,500,430,25);
         playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
@@ -83,6 +85,19 @@ public class SwingUI extends JFrame{
         submitCommandBtn.setText("Do it");
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
         add(submitCommandBtn);
+
+        volumeControlsBtn = new JButton();
+        volumeControlsBtn.setBounds(25,550,50,50);
+        volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
+        Image img = null;
+        try {
+            img = ImageIO.read(new File("Game/Icons/soundIcon.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
+        volumeControlsBtn.setIcon(new ImageIcon(img));
+        add(volumeControlsBtn);
 
         soundManagerV2.playBGM("Game/Sounds/BGM.wav");
         playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
@@ -117,6 +132,15 @@ public class SwingUI extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             processSubmitInput();
+        }
+    }
+
+    private class HandleVolumeControlsBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("Vol button clicked.");
+            SoundControls sc = new SoundControls("Volume",soundManagerV2,getLocation());
+            sc.setVisible(true);
         }
     }
 
