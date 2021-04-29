@@ -7,9 +7,7 @@ import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GameClient implements GameInterface, java.io.Serializable{
     HashMap<String, Rooms> rooms;
@@ -27,7 +25,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
             System.out.println(e.getMessage());
         }
         player = new Player(rooms.get("Master Bathroom"));
-        monster = new Monster(rooms.get("Boiler"));
+        monster = new Monster(rooms.get("Bedroom Two"));
     }
 
     @Override
@@ -95,6 +93,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
     private String processMove(InputData data){
+        monster.moveMonsterToRandomNeighbor();
         player.unHide();
         return player.changeRoom(data.getNoun());
 
@@ -113,6 +112,8 @@ public class GameClient implements GameInterface, java.io.Serializable{
             Item item = player.getCurrRoom().removeItemFromRoom(data.getNoun());
             if (item != null) {
                 result = player.addToInventory(item);
+                monster.moveMonsterToRandomNeighbor();
+
             } else {
                 result = "Cannot get " + data.getNoun() + ".";
             }
@@ -163,6 +164,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
         if (hidingSpot != null){
             result = "Using the " + hidingSpot + ", you attempt to hide.";
             player.hide();
+            monster.moveMonsterToRandomNeighbor();
         }
         else {
             result = "There is no where to hide.";
@@ -214,8 +216,6 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
         return result;
     }
-
-
 
 
     private String saveGame(){
@@ -271,19 +271,8 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
 
-    public void monsterRandomNeighboor(Rooms rooms){
-        Rooms currentRoom = monster.getCurrRoom();
-
-        String[] directions = {"north","east","south","west"};
-
-        for (String direction : directions) {
-            if (currentRoom.getRoomNeighbors().get(direction) != null){
-                System.out.println(direction);
-            }
-        }
 
 
 
-    }
 
 }

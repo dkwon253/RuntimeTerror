@@ -22,12 +22,21 @@ public class Monster implements java.io.Serializable{
         System.out.println("Monster's current room " + currRoom.getRoomName());
     };
 
-//    public Rooms getRandomRoom(HashMap<String, Rooms> rooms){
-//        List<String> keysAsArray = new ArrayList<String>(rooms.keySet());
-//        Random r = new Random();
-//        Rooms randomRoom = rooms.get(keysAsArray.get(r.nextInt(keysAsArray.size())));
-//        return randomRoom;
-//    }
+
+    public void moveMonsterToRandomNeighbor(){
+        String[] directions = {"north","east","south","west"};
+        List<String> movableDirectionsList = new ArrayList<>();
+
+        for (String direction : directions) {
+            if (this.getCurrRoom().getRoomNeighbors().get(direction) != null){
+                movableDirectionsList.add(direction);
+            }
+        }
+        Random r = new Random();
+        int randomitem = r.nextInt(movableDirectionsList.size());
+        this.changeRoom(this.getCurrRoom().getRoomNeighbors().get(movableDirectionsList.get(randomitem)));
+    }
+
 
     //GETTERS & SETTERS
     public Rooms getCurrRoom() {

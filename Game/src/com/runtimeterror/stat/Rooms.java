@@ -48,6 +48,9 @@ public class Rooms implements java.io.Serializable{
         return roomNeighbors;
     }
 
+    public void setRoomNeighbors(HashMap<String, Rooms> roomNeighbors) {
+        this.roomNeighbors = roomNeighbors;
+    }
 
     public String getHidingLocation() {
         return hidingLocation;
