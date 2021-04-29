@@ -2,12 +2,15 @@ package com.runtimeterror.sound;
 
 import javax.sound.sampled.*;
 import java.io.File;
-import java.io.FileInputStream;
 
 public class SoundManagerV2 {
     private Clip BGM;
     private Clip roomSFX;
     private Clip extraSFX;
+    private boolean BGMOff = false;
+    private boolean SFXOff = false;
+    private float BMGVol = 0.5f;
+    private float SFXVol = 0.6f;
 
     public SoundManagerV2(){
         try {
@@ -19,6 +22,7 @@ public class SoundManagerV2 {
     }
 
     public void playBGM(String BGMFile){
+
         if (BGM.isOpen()) {
             BGM.close();
         }
@@ -28,13 +32,26 @@ public class SoundManagerV2 {
         }
         catch (UnsupportedAudioFileException e) {e.printStackTrace();}
         catch (Exception e) {e.printStackTrace();}
-        BGM.start();
         BGM.loop(Clip.LOOP_CONTINUOUSLY);
+        if (!BGMOff) {
+            BGM.start();
+            setBGMVolume(BMGVol);
+        }
     }
 
     public void stopBGM(){
         BGM.stop();
-        BGM.close();
+    }
+
+    public void turnOffBGM(){
+        stopBGM();
+        BGMOff = true;
+    }
+
+    public void turnOnBGM(){
+        BGM.setMicrosecondPosition(0L);
+        BGM.start();
+        BGMOff = false;
     }
 
     public void playRoomSFX(String SFXFile, boolean loop){
@@ -47,18 +64,35 @@ public class SoundManagerV2 {
         }
         catch (UnsupportedAudioFileException e) {e.printStackTrace();}
         catch (Exception e) {e.printStackTrace();}
-        roomSFX.start();
+
         if (loop) {
             roomSFX.loop(Clip.LOOP_CONTINUOUSLY);
         }
         else{
             roomSFX.loop(0);
         }
+        if (!SFXOff) {
+            roomSFX.start();
+            setSFXVolume(SFXVol);
+        }
     }
 
     public void stopRoomSFX(){
         roomSFX.stop();
-        roomSFX.close();
+    }
+
+    public void turnOffSFX(){
+        SFXOff = true;
+        roomSFX.stop();
+        extraSFX.stop();
+    }
+
+    public void turnOnSFX(){
+        SFXOff = false;
+        roomSFX.setMicrosecondPosition(0L);
+        roomSFX.start();
+        extraSFX.setMicrosecondPosition(0L);
+        extraSFX.start();
     }
 
     public void playExtraSFX(String SFXFile, boolean loop){
@@ -77,6 +111,10 @@ public class SoundManagerV2 {
         }
         else{
             extraSFX.loop(0);
+        }
+        if (!SFXOff) {
+            extraSFX.start();
+            setSFXVolume(SFXVol);
         }
     }
 
@@ -99,5 +137,43 @@ public class SoundManagerV2 {
 
     public boolean isExtraSFXActive(){
         return extraSFX.isActive();
+    }
+
+    public float getBGMVolume(){
+        FloatControl volume = (FloatControl)BGM.getControl(FloatControl.Type.MASTER_GAIN);
+        return (float) Math.pow(10f, volume.getValue() / 20f);
+    }
+
+    public void setBGMVolume(float newVol){
+        if (newVol >= 0.0f && newVol <= 1.0f) {
+            BMGVol = newVol;
+            FloatControl volume = (FloatControl) BGM.getControl(FloatControl.Type.MASTER_GAIN);
+            volume.setValue(20f * (float)Math.log10(newVol));
+        }
+    }
+
+    public float getSFXVolume(){
+        FloatControl volume = (FloatControl)roomSFX.getControl(FloatControl.Type.MASTER_GAIN);
+        return (float) Math.pow(10f, volume.getValue() / 20f);
+    }
+
+    public void setSFXVolume(float newVol){
+        if (newVol >= 0.0f && newVol <= 1.0f) {
+            SFXVol = newVol;
+            FloatControl volume1 = (FloatControl) roomSFX.getControl(FloatControl.Type.MASTER_GAIN);
+            volume1.setValue(20f * (float)Math.log10(newVol));
+            if (extraSFX.isOpen()) {
+                FloatControl volume2 = (FloatControl) extraSFX.getControl(FloatControl.Type.MASTER_GAIN);
+                volume2.setValue(20f * (float)Math.log10(newVol));
+            }
+        }
+    }
+
+    public boolean isBGMOff() {
+        return BGMOff;
+    }
+
+    public boolean isSFXOff() {
+        return SFXOff;
     }
 }
