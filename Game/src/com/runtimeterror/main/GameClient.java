@@ -7,9 +7,7 @@ import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GameClient implements GameInterface, java.io.Serializable{
     HashMap<String, Rooms> rooms;
@@ -27,7 +25,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
             System.out.println(e.getMessage());
         }
         player = new Player(rooms.get("Master Bathroom"));
-        monster = new Monster(rooms.get("Boiler"));
+        monster = new Monster(rooms.get("Bedroom Two"));
     }
 
     @Override
@@ -95,7 +93,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
     private String processMove(InputData data){
-        monster.changeRoom(rooms);
+        monster.moveMonsterToRandomNeighbor();
         player.unHide();
         return player.changeRoom(data.getNoun());
 
@@ -114,6 +112,8 @@ public class GameClient implements GameInterface, java.io.Serializable{
             Item item = player.getCurrRoom().removeItemFromRoom(data.getNoun());
             if (item != null) {
                 result = player.addToInventory(item);
+                monster.moveMonsterToRandomNeighbor();
+
             } else {
                 result = "Cannot get " + data.getNoun() + ".";
             }
@@ -164,6 +164,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
         if (hidingSpot != null){
             result = "Using the " + hidingSpot + ", you attempt to hide.";
             player.hide();
+            monster.moveMonsterToRandomNeighbor();
         }
         else {
             result = "There is no where to hide.";
@@ -175,15 +176,22 @@ public class GameClient implements GameInterface, java.io.Serializable{
         String result = "";
         if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
             player.setCurrRoom(rooms.get("Main Hall"));
+            monster.changeRoom(rooms.get("Gazebo"));
         }
         else if (player.getCurrRoom().getRoomName().equals("Main Hall")){
             player.setCurrRoom(rooms.get("Floor Two Hall"));
+            monster.changeRoom(rooms.get("Master Bathroom"));
+
         }
         else if (player.getCurrRoom().getRoomName().equals("Kitchen")){
             player.setCurrRoom(rooms.get("Basement"));
+            monster.changeRoom(rooms.get("Electrical"));
+
         }
         else if (player.getCurrRoom().getRoomName().equals("Basement")){
             player.setCurrRoom(rooms.get("Kitchen"));
+            monster.changeRoom(rooms.get("Gazebo"));
+
         }
         else {
             result = "There are no stairs to use.";
@@ -195,17 +203,19 @@ public class GameClient implements GameInterface, java.io.Serializable{
         String result = "";
         if (player.getCurrRoom().getRoomName().equals("Floor Two Hall")){
             player.setCurrRoom(rooms.get("Storage"));
+            monster.changeRoom(rooms.get("Boiler"));
+
         }
         else if (player.getCurrRoom().getRoomName().equals("Storage")){
             player.setCurrRoom(rooms.get("Floor Two Hall"));
+            monster.changeRoom(rooms.get("Gazebo"));
+
         }
         else {
             result = "There is no elevator to use.";
         }
         return result;
     }
-
-
 
 
     private String saveGame(){
@@ -259,5 +269,10 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
         return result;
     }
+
+
+
+
+
 
 }
