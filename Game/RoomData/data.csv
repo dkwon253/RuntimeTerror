@@ -15,8 +15,8 @@ Garden,key,weapon,itemDescription,tool shed,Gazebo,null,null,Courtyard,This is t
 Courtyard,key,weapon,itemDescription,null,Gazebo,Dining Room,Garden,Maze,this is the courtyard.
 Gazebo,key,weapon,itemDescription,null,null,Courtyard,Garden,Maze,This is the gazebo.
 Maze,key,weapon,itemDescription,null,null,Courtyard,Gazebo,null,This is a hedge maze.
-Laundry Room,key,weapon,itemDescription,null,Basement,null,null,Storage,This is the laundry.
+Laundry Room,key,weapon,itemDescription,Washing Machine,Basement,null,null,Storage,This is the laundry.
 Basement,key,weapon,itemDescription,null,Boiler,Laundry Room,null,Storage,This is the basement.
-Storage,key,weapon,itemDescription,null,Electrical,Laundry Room,Basement,null,This is a storage room.
-Boiler,bolt cutters,tool,These bolt cutters are rusty but should be good fo one or two more cuts,null,null,Basement,null,Electrical,This is the boiler room.
-Electrical,key,weapon,itemDescription,null,null,Storage,Boiler,null,This is the electrical room.
+Storage,key,weapon,itemDescription,Locker,Electrical,Laundry Room,Basement,null,This is a storage room.
+Boiler,bolt cutters,tool,These bolt cutters are rusty but should be good fo one or two more cuts,Boiler,null,Basement,null,Electrical,This is the boiler room.
+Electrical,key,weapon,itemDescription,Cabinet,null,Storage,Boiler,null,This is the electrical room.

@@ -89,6 +89,10 @@ public class GameClient implements GameInterface, java.io.Serializable{
         else if (LOAD.equals(parsedInput.getVerbType())) {
             result = loadGame();
         }
+        else if (WAIT.equals(parsedInput.getVerbType())) {
+            result = skipPlayerTurn();
+        }
+
         return result;
     }
 
@@ -167,7 +171,7 @@ public class GameClient implements GameInterface, java.io.Serializable{
     private String processHide(){
         String result = "";
         String hidingSpot = player.getCurrRoom().getHidingLocation();
-        if (hidingSpot != null){
+        if (hidingSpot != null && !player.isHidden()){
             result = "Using the " + hidingSpot + ", you attempt to hide.";
             player.hide();
             monster.moveMonsterToRandomNeighbor();
@@ -280,8 +284,6 @@ public class GameClient implements GameInterface, java.io.Serializable{
 
     public void monsterEncounter(){
         if(monster.getCurrRoom().getRoomName() == player.getCurrRoom().getRoomName()){
-//            System.out.println(monster.getCurrRoom().getRoomName());
-//            System.out.println(player.getCurrRoom().getRoomName());
             if (player.isHidden()){
                 System.out.println("Monster is here but you are hidden and safe.");
             }
@@ -301,5 +303,10 @@ public class GameClient implements GameInterface, java.io.Serializable{
                 }
             }
         }
+    }
+
+    private String skipPlayerTurn(){
+     monster.moveMonsterToRandomNeighbor();
+     return "Monster has moved but still lurking around other rooms.";
     }
 }

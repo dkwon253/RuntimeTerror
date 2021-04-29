@@ -3,7 +3,7 @@ import static com.runtimeterror.textparser.Verbs.*;
 
 public class Parser {
 
-    private static final Verbs[] verbsList = {HIDE,GET,GO,USE,LOOK,LOAD,SAVE};
+    private static final Verbs[] verbsList = {HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT};
 
     public static InputData parseInput(String input){
         String temp = input.trim();
