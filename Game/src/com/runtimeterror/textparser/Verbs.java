@@ -11,7 +11,8 @@ public enum Verbs {
     LOOK(Arrays.asList("look at", "look","examine","study","check out","inspect","scan","appraise")),
     HIDE(Arrays.asList("hide","take cover")),
     SAVE(Arrays.asList("save")),
-    LOAD(Arrays.asList("load"));
+    LOAD(Arrays.asList("load")),
+    WAIT(Arrays.asList("wait"));
 
 
     private List<String> verbList;
