@@ -30,6 +30,9 @@ public class SwingUI extends JFrame{
     private JLabel monsterInRoomLbl;
     private JLabel monsterNearByLbl;
     private JButton volumeControlsBtn;
+    private ImageIcon imageTitle;
+    private JLabel imageTitleContainer;
+
 
     // CTOR
     public SwingUI(String title, SwingController controller){
@@ -41,6 +44,18 @@ public class SwingUI extends JFrame{
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+
+        Image imgTitle = null;
+        try {
+            imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        imageTitle = new ImageIcon(imgTitle);
+        imageTitleContainer = new JLabel(imageTitle, SwingConstants.CENTER);
+        imageTitleContainer.setBounds(0,10,500,40);
+        add(imageTitleContainer);
 
         roomInfoTA = new JTextArea(25,40);
         roomInfoTA.setBounds(25,50,430,300);
