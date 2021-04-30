@@ -29,7 +29,7 @@ public class SoundControls extends JFrame {
     public SoundControls(String title, SoundManagerV2 sm, Point location){
         super(title);
         this.sm = sm;
-        setLocation((int)location.getX()-25, (int)location.getY()-25);
+        setLocation((int)location.getX()+25, (int)location.getY()+25);
         setSize(FRAME_X_SIZE,FRAME_Y_SIZE);
         setResizable(false);
         setLayout(null);
