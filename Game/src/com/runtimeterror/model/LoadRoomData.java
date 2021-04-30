@@ -1,4 +1,4 @@
-package com.runtimeterror.stat;
+package com.runtimeterror.model;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,7 +19,13 @@ public class LoadRoomData {
             String hidingSpot = "null".equals(tokens[4]) ? null : tokens[4];
             String description = tokens[9];
 
-            roomList.put(roomName, new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription )));
+            if(itemName == null){
+                roomList.put(roomName, new Rooms(roomName, description, hidingSpot, null));
+
+            }else{
+                roomList.put(roomName, new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription )));
+
+            }
 
         });
 

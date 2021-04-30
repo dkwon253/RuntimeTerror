@@ -1,4 +1,4 @@
-package com.runtimeterror.stat;
+package com.runtimeterror.model;
 
 import org.junit.Test;
 

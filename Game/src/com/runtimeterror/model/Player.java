@@ -1,4 +1,4 @@
-package com.runtimeterror.stat;
+package com.runtimeterror.model;
 
 import java.util.ArrayList;
 import java.util.List;
