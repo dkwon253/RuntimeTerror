@@ -1,4 +1,4 @@
-package com.runtimeterror.stat;
+package com.runtimeterror.model;
 
 public class Item implements java.io.Serializable{
 

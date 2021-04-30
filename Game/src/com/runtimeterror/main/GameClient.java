@@ -1,7 +1,7 @@
 package com.runtimeterror.main;
 
 import com.runtimeterror.controller.GameInterface;
-import com.runtimeterror.stat.*;
+import com.runtimeterror.model.*;
 import com.runtimeterror.textparser.InputData;
 import com.runtimeterror.textparser.Parser;
 import static com.runtimeterror.textparser.Verbs.*;
