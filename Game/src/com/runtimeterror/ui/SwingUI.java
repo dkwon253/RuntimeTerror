@@ -141,12 +141,65 @@ public class SwingUI extends JFrame{
         if (controller.getStatus()){
             playerStateLbl.setText("Status: Hidden");
         }
-        else{
+        else {
             playerStateLbl.setText("Status: Visible");
         }
         handleMonsterData(controller.getMonsterData());
         playerInputTF.setText("");
         playRoomSounds(roomData,result);
+        if (result.contains("Game Over")){
+            System.out.println("Handle game over case here...");
+            endGame(result);
+        }
+    }
+
+    private void endGame(String message){
+        Image img = null;
+        String iconImage = "Game/Icons/";
+        if (message.contains("You are now dead")){
+            iconImage += "skull.png";
+        }
+        else {
+            iconImage += "freedom.png";
+        }
+        try {
+            img = ImageIO.read(new File(iconImage));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        img = img.getScaledInstance(100,100,Image.SCALE_SMOOTH);
+
+        Object[] options = {"Restart", "Exit Game"};
+        int n = JOptionPane.showOptionDialog(
+                this,
+                message,
+                "Game Over",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                new ImageIcon(img),
+                options,
+                options[0]
+        );
+        System.out.println("you choose: " + n);
+        if (n == 1) {
+            System.exit(0);
+        }
+        else{
+            controller.startNewGame();
+            playerMessageLbl.setText("Game restarted");
+            String roomData = controller.getRoomDesc();
+            roomInfoTA.setText(roomData);
+            String invData = controller.getInventory();
+            inventoryInfoTA.setText(invData);
+            playerStateLbl.setText("Status: Visible");
+            playerInputTF.setText("");
+            playRoomSounds(roomData,"");
+            imageTitleContainer.setVisible(true);
+            monsterInRoomLbl.setVisible(false);
+            monsterNearByLbl.setVisible(false);
+            soundManagerV2.stopExtraSFX();
+        }
+
     }
 
     private class HandleSubmitBtnClick implements ActionListener {

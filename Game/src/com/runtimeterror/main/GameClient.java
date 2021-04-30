@@ -13,10 +13,12 @@ public class GameClient implements GameInterface, java.io.Serializable{
     HashMap<String, Rooms> rooms;
     Player player;
     Monster monster;
-    String addendumText = "Test Addendum text";
+    String addendumText = "";
     boolean gameLoaded = false;
 
     GameClient(){
+        gameLoaded = false;
+        addendumText = "";
         try {
             rooms = LoadRoomData.load();
         }
@@ -63,6 +65,21 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
     @Override
+    public void reset() {
+        gameLoaded = false;
+        addendumText = "";
+        try {
+            rooms = LoadRoomData.load();
+        }
+        catch (Exception e){
+            System.out.printf("Failed to load the game files:");
+            System.out.println(e.getMessage());
+        }
+        player = new Player(rooms.get("Master Bathroom"));
+        monster = new Monster(rooms.get("Bedroom Two"));
+    }
+
+    @Override
     public boolean getPLayerStatus() {
         return player.isHidden();
     }
@@ -103,7 +120,9 @@ public class GameClient implements GameInterface, java.io.Serializable{
         else if (WAIT.equals(parsedInput.getVerbType())) {
             result = skipPlayerTurn();
         }
-
+        if(player.getCurrRoom().equals(monster.getCurrRoom())){
+            result = monsterEncounter();
+        }
         return result;
     }
 
@@ -292,16 +311,19 @@ public class GameClient implements GameInterface, java.io.Serializable{
         return result;
     }
 
-    public void monsterEncounter(){
+    public String monsterEncounter(){
         if(monster.getCurrRoom().getRoomName() == player.getCurrRoom().getRoomName()){
             if (player.isHidden()){
                 System.out.println("Monster is here but you are hidden and safe.");
+                return "Monster is here but you are hidden and safe.";
             }
             if(!player.isHidden()){
-                System.out.println("Monster caught you. You are now dead. \nGame Over...");
-                System.exit(0);
+                System.out.println("Monster caught you. You are now dead. Game Over...");
+                return "Monster caught you. You are now dead. Game Over...";
+                //System.exit(0);
             }
         }
+        return "";
     }
 
     private boolean checkAdjacentRoom(){
@@ -321,4 +343,6 @@ public class GameClient implements GameInterface, java.io.Serializable{
      monster.moveMonsterToRandomNeighbor();
      return "Monster has moved but still lurking around other rooms.";
     }
+
+
 }
