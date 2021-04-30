@@ -52,6 +52,17 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
     @Override
+    public int getMonsterLocation() {
+        if (checkAdjacentRoom()) {
+            return 1;
+        }
+        else if (player.getCurrRoom().equals(monster.getCurrRoom())){
+            return 0;
+        }
+        return -1;
+    }
+
+    @Override
     public boolean getPLayerStatus() {
         return player.isHidden();
     }
@@ -229,7 +240,6 @@ public class GameClient implements GameInterface, java.io.Serializable{
         return result;
     }
 
-
     private String saveGame(){
         HashMap<String, Object> gameObjects = new HashMap<String, Object>();
         gameObjects.put("rooms", rooms);
@@ -294,15 +304,17 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
     }
 
-    private void checkAdjacentRoom(){
+    private boolean checkAdjacentRoom(){
         String[] directions = {"north","east","south","west"};
         for (String direction : directions) {
             if (player.getCurrRoom().getRoomNeighbors().get(direction) != null){
                 if (monster.getCurrRoom() == player.getCurrRoom().getRoomNeighbors().get(direction)){
-                    System.out.println("Monster is nearby.");
+                    //System.out.println("Monster is nearby.");
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private String skipPlayerTurn(){
