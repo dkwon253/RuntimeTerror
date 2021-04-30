@@ -57,6 +57,18 @@ public class SwingUI extends JFrame{
         imageTitleContainer.setBounds(0,10,500,40);
         add(imageTitleContainer);
 
+        monsterInRoomLbl = new JLabel("The monster is Here!!!",SwingConstants.CENTER);
+        monsterNearByLbl = new JLabel("The monster is close...",SwingConstants.CENTER);
+        monsterInRoomLbl.setBounds(25,20,430,25);
+        monsterNearByLbl.setBounds(monsterInRoomLbl.getBounds());
+        monsterInRoomLbl.setForeground(Color.RED);
+        monsterNearByLbl.setForeground(Color.BLACK);
+        monsterInRoomLbl.setVisible(false);
+        monsterNearByLbl.setVisible(false);
+        add(monsterInRoomLbl);
+        add(monsterNearByLbl);
+
+
         roomInfoTA = new JTextArea(25,40);
         roomInfoTA.setBounds(25,50,430,300);
         roomInfoTA.setEditable(false);
@@ -132,6 +144,7 @@ public class SwingUI extends JFrame{
         else{
             playerStateLbl.setText("Status: Visible");
         }
+        handleMonsterData(controller.getMonsterData());
         playerInputTF.setText("");
         playRoomSounds(roomData,result);
     }
@@ -173,6 +186,27 @@ public class SwingUI extends JFrame{
             if ("Theater".equals(splitString[1])) {
                 soundManagerV2.playRoomSFX("Game/Sounds/static.wav", true);
             }
+        }
+    }
+
+    private void handleMonsterData(int monsterInfo){
+        if (monsterInfo == -1){
+            imageTitleContainer.setVisible(true);
+            monsterInRoomLbl.setVisible(false);
+            monsterNearByLbl.setVisible(false);
+            soundManagerV2.stopExtraSFX();
+        }
+        else if (monsterInfo == 1){
+            imageTitleContainer.setVisible(false);
+            monsterInRoomLbl.setVisible(false);
+            monsterNearByLbl.setVisible(true);
+            soundManagerV2.playExtraSFX("Game/Sounds/footsteps.wav",true);
+        }
+        else{
+            imageTitleContainer.setVisible(false);
+            monsterInRoomLbl.setVisible(true);
+            monsterNearByLbl.setVisible(false);
+            soundManagerV2.playExtraSFX("Game/Sounds/breathing.wav",true);
         }
     }
 }

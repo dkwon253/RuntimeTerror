@@ -21,6 +21,11 @@ public class FauxGame implements GameInterface {
     }
 
     @Override
+    public int getMonsterLocation() {
+        return 0;
+    }
+
+    @Override
     public String getRoomText() {
         return roomDesc;
     }

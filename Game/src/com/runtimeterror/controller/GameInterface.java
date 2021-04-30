@@ -12,4 +12,8 @@ public interface GameInterface {
 
     // Submit player input.  Pass the player entered string to the game and gets player message back.
     public String submitPlayerString(String inputString);
+
+    // User to get the Monster's location in relation to the player. 0 = monster in same room. 1 = monster in adjacent
+    // room.  otherwise it returns -1.
+    public int getMonsterLocation();
 }

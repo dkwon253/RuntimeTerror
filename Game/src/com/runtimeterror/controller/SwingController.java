@@ -23,4 +23,6 @@ public class SwingController {
     }
 
     public boolean getStatus() { return gi.getPLayerStatus(); }
+
+    public int getMonsterData() { return gi.getMonsterLocation(); }
 }
