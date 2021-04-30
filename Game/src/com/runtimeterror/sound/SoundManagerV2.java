@@ -9,6 +9,8 @@ public class SoundManagerV2 {
     private Clip extraSFX;
     private boolean BGMOff = false;
     private boolean SFXOff = false;
+    private boolean SFXLoop = false;
+    private boolean extraLoop = false;
     private float BMGVol = 0.5f;
     private float SFXVol = 0.6f;
 
@@ -61,6 +63,7 @@ public class SoundManagerV2 {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(SFXFile));
             roomSFX.open(audioInputStream);
+            SFXLoop = loop;
         }
         catch (UnsupportedAudioFileException e) {e.printStackTrace();}
         catch (Exception e) {e.printStackTrace();}
@@ -91,8 +94,14 @@ public class SoundManagerV2 {
         SFXOff = false;
         roomSFX.setMicrosecondPosition(0L);
         roomSFX.start();
+        if (SFXLoop){
+            roomSFX.loop(Clip.LOOP_CONTINUOUSLY);
+        }
         extraSFX.setMicrosecondPosition(0L);
         extraSFX.start();
+        if (extraLoop){
+            extraSFX.loop(Clip.LOOP_CONTINUOUSLY);
+        }
     }
 
     public void playExtraSFX(String SFXFile, boolean loop){
