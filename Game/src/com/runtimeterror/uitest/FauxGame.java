@@ -21,6 +21,11 @@ public class FauxGame implements GameInterface {
     }
 
     @Override
+    public void reset() {
+
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }
