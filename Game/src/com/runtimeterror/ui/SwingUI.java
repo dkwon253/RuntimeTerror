@@ -162,7 +162,7 @@ public class SwingUI extends JFrame{
         playerInputTF.setText("");
         playRoomSounds(roomData,result);
         if (result.contains("Game Over")){
-            System.out.println("Handle game over case here...");
+            //System.out.println("Handle game over case here...");
             endGame(result);
         }
     }
