@@ -12,6 +12,7 @@ public enum Verbs {
     HIDE(Arrays.asList("hide","take cover")),
     SAVE(Arrays.asList("save")),
     LOAD(Arrays.asList("load")),
+    HELP(Arrays.asList("help")),
     WAIT(Arrays.asList("wait"));
 
 
