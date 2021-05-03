@@ -80,6 +80,11 @@ public class GameClient implements GameInterface, java.io.Serializable{
     }
 
     @Override
+    public String getRoomImagePath() {
+        return player.getCurrRoom().getRoomImagePath();
+    }
+
+    @Override
     public boolean getPLayerStatus() {
         return player.isHidden();
     }

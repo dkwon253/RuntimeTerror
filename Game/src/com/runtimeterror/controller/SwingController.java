@@ -21,6 +21,9 @@ public class SwingController {
     public String getInventory(){
         return gi.getPLayerInventory();
     }
+    public String getRoomImagePath(){
+        return gi.getRoomImagePath();
+    }
 
     public boolean getStatus() { return gi.getPLayerStatus(); }
 

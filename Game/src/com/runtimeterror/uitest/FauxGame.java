@@ -26,6 +26,11 @@ public class FauxGame implements GameInterface {
     }
 
     @Override
+    public String getRoomImagePath() {
+        return null;
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }
