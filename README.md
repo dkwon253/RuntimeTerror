@@ -3,7 +3,7 @@
 ###TEAM-NAME: Runtime Terror
 
 ###Team members: 
-Danny Manandhar, Chris Huckins, Ibrahim Gurhan
+David Kwon, Junru Chen, Nick Smith, Tamarris Jenkins
 
 ###Game-name: 
 Runtime Terror
