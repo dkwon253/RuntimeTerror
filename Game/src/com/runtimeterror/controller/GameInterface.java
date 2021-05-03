@@ -18,4 +18,6 @@ public interface GameInterface {
     public int getMonsterLocation();
 
     public void reset();
+
+    public String getRoomImagePath();
 }

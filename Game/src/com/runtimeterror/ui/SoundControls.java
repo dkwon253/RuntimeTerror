@@ -10,8 +10,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class SoundControls extends JFrame {
-    private final int FRAME_X_SIZE = 150;
-    private final int FRAME_Y_SIZE = 200;
+    private final int FRAME_X_SIZE = 230;
+    private final int FRAME_Y_SIZE = 250;
 
     private JLabel BGMLbl;
     private JLabel SFXLbl;
