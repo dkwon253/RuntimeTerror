@@ -125,6 +125,9 @@ public class GameClient implements GameInterface, java.io.Serializable{
         else if (WAIT.equals(parsedInput.getVerbType())) {
             result = skipPlayerTurn();
         }
+        else if (HELP.equals(parsedInput.getVerbType())) {
+            result = help();
+        }
         if(player.getCurrRoom().equals(monster.getCurrRoom())){
             result = monsterEncounter();
         }
@@ -347,6 +350,10 @@ public class GameClient implements GameInterface, java.io.Serializable{
     private String skipPlayerTurn(){
      monster.moveMonsterToRandomNeighbor();
      return "Monster has moved but still lurking around other rooms.";
+    }
+
+    private String help(){
+        return "commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP";
     }
 
 
