@@ -68,14 +68,15 @@ public class SoundManagerV2 {
         catch (UnsupportedAudioFileException e) {e.printStackTrace();}
         catch (Exception e) {e.printStackTrace();}
 
-        if (loop) {
-            roomSFX.loop(Clip.LOOP_CONTINUOUSLY);
-        }
-        else{
-            roomSFX.loop(0);
-        }
         if (!SFXOff) {
             roomSFX.start();
+            setSFXVolume(SFXVol);
+            if (loop) {
+                roomSFX.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+            else{
+                roomSFX.loop(0);
+            }
             setSFXVolume(SFXVol);
         }
     }
@@ -102,6 +103,7 @@ public class SoundManagerV2 {
         if (extraLoop){
             extraSFX.loop(Clip.LOOP_CONTINUOUSLY);
         }
+        setSFXVolume(SFXVol);
     }
 
     public void playExtraSFX(String SFXFile, boolean loop){
@@ -114,15 +116,16 @@ public class SoundManagerV2 {
         }
         catch (UnsupportedAudioFileException e) {e.printStackTrace();}
         catch (Exception e) {e.printStackTrace();}
-        extraSFX.start();
-        if (loop) {
-            extraSFX.loop(Clip.LOOP_CONTINUOUSLY);
-        }
-        else{
-            extraSFX.loop(0);
-        }
+
         if (!SFXOff) {
             extraSFX.start();
+            setSFXVolume(SFXVol);
+            if (loop) {
+                extraSFX.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+            else{
+                extraSFX.loop(0);
+            }
             setSFXVolume(SFXVol);
         }
     }
