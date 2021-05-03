@@ -9,7 +9,12 @@ public enum Verbs {
     GO(Arrays.asList("go","travel","walk","move","migrate","trek","wander")),
     USE(Arrays.asList("use","manipulate")),
     LOOK(Arrays.asList("look at", "look","examine","study","check out","inspect","scan","appraise")),
-    HIDE(Arrays.asList("hide","take cover"));
+    HIDE(Arrays.asList("hide","take cover")),
+    SAVE(Arrays.asList("save")),
+    LOAD(Arrays.asList("load")),
+    HELP(Arrays.asList("help")),
+    WAIT(Arrays.asList("wait"));
+
 
     private List<String> verbList;
 

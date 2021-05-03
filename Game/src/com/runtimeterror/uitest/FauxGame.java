@@ -16,6 +16,26 @@ public class FauxGame implements GameInterface {
     }
 
     @Override
+    public boolean getPLayerStatus() {
+        return false;
+    }
+
+    @Override
+    public void reset() {
+
+    }
+
+    @Override
+    public String getRoomImagePath() {
+        return null;
+    }
+
+    @Override
+    public int getMonsterLocation() {
+        return 0;
+    }
+
+    @Override
     public String getRoomText() {
         return roomDesc;
     }
