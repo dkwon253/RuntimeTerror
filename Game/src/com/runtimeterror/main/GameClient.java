@@ -180,6 +180,9 @@ public class GameClient implements GameInterface, java.io.Serializable{
         }
         else {
             addendumText = UseInventoryItemProcessor.useItem(data,player,rooms);
+            if (addendumText.contains("the chain is broken")){
+                result = "Game Over.  You have escaped the house with your life";
+            }
         }
         return result;
     }
