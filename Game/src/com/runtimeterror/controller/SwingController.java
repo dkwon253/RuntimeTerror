@@ -24,6 +24,9 @@ public class SwingController {
     public String getRoomImagePath(){
         return gi.getRoomImagePath();
     }
+    public String getRoomMapPath() {
+        return gi.getRoomMapPath();
+    }
 
     public boolean getStatus() { return gi.getPLayerStatus(); }
 
