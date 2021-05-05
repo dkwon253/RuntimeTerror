@@ -7,7 +7,9 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 
 public class Parser {
@@ -17,7 +19,15 @@ public class Parser {
     public static InputData parseInput(String input) {
         String temp = input.trim();
         temp = temp.replaceAll("\\p{Punct}","");
-        String[] inputList = StringUtils.split(temp, " ", 2);
+        int i = temp.lastIndexOf(" ");
+        List<String> inputList = new ArrayList<>();
+        if (i == -1){
+            inputList.add(temp);
+        }else{
+            inputList.add(temp.substring(0, i));
+            inputList.add(temp.substring(i+1));
+        }
+        //pick up bolt cutters
 
         try(InputStream inputStream = Parser.class.getResourceAsStream("verb.json")){
             Object obj = new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
@@ -25,9 +35,8 @@ public class Parser {
             Iterator<String> keys = verbs.keySet().iterator();
             while(keys.hasNext()) {
                 String key = keys.next();
-                //System.out.println(verbs.get(key).getClass());
-                if (verbs.get(key).toString().contains(inputList[0])){
-                    return new InputData(key, inputList[1]);
+                if (verbs.get(key).toString().contains(inputList.get(0))){
+                    return new InputData(key, temp.replaceAll(inputList.get(0),"").trim());
                 }
             }
         }catch (IOException | ParseException e){
@@ -36,8 +45,8 @@ public class Parser {
         return null;
     }
 //
-//    public static void main(String[] args) {
-//        System.out.println(parseInput("travel east").getVerb());
-//    }
+    public static void main(String[] args) {
+        parseInput("pick; up axe.!");
+    }
 
 }

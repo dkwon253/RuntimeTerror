@@ -1,8 +1,8 @@
 {
-  "GET": ["get","acquire","grab","obtain","take"],
+  "GET": ["get","acquire","pick up","grab","obtain","take"],
   "GO": ["go","travel","walk","move","migrate","trek","wander"],
   "USE": ["use","manipulate"],
-  "LOOK": ["look at", "look","examine","study","check out","inspect","scan","appraise"],
+  "LOOK": ["look at", "look","examine","check out","study","inspect","scan","appraise"],
   "HIDE": ["hide","take cover"],
   "SAVE": ["save"],
   "LOAD": ["load"],
