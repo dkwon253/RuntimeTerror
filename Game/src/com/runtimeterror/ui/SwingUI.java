@@ -1,6 +1,9 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
+import com.runtimeterror.model.LoadRoomData;
+import com.runtimeterror.model.Result;
+import com.runtimeterror.model.Rooms;
 import com.runtimeterror.sound.SoundManagerV2;
 
 import javax.imageio.ImageIO;
@@ -46,86 +49,29 @@ public class SwingUI extends JFrame{
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-
         Image imgTitle = null;
         try {
             imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        imageTitle = new ImageIcon(imgTitle);
-        imageTitleContainer = new JLabel(imageTitle, SwingConstants.CENTER);
-        imageTitleContainer.setBounds(0,10,500,40);
-        add(imageTitleContainer);
+        setupImageTitle(imgTitle);
+        setupMonster();
+        setupImageContainer();
+        setupRoomInfoTA(controller);
+        setupPlayerMessageLbl();
+        setupInventoryInfoTA(controller);
+        setupPlayerStateLbl();
+        setupSaveGameMsgLbl();
+        setupPlayerInputTF();
+        setupSubmitCommandBtn();
+        setupVolumeControlsBtn();
 
-        monsterInRoomLbl = new JLabel("The monster is Here!!!",SwingConstants.CENTER);
-        monsterNearByLbl = new JLabel("The monster is close...",SwingConstants.CENTER);
-        monsterInRoomLbl.setBounds(25,20,430,25);
-        monsterNearByLbl.setBounds(monsterInRoomLbl.getBounds());
-        monsterInRoomLbl.setForeground(Color.RED);
-        monsterNearByLbl.setForeground(Color.BLACK);
-        monsterInRoomLbl.setVisible(false);
-        monsterNearByLbl.setVisible(false);
-        add(monsterInRoomLbl);
-        add(monsterNearByLbl);
+        soundManagerV2.playBGM("Game/Sounds/BGM.wav");
+        playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
+    }
 
-
-        Image roomImage = null;
-        try {
-            roomImage = ImageIO.read(new File("Game/Icons/masterbathroom.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        roomImageContainer = new JLabel(new ImageIcon(roomImage), SwingConstants.CENTER);
-        roomImageContainer.setBounds(0,50,500,260);
-        add(roomImageContainer);
-
-
-        roomInfoTA = new JTextArea(25,40);
-        roomInfoTA.setBounds(25,315,430,300);
-        roomInfoTA.setEditable(false);
-        roomInfoTA.setLineWrap(true);
-        roomInfoTA.setWrapStyleWord(true);
-        roomInfoTA.setText(controller.getRoomDesc());
-        add(roomInfoTA);
-
-        playerMessageLbl = new JLabel("", SwingConstants.CENTER);
-        playerMessageLbl.setBounds(25,615,430,25);
-        add(playerMessageLbl);
-
-        inventoryInfoTA = new JTextArea(5,40);
-        inventoryInfoTA.setBounds(25,645,430,75);
-        inventoryInfoTA.setEditable(false);
-        inventoryInfoTA.setLineWrap(true);
-        inventoryInfoTA.setWrapStyleWord(true);
-        inventoryInfoTA.setText(controller.getInventory());
-        add(inventoryInfoTA);
-
-        playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
-        playerStateLbl.setBounds(25,730,430,25);
-        add(playerStateLbl);
-
-        saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
-        saveGameMsgLbl.setBounds(25,780,430,25);
-        JLabel label = new JLabel("I'm bold");
-        Font font = new Font("Courier", Font.BOLD,12);
-        saveGameMsgLbl.setFont(font);
-        Font f = label.getFont();
-        saveGameMsgLbl.setFont(f.deriveFont(f.getStyle() & ~Font.BOLD));
-        add(saveGameMsgLbl);
-
-        playerInputTF = new JTextField();
-        playerInputTF.setBounds(25,755,430,25);
-        playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
-        add(playerInputTF);
-
-        submitCommandBtn = new JButton();
-        submitCommandBtn.setBounds(380,800,75,25);
-        submitCommandBtn.setText("Do it");
-        submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
-        add(submitCommandBtn);
-
+    private void setupVolumeControlsBtn() {
         volumeControlsBtn = new JButton();
         volumeControlsBtn.setBounds(25,800,50,50);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
@@ -138,9 +84,97 @@ public class SwingUI extends JFrame{
         img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
         volumeControlsBtn.setIcon(new ImageIcon(img));
         add(volumeControlsBtn);
+    }
 
-        soundManagerV2.playBGM("Game/Sounds/BGM.wav");
-        playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
+    private void setupSubmitCommandBtn() {
+        submitCommandBtn = new JButton();
+        submitCommandBtn.setBounds(380,800,75,25);
+        submitCommandBtn.setText("Do it");
+        submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
+        add(submitCommandBtn);
+    }
+
+    private void setupPlayerInputTF() {
+        playerInputTF = new JTextField();
+        playerInputTF.setBounds(25,755,430,25);
+        playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
+        add(playerInputTF);
+    }
+
+    private void setupSaveGameMsgLbl() {
+        saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
+        saveGameMsgLbl.setBounds(25,780,430,25);
+        JLabel label = new JLabel("I'm bold");
+        Font font = new Font("Courier", Font.BOLD,12);
+        saveGameMsgLbl.setFont(font);
+        Font f = label.getFont();
+        saveGameMsgLbl.setFont(f.deriveFont(f.getStyle() & ~Font.BOLD));
+        add(saveGameMsgLbl);
+    }
+
+    private void setupPlayerStateLbl() {
+        playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
+        playerStateLbl.setBounds(25,730,430,25);
+        add(playerStateLbl);
+    }
+
+    private void setupInventoryInfoTA(SwingController controller) {
+        inventoryInfoTA = new JTextArea(5,40);
+        inventoryInfoTA.setBounds(25,645,430,75);
+        inventoryInfoTA.setEditable(false);
+        inventoryInfoTA.setLineWrap(true);
+        inventoryInfoTA.setWrapStyleWord(true);
+        inventoryInfoTA.setText(controller.getInventory());
+        add(inventoryInfoTA);
+    }
+
+    private void setupPlayerMessageLbl() {
+        playerMessageLbl = new JLabel("", SwingConstants.CENTER);
+        playerMessageLbl.setBounds(25,615,430,25);
+        add(playerMessageLbl);
+    }
+
+    private void setupRoomInfoTA(SwingController controller) {
+        roomInfoTA = new JTextArea(25,40);
+        roomInfoTA.setBounds(25,315,430,300);
+        roomInfoTA.setEditable(false);
+        roomInfoTA.setLineWrap(true);
+        roomInfoTA.setWrapStyleWord(true);
+        roomInfoTA.setText(controller.getRoomDesc());
+        add(roomInfoTA);
+    }
+
+    private void setupImageContainer() {
+        Image roomImage = null;
+        try {
+            roomImage = ImageIO.read(new File("Game/Icons/masterbathroom.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        roomImageContainer = new JLabel(new ImageIcon(roomImage), SwingConstants.CENTER);
+        roomImageContainer.setBounds(0,50,500,260);
+        add(roomImageContainer);
+    }
+
+    private void setupImageTitle(Image imgTitle) {
+        imageTitle = new ImageIcon(imgTitle);
+        imageTitleContainer = new JLabel(imageTitle, SwingConstants.CENTER);
+        imageTitleContainer.setBounds(0,10,500,40);
+        add(imageTitleContainer);
+    }
+
+    private void setupMonster() {
+        monsterInRoomLbl = new JLabel("The monster is Here!!!",SwingConstants.CENTER);
+        monsterNearByLbl = new JLabel("The monster is close...",SwingConstants.CENTER);
+        monsterInRoomLbl.setBounds(25,20,430,25);
+        monsterNearByLbl.setBounds(monsterInRoomLbl.getBounds());
+        monsterInRoomLbl.setForeground(Color.RED);
+        monsterNearByLbl.setForeground(Color.BLACK);
+        monsterInRoomLbl.setVisible(false);
+        monsterNearByLbl.setVisible(false);
+        add(monsterInRoomLbl);
+        add(monsterNearByLbl);
     }
 
     private void processSubmitInput(){
@@ -161,17 +195,19 @@ public class SwingUI extends JFrame{
         handleMonsterData(controller.getMonsterData());
         playerInputTF.setText("");
         playRoomSounds(roomData,result);
-        if (result.contains("Game Over")){
-            //System.out.println("Handle game over case here...");
-            endGame(result);
+        if (controller.isGameOver()){
+            System.out.println("Handle game over case here...");
+            endGame(controller.isKilledByMonster());
         }
     }
 
-    private void endGame(String message){
+    private void endGame(boolean wasKilled){
         Image img = null;
+        String message = "";
         String iconImage = "Game/Icons/";
-        if (message.contains("You are now dead")){
+        if (wasKilled){
             iconImage += "skull.png";
+            message = "You are now dead";
         }
         else {
             iconImage += "freedom.png";
@@ -242,18 +278,15 @@ public class SwingUI extends JFrame{
 
     private void playRoomSounds(String roomText, String messageText){
         String[] splitString = roomText.split("\n");
-        //System.out.println(splitString[1]);
-        if (!currentRoomName.equals(splitString)) {
-            soundManagerV2.stopRoomSFX();
-            if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {
-                soundManagerV2.playRoomSFX("Game/Sounds/bathroom.wav", true);
-            }
-            if ("Courtyard".equals(splitString[1])) {
-                soundManagerV2.playRoomSFX("Game/Sounds/wind.wav", true);
-            }
-            if ("Theater".equals(splitString[1])) {
-                soundManagerV2.playRoomSFX("Game/Sounds/static.wav", true);
-            }
+        soundManagerV2.stopRoomSFX();
+        if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {
+            soundManagerV2.playRoomSFX("Game/Sounds/bathroom.wav", true);
+        }
+        if ("Courtyard".equals(splitString[1])) {
+            soundManagerV2.playRoomSFX("Game/Sounds/wind.wav", true);
+        }
+        if ("Theater".equals(splitString[1])) {
+            soundManagerV2.playRoomSFX("Game/Sounds/static.wav", true);
         }
     }
 

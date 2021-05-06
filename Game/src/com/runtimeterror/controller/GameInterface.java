@@ -1,5 +1,9 @@
 package com.runtimeterror.controller;
 
+import com.runtimeterror.model.Result;
+
+import java.util.Map;
+
 public interface GameInterface {
     // Used to get a formatted string object of the room information.
     public String getRoomText();
@@ -20,4 +24,10 @@ public interface GameInterface {
     public void reset();
 
     public String getRoomImagePath();
+
+    public String getMapImagePath();
+
+    boolean isGameOver();
+
+    boolean isKilledByMonster();
 }

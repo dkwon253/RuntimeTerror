@@ -3,11 +3,11 @@ package com.runtimeterror.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player implements java.io.Serializable{
+public class Player implements java.io.Serializable {
 
     //FIELDS
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private List<Item> Inventory;
 
     private Rooms currRoom;
@@ -21,7 +21,10 @@ public class Player implements java.io.Serializable{
         this.Inventory = new ArrayList<>();
     }
 
-    public Player(Rooms currRoom,String name, String description) {
+    public Player() {
+    }
+
+    public Player(Rooms currRoom, String name, String description) {
         this.name = name;
         this.currRoom = currRoom;
         this.description = description;
@@ -34,32 +37,30 @@ public class Player implements java.io.Serializable{
         return "You added a(n) " + item.getName() + " to your inventory";
     }
 
-    public String changeRoom(String direction){
+    public String changeRoom(String direction) {
         String result = "";
-        if(this.getCurrRoom().getRoomNeighbors().get(direction) == null || !this.getCurrRoom().getRoomNeighbors().containsKey(direction)){
+        if (this.getCurrRoom().getRoomNeighbors().get(direction) == null || !this.getCurrRoom().getRoomNeighbors().containsKey(direction)) {
             result = "You cant go this way";
-        }else{
+        } else {
             this.currRoom = getCurrRoom().getRoomNeighbors().get(direction);
         }
         return result;
     }
 
     //player to be able to hide in a room when hiding place is available
-    public void hide(){
-            isHidden = true;
+    public void hide() {
+        isHidden = true;
     }
 
-    public void unHide(){
-        if (isHidden){
+    public void unHide() {
+        if (isHidden) {
             isHidden = false;
         }
     }
 
 
-
-
     //instructions for the player
-    public String help(){
+    public String help() {
         return "We are here to help. \n" +
                 "To change location: Input (verb + noun) . For example: 'Go East' or 'Move East'. \n" +
                 "To get an item: Input (verb + noun). For example: 'get pizza' or 'pick up pizza'. \n" +
@@ -69,19 +70,19 @@ public class Player implements java.io.Serializable{
     }
 
     //GETTERS & SETTERS
-    public void getLocation(){
+    public void getLocation() {
         System.out.println(currRoom.getRoomDescription());
     }
 
-    public void getCurrentStatus(){
+    public void getCurrentStatus() {
         this.getLocation();
         this.getCurrRoom().getHidingLocation();
         this.getCurrRoom().getRoomItem();
     }
 
-    public boolean hasItem(String itemName){
-        for (Item item : Inventory){
-            if (item.getName().equals(itemName)){
+    public boolean hasItem(String itemName) {
+        for (Item item : Inventory) {
+            if (item.getName().equals(itemName)) {
                 return true;
             }
         }
@@ -93,7 +94,7 @@ public class Player implements java.io.Serializable{
         return this.Inventory;
     }
 
-    public void removeItemFromInventory(String itemName){
+    public void removeItemFromInventory(String itemName) {
         Inventory.removeIf(item -> item.getName().equals(itemName));
     }
 

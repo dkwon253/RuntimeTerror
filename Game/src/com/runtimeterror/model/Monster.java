@@ -10,6 +10,8 @@ public class Monster implements java.io.Serializable{
     private Rooms currRoom;
 
     //CONSTRUCTORS
+
+    public Monster() {}
     public Monster(Rooms currRoom) {
         this.currRoom = currRoom;
     }

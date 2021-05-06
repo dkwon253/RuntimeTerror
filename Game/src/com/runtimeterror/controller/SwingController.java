@@ -1,10 +1,14 @@
 package com.runtimeterror.controller;
 
+import com.runtimeterror.model.Result;
+
+import java.util.Map;
+
 public class SwingController {
     private GameInterface gi;
 
     //CTOR
-    public SwingController(GameInterface gi){
+    public SwingController(GameInterface gi) {
         // done: Setup with game interface
         this.gi = gi;
     }
@@ -18,16 +22,31 @@ public class SwingController {
         return gi.getRoomText();
     }
 
-    public String getInventory(){
+    public String getInventory() {
         return gi.getPLayerInventory();
     }
-    public String getRoomImagePath(){
+
+    public String getRoomImagePath() {
         return gi.getRoomImagePath();
     }
 
-    public boolean getStatus() { return gi.getPLayerStatus(); }
+    public boolean getStatus() {
+        return gi.getPLayerStatus();
+    }
 
-    public int getMonsterData() { return gi.getMonsterLocation(); }
+    public int getMonsterData() {
+        return gi.getMonsterLocation();
+    }
 
-    public void startNewGame() { gi.reset(); }
+    public void startNewGame() {
+        gi.reset();
+    }
+
+    public boolean isGameOver() {
+        return gi.isGameOver();
+    }
+
+    public boolean isKilledByMonster() {
+        return gi.isKilledByMonster();
+    }
 }

@@ -3,11 +3,12 @@ package com.runtimeterror.model;
 public class Item implements java.io.Serializable{
 
     // FIELDS
-    private final String name;
-    private final String type;
-    private final String description;
+    private  String name;
+    private  String type;
+    private  String description;
 
     //CONSTRUCTOR
+    public Item(){}
     public Item(String name, String type, String description) {
         this.name = name;
         this.type = type;

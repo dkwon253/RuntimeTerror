@@ -19,5 +19,11 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="commons-lang3-3.12.0" level="project" />
+    <orderEntry type="library" name="json-simple-1.1" level="project" />
+    <orderEntry type="library" name="mockito-core-3.9.0" level="project" />
+    <orderEntry type="library" name="objenesis-3.2" level="project" />
+    <orderEntry type="library" name="byte-buddy-1.11.0" level="project" />
+    <orderEntry type="library" name="byte-buddy-agent-1.11.0" level="project" />
   </component>
 </module>

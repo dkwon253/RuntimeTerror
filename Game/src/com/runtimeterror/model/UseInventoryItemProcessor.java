@@ -3,6 +3,8 @@ package com.runtimeterror.model;
 import com.runtimeterror.textparser.InputData;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UseInventoryItemProcessor {
     public static String useItem(InputData parsedInput,Player player, HashMap<String, Rooms> roomList){
@@ -23,5 +25,25 @@ public class UseInventoryItemProcessor {
             result = "You don't have " + parsedInput.getNoun();
         }
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static void useItem2(Map<String, Result<?>> gameMap){
+        InputData inputData = (InputData)  gameMap.get("inputData").getResult();
+        Rooms room = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        String noun = inputData.getNoun();
+        List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+        Item itemToRemove = new Item();
+        for (Item item : inventory) {
+            if(item != null && noun.equals(item.getName())) {
+                gameMap.put("usedItem", new Result<>(true));
+                gameMap.put("itemUsed", new Result<>(noun));
+                itemToRemove = item;
+                break;
+            } else {
+                gameMap.put("usedItem", new Result<>(false));
+            }
+        }
+        inventory.remove(itemToRemove);
     }
 }
