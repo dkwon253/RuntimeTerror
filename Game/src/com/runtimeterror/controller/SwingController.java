@@ -49,4 +49,16 @@ public class SwingController {
     public boolean isKilledByMonster() {
         return gi.isKilledByMonster();
     }
+
+    public String getMessageLabel() {
+        return gi.getMessageLabel();
+    }
+
+    public void resetRound() {
+        gi.resetRound();
+    }
+
+    public String getRoomMapPath() {
+        return gi.getRoomMapPath();
+    }
 }

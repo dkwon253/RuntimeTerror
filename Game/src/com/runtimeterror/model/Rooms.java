@@ -15,20 +15,22 @@ public class Rooms implements java.io.Serializable {
     private String RoomImagePath;
     private boolean hasStairs;
     private Rooms stairsNeighbor;
-    private String mapImagePath;
+    private String RoomMapPath;
+    private String stairsNeighborName;
 
 
 
     //Constructor
 
     public Rooms(){}
-    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mapPath) {
+    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mpath, String stairsNeighbor) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.hidingLocation = hidingLocation;
         this.item = item;
         this.RoomImagePath = path;
-        setMapImagePath(mapPath);
+        setMapImagePath(mpath);
+        setStairsNeighborName(stairsNeighbor);
     }
 
     public void getRoomItem() {
@@ -96,11 +98,22 @@ public class Rooms implements java.io.Serializable {
     }
 
     public void setMapImagePath(String location) {
-        this.mapImagePath = location;
+        this.RoomMapPath = location;
     }
 
     public String getMapImagePath() {
-        return this.mapImagePath;
+        return this.RoomMapPath;
+    }
+
+    public String getStairsNeighborName() {
+        return this.stairsNeighborName;
+    }
+
+    public void setStairsNeighborName(String neighborName) {
+        if(neighborName != null) {
+            this.stairsNeighborName = neighborName;
+            setHasStairs();
+        }
     }
 
     public String getRoomDescriptionText() {

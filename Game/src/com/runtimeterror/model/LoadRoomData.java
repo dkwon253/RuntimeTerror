@@ -32,17 +32,18 @@ public class LoadRoomData {
             String itemType = "null".equals(tokens[2]) ? null : tokens[2];
             String itemDescription = "null".equals(tokens[3]) ? null : tokens[3];
             String hidingSpot = "null".equals(tokens[4]) ? null : tokens[4];
+            String stairsNeighbor = "null".equals(tokens[12]) ? null : tokens[12];
             String description = tokens[9];
             String path = tokens[10];
-            String mapPath = tokens[10];
+            String mapPath = tokens[11];
 
             Rooms newRoom;
             if(itemName == null){
-                newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath);
+                newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath, stairsNeighbor);
 
             }else{
                 listOfItems.add(itemName);
-                newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription), path, mapPath);
+                newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription), path, mapPath, stairsNeighbor);
 
             }
             if(i.get() == 0) {
@@ -51,6 +52,16 @@ public class LoadRoomData {
             roomList.put(roomName, newRoom);
             i.getAndIncrement();
         });
+        addDirections(listOfItems);
+    }
+
+    private static void addDirections(List<String> listOfItems) {
+        listOfItems.add("east");
+        listOfItems.add("north");
+        listOfItems.add("south");
+        listOfItems.add("west");
+        listOfItems.add("stairs");
+        listOfItems.add("elevator");
     }
 
     private static void setupNeighbors(HashMap<String, Rooms> roomList) throws IOException {
@@ -75,36 +86,45 @@ public class LoadRoomData {
     }
 
     private static void setupGameMapDefaults(Map<String, Result<?>> gameMap, HashMap<String, Rooms> roomList, List<String> listOfItems) {
-        gameMap.put("availableRooms", new Result<>(defaultRoom.getRoomNeighbors()));
-        gameMap.put("input", new Result<>(""));
-        gameMap.put("inputData", new Result<>(""));
-        gameMap.put("hasStairs", new Result<>(false));
-        gameMap.put("stairsRoom", new Result<>(defaultRoom));
-        gameMap.put("usedStairs", new Result<>(false));
-        gameMap.put("hidden", new Result<>(false));
-        gameMap.put("isProcessed", new Result<>(false));
         gameMap.put("monsterCurrentRoom", new Result<>(new Rooms()));
         gameMap.put("playerCurrentRoom", new Result<>(defaultRoom));
-        gameMap.put("didChangeRoom", new Result<>(false));
-        gameMap.put("addendumText", new Result<>(""));
+        gameMap.put("availableRooms", new Result<>(defaultRoom.getRoomNeighbors()));
         gameMap.put("rooms", new Result<>(roomList));
-        gameMap.put("itemUsed", new Result<>(""));
-        gameMap.put("usedItem", new Result<>(false));
         gameMap.put("triedToUseItem", new Result<>(false));
         gameMap.put("inventory", new Result<>(new ArrayList<Item>()));
         gameMap.put("gameLoaded", new Result<>(false));
+        gameMap.put("hasStairs", new Result<>(defaultRoom.hasStairs()));
+        gameMap.put("stairsRoom", new Result<>(defaultRoom.getStairsNeighborName()));
         gameMap.put("player", new Result<>(new Player()));
         gameMap.put("monster", new Result<>(new Monster()));
         gameMap.put("startingRoom", new Result<>(defaultRoom));
         gameMap.put("helpText", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
-        gameMap.put("askedForHelp", new Result<>(false));
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
-        gameMap.put("shouldMonsterChangeRooms", new Result<>(false));
         gameMap.put("listOfItems", new Result<>(listOfItems));
+        setGameMapRoundDefaults(gameMap);
+    }
+
+    public static void setGameMapRoundDefaults(Map<String, Result<?>> gameMap) {
+        gameMap.put("input", new Result<>(""));
+        gameMap.put("inputData", new Result<>(""));
+        gameMap.put("usedStairs", new Result<>(false));
+        gameMap.put("hidden", new Result<>(false));
+        gameMap.put("isProcessed", new Result<>(false));
+        gameMap.put("didChangeRoom", new Result<>(false));
+        gameMap.put("addendumText", new Result<>(""));
+        gameMap.put("itemUsed", new Result<>(""));
+        gameMap.put("usedItem", new Result<>(false));
+        gameMap.put("triedToUseItem", new Result<>(false));
+        gameMap.put("askedForHelp", new Result<>(false));
+        gameMap.put("shouldMonsterChangeRooms", new Result<>(false));
         gameMap.put("didMonsterMove", new Result<>(false));
         gameMap.put("isGameOver", new Result<>(false));
         gameMap.put("isKilledByMonster", new Result<>(false));
         gameMap.put("didUseStairs", new Result<>(false));
         gameMap.put("didGetItem", new Result<>(false));
+        gameMap.put("triedToGoDirection", new Result<>(false));
+        gameMap.put("triedToGetItem", new Result<>(false));
+        gameMap.put("triedToHide", new Result<>(false));
+        gameMap.put("triedToUseStairs", new Result<>(false));
     }
 }

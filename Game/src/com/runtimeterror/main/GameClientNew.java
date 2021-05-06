@@ -12,14 +12,12 @@ import static com.runtimeterror.utils.Pipe.apply;
 
 class GameClientNew implements GameInterface, java.io.Serializable {
     private Database database;
-    private boolean gameLoaded;
 
     GameClientNew(boolean test) {
         // test constructor
     }
     GameClientNew() {
         newDatabase();
-        gameLoaded = false;
     }
 
     @Override
@@ -73,13 +71,19 @@ class GameClientNew implements GameInterface, java.io.Serializable {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
         boolean hasStairs = (boolean) gameMap.get("hasStairs").getResult();
-        Rooms stairsRoom = (Rooms) gameMap.get("stairsRoom").getResult();
+        String stairsRoomName = (String) gameMap.get("stairsRoom").getResult();
+        @SuppressWarnings("unchecked")
+        Map<String, Rooms> rooms = (Map<String, Rooms>) gameMap.get("rooms").getResult();
+        Rooms stairsRoom = rooms.get(stairsRoomName);
         if (hasStairs && "stairs".equals(noun)) {
             gameMap.put("didUseStairs", new Result<>(true));
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
+            gameMap.put("didChangeRoom", new Result<>(true));
             gameMap.put("playerCurrentRoom", new Result<>(stairsRoom));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+        } else if("stairs".equals(noun)) {
+            gameMap.put("triedToUseStairs", new Result<>(true));
         }
         return gameMap;
     }
@@ -101,7 +105,6 @@ class GameClientNew implements GameInterface, java.io.Serializable {
         return gameMap;
     }
 
-    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processGet(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
@@ -114,6 +117,7 @@ class GameClientNew implements GameInterface, java.io.Serializable {
         Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         Item roomItem = currentRoom.getItem();
         if ("GET".equals(verb) && noun != null && roomItem != null && noun.equals(roomItem.getName())) {
+            @SuppressWarnings("unchecked")
             List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
             inventory.add(currentRoom.getItem());
             currentRoom.removeRoomItem();
@@ -121,27 +125,33 @@ class GameClientNew implements GameInterface, java.io.Serializable {
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+        } else if("GET".equals(verb)){
+            gameMap.put("triedToGetItem", new Result<>(true));
         }
         return gameMap;
     }
 
-    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processGo(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
             return gameMap;
         }
 
+        @SuppressWarnings("unchecked")
         Map<String, Rooms> availableRooms = (HashMap<String, Rooms>) gameMap.get("availableRooms").getResult();
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
+        String verb = inputData.getVerb();
         Rooms newRoom = availableRooms.get(noun);
-        if (newRoom != null) {
+        if ("GO".equals(verb) && newRoom != null) {
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("playerCurrentRoom", new Result<>(newRoom));
             gameMap.put("didChangeRoom", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+            gameMap.put("isValidDirection", new Result<>(true));
+        } else {
+            gameMap.put("triedToGoDirection", new Result<>(true));
         }
         return gameMap;
     }
@@ -153,19 +163,22 @@ class GameClientNew implements GameInterface, java.io.Serializable {
         }
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
-        if ("HIDE".equals(verb)) {
+        Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        if ("HIDE".equals(verb) && currentRoom.getHidingLocation() != null) {
             gameMap.put("hidden", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+        } else if("HIDE".equals(verb)){
+            gameMap.put("triedToHide", new Result<>(true));
         }
         return gameMap;
     }
 
-    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processMoveMonster(Map<String, Result<?>> gameMap) {
         boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
         if (shouldMonsterChangeRooms) {
             Random r = new Random();
+            @SuppressWarnings("unchecked")
             Map<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
             List<Rooms> allRoomsList = new ArrayList<>(allRooms.values());
             int randomInt = r.nextInt(allRoomsList.size() - 1) + 1;
@@ -177,9 +190,9 @@ class GameClientNew implements GameInterface, java.io.Serializable {
     }
 
 
-    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processSaveGame(Map<String, Result<?>> gameMap) {
         HashMap<String, Object> gameObjects = new HashMap<>();
+        @SuppressWarnings("unchecked")
         HashMap<String, Rooms> rooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
         Player player = (Player) gameMap.get("player").getResult();
         Monster monster = (Monster) gameMap.get("monster").getResult();
@@ -195,7 +208,7 @@ class GameClientNew implements GameInterface, java.io.Serializable {
             oos.close();
             fos.close();
         } catch (FileNotFoundException e) {
-            System.out.printf("Failed to load the game files:");
+            System.out.println("Failed to load the game files:");
             System.out.println(e.getMessage());
         } catch (IOException e) {
             e.printStackTrace();
@@ -204,7 +217,6 @@ class GameClientNew implements GameInterface, java.io.Serializable {
         return gameMap;
     }
 
-    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processLoadGame(Map<String, Result<?>> gameMap) {
         boolean gameLoaded = (boolean) gameMap.get("gameLoaded").getResult();
         String result = "";
@@ -213,7 +225,7 @@ class GameClientNew implements GameInterface, java.io.Serializable {
 
                 FileInputStream fis = new FileInputStream("Game/gameData/savedGameData.txt");
                 ObjectInputStream ois = new ObjectInputStream(fis);
-
+                @SuppressWarnings("unchecked")
                 HashMap<String, Object> data = (HashMap<String, Object>) ois.readObject();
                 fis.close();
 
@@ -255,7 +267,7 @@ class GameClientNew implements GameInterface, java.io.Serializable {
         if (didChangeRoom) {
             Rooms newRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
             gameMap.put("hasStairs", new Result<>(newRoom.hasStairs()));
-            gameMap.put("stairsRoom", new Result<>(newRoom.getStairsNeighbor()));
+            gameMap.put("stairsRoom", new Result<>(newRoom.getStairsNeighborName()));
             gameMap.put(("availableRooms"), new Result<>(newRoom.getRoomNeighbors()));
         }
         return gameMap;
@@ -297,9 +309,9 @@ class GameClientNew implements GameInterface, java.io.Serializable {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String getPLayerInventory() {
         Map<String, Result<?>> gameMap = getGameMap();
+        @SuppressWarnings("unchecked")
         List<Item> inv = (List<Item>) gameMap.get("inventory").getResult();
         List<String> invString = new ArrayList<>();
         for (Item item : inv) {
@@ -311,13 +323,64 @@ class GameClientNew implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public String getMessageLabel() {
+        String result = "";
+        Map<String, Result<?>> gameMap = getGameMap();
+        String helpText = (String) gameMap.get("helpText").getResult();
+        boolean askedForHelp = (boolean) gameMap.get("askedForHelp").getResult();
+        boolean didUseStairs = (boolean) gameMap.get("didUseStairs").getResult();
+        boolean triedToUseStairs = (boolean) gameMap.get("triedToUseStairs").getResult();
+        boolean triedToUseItem = (boolean) gameMap.get("triedToUseItem").getResult();
+        boolean usedItem = (boolean) gameMap.get("usedItem").getResult();
+        boolean didGetItem = (boolean) gameMap.get("didGetItem").getResult();
+        boolean triedToGoDirection = (boolean) gameMap.get("triedToGoDirection").getResult();
+        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
+        boolean triedToGetItem = (boolean) gameMap.get("triedToGetItem").getResult();
+        boolean triedToHide = (boolean) gameMap.get("triedToHide").getResult();
+        if(askedForHelp) {
+            result = helpText;
+        } else if(didUseStairs) {
+            result = "You used the stairs.";
+        } else if(triedToUseStairs) {
+            result = "There are no stairs in this room";
+        } else if(triedToUseItem && !usedItem) {
+            result = "You don't have that item.";
+        } else if(usedItem) {
+            result = "You used an item.";
+        } else if(didGetItem) {
+            result = "You picked up an item.";
+        } else if(didChangeRoom) {
+            result = "You went in a direction";
+        } else if(triedToGoDirection) {
+            result = "You can't go that direction";
+        } else if(triedToGetItem) {
+            result = "The room doesn't have that item";
+        } else if(triedToHide) {
+            result = "You can't hide in this room";
+        }
+        return result;
+    }
+
+    @Override
+    public void resetRound() {
+        Map<String, Result<?>> gameMap = getGameMap();
+        LoadRoomData.setGameMapRoundDefaults(gameMap);
+    }
+
+    @Override
+    public String getRoomMapPath() {
+        Map<String, Result<?>> gameMap = getGameMap();
+        Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        return currentRoom.getMapImagePath();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return -1;
     }
 
     @Override
     public void reset() {
-        gameLoaded = false;
     }
 
     @Override

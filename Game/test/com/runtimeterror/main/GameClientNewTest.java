@@ -5,16 +5,13 @@ import com.runtimeterror.textparser.InputData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+
 import java.util.Map;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 public class GameClientNewTest {
     Map<String, Result<?>> gameMap;
@@ -237,17 +234,111 @@ public class GameClientNewTest {
         assertFalse(didGetItem);
     }
 
-
     @Test
-    public void processGet() {
+    public void testProcessGo_wontProcess_whenIsProcessedIsTrue() {
+        gameMap.put("isProcessed", new Result<>(true));
+        gameClientNew.processGo(gameMap);
+        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
+        assertFalse(didChangeRoom);
     }
 
     @Test
-    public void processGo() {
+    public void testProcessGo_playerCurrentRoomShouldChange_whenVerbIsGOAndDirectionIsValid() {
+        Rooms playerCurrentRoomBeforeRun = new Rooms();
+        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
+        Rooms validRoom = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>();
+        availableRooms.put("east", validRoom);
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
+        gameClientNew.processGo(gameMap);
+        Rooms playerCurrentRoomAfterRun = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+
+        assertNotSame(playerCurrentRoomBeforeRun, playerCurrentRoomAfterRun);
     }
 
     @Test
-    public void processHide() {
+    public void testProcessGo_shouldMonsterChangeRoomsIsTrue_whenVerbIsGOAndDirectionIsValid() {
+        Rooms playerCurrentRoomBeforeRun = new Rooms();
+        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
+        Rooms validRoom = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>();
+        availableRooms.put("east", validRoom);
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
+        gameClientNew.processGo(gameMap);
+        boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
+
+        assertTrue(shouldMonsterChangeRooms);
+    }
+
+    @Test
+    public void testProcessGo_didChangeRoomIsTrue_whenVerbIsGOAndDirectionIsValid() {
+        Rooms playerCurrentRoomBeforeRun = new Rooms();
+        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
+        Rooms validRoom = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>();
+        availableRooms.put("east", validRoom);
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
+        gameClientNew.processGo(gameMap);
+        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
+
+        assertTrue(didChangeRoom);
+    }
+
+    @Test
+    public void testProcessGo_hiddenIsFalse_whenVerbIsGOAndDirectionIsValid() {
+        Rooms playerCurrentRoomBeforeRun = new Rooms();
+        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
+        Rooms validRoom = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>();
+        availableRooms.put("east", validRoom);
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
+        gameClientNew.processGo(gameMap);
+        boolean hidden = (boolean) gameMap.get("hidden").getResult();
+
+        assertFalse(hidden);
+    }
+
+    @Test
+    public void testProcessGo_didChangeRoomIsFalse_whenVerbIsGOAndDirectionIsInvalid() {
+        Rooms playerCurrentRoomBeforeRun = new Rooms();
+        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
+        Rooms validRoom = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>();
+        availableRooms.put("west", validRoom);
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
+        gameClientNew.processGo(gameMap);
+        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
+
+        assertFalse(didChangeRoom);
+    }
+
+    @Test
+    public void testProcessGo_didChangeRoomIsFalse_whenVerbIsNotGoAndDirectionIsValid() {
+        Rooms playerCurrentRoomBeforeRun = new Rooms();
+        gameMap.put("inputData", new Result<>(new InputData("GET", "east")));
+        Rooms validRoom = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>();
+        availableRooms.put("east", validRoom);
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
+        gameClientNew.processGo(gameMap);
+        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
+
+        assertFalse(didChangeRoom);
+    }
+
+
+    @Test
+    public void processHide_wontProcess_w() {
+        gameMap.put("isProcessed", new Result<>(true));
+        gameClientNew.processGo(gameMap);
+        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
+        assertFalse(didChangeRoom);
     }
 
     @Test
@@ -346,6 +437,10 @@ public class GameClientNewTest {
         gameMap.put("isKilledByMonster", new Result<>(false));
         gameMap.put("didUseStairs", new Result<>(false));
         gameMap.put("didGetItem", new Result<>(false));
+        gameMap.put("triedToGoDirection", new Result<>(false));
+        gameMap.put("triedToGetItem", new Result<>(false));
+        gameMap.put("triedToHide", new Result<>(false));
+        gameMap.put("triedToUseStairs", new Result<>(false));
         return gameMap;
     }
 }

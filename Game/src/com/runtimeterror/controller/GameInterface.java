@@ -30,4 +30,10 @@ public interface GameInterface {
     boolean isGameOver();
 
     boolean isKilledByMonster();
+
+    String getMessageLabel();
+
+    void resetRound();
+
+    String getRoomMapPath();
 }

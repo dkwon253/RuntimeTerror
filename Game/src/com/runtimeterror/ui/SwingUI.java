@@ -18,6 +18,7 @@ import java.io.IOException;
 public class SwingUI extends JFrame{
     private SoundManagerV2 soundManagerV2 = new SoundManagerV2();
     private String currentRoomName = "";
+    private PlayerMap player = new PlayerMap();
 
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
@@ -36,6 +37,7 @@ public class SwingUI extends JFrame{
     private ImageIcon imageTitle;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
+    private JButton mapCommandBtn;
 
 
     // CTOR
@@ -66,6 +68,7 @@ public class SwingUI extends JFrame{
         setupPlayerInputTF();
         setupSubmitCommandBtn();
         setupVolumeControlsBtn();
+        setupMapButton();
 
         soundManagerV2.playBGM("Game/Sounds/BGM.wav");
         playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
@@ -101,6 +104,15 @@ public class SwingUI extends JFrame{
         add(playerInputTF);
     }
 
+
+    private void setupMapButton() {
+        // button for map to popup
+        mapCommandBtn = new JButton();
+        mapCommandBtn.setBounds(300, 800, 75, 25);
+        mapCommandBtn.setText("Map");
+        mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
+        add(mapCommandBtn);
+    }
     private void setupSaveGameMsgLbl() {
         saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
         saveGameMsgLbl.setBounds(25,780,430,25);
@@ -179,13 +191,15 @@ public class SwingUI extends JFrame{
 
     private void processSubmitInput(){
         String inputText = playerInputTF.getText().toLowerCase();
-        String result = controller.processInput(inputText);
+        controller.processInput(inputText);
+        String result = controller.getMessageLabel();
         playerMessageLbl.setText(result);
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();
         inventoryInfoTA.setText(invData);
         roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+        player.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
         if (controller.getStatus()){
             playerStateLbl.setText("Status: Hidden");
         }
@@ -199,6 +213,7 @@ public class SwingUI extends JFrame{
             System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());
         }
+        controller.resetRound();
     }
 
     private void endGame(boolean wasKilled){
@@ -257,6 +272,14 @@ public class SwingUI extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             processSubmitInput();
+        }
+    }
+
+    private class HandlePlayerMapBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("PlayerMap has been clicked.");
+            player.setVisible(true);
         }
     }
 
