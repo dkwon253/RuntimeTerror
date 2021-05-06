@@ -13,15 +13,17 @@ public class Rooms implements java.io.Serializable{
     private boolean NPCVisited = false;
     private boolean NPCQuestCompleted = false;
     private String RoomImagePath;
+    private String RoomMapPath;
 
 
     //Constructor
-    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item,String path) {
+    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item,String path,String mpath) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.hidingLocation = hidingLocation;
         this.item = item;
         this.RoomImagePath = path;
+        this.RoomMapPath = mpath;
     }
 
     public void getRoomItem() {
@@ -35,6 +37,9 @@ public class Rooms implements java.io.Serializable{
 
     public String getRoomImagePath() {
         return RoomImagePath;
+    }
+    public String getRoomMapPath() {
+        return RoomMapPath;
     }
 
     public Item getItem() {
@@ -126,4 +131,6 @@ public class Rooms implements java.io.Serializable{
         }
         return null;
     }
+
+
 }

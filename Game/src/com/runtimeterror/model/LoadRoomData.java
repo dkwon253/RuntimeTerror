@@ -19,12 +19,13 @@ public class LoadRoomData {
             String hidingSpot = "null".equals(tokens[4]) ? null : tokens[4];
             String description = tokens[9];
             String path = tokens[10];
+            String mpath = tokens[11];
 
             if(itemName == null){
-                roomList.put(roomName, new Rooms(roomName, description, hidingSpot, null,path));
+                roomList.put(roomName, new Rooms(roomName, description, hidingSpot, null,path,mpath));
 
             }else{
-                roomList.put(roomName, new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription ),path));
+                roomList.put(roomName, new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription ),path,mpath));
 
             }
 

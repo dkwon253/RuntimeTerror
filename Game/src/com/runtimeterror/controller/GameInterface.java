@@ -20,4 +20,7 @@ public interface GameInterface {
     public void reset();
 
     public String getRoomImagePath();
+
+    public String getRoomMapPath();
+
 }

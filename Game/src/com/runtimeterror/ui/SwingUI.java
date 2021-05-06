@@ -33,6 +33,7 @@ public class SwingUI extends JFrame{
     private ImageIcon imageTitle;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
+    private JLabel roomMapContainer;
 
 
     // CTOR
@@ -80,6 +81,19 @@ public class SwingUI extends JFrame{
         roomImageContainer = new JLabel(new ImageIcon(roomImage), SwingConstants.CENTER);
         roomImageContainer.setBounds(0,50,500,260);
         add(roomImageContainer);
+
+        //container for map
+        Image roomMap = null;
+        try {
+            roomMap = ImageIO.read(new File("Game/maps/masterbathroom.jpg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        roomMapContainer = new JLabel(new ImageIcon(roomMap), SwingConstants.CENTER);
+        roomMapContainer.setBounds(0,450,500,260);
+        add(roomMapContainer);
+        roomMapContainer.setVisible(true);
 
 
         roomInfoTA = new JTextArea(25,40);
@@ -152,6 +166,7 @@ public class SwingUI extends JFrame{
         String invData = controller.getInventory();
         inventoryInfoTA.setText(invData);
         roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+        roomMapContainer.setIcon(new ImageIcon(controller.getRoomMapPath()));
         if (controller.getStatus()){
             playerStateLbl.setText("Status: Hidden");
         }
