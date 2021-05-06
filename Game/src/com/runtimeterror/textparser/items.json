@@ -1,0 +1,7 @@
+{
+  "Master Bathroom": ["axe"],
+  "Library": ["book"],
+  "Kitchen": ["cake"],
+  "Boiler": ["bolt cutters"],
+  "Direction": ["east", "west", "south", "north"]
+}

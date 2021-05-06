@@ -4,7 +4,7 @@ import com.runtimeterror.controller.GameInterface;
 import com.runtimeterror.model.*;
 import com.runtimeterror.textparser.InputData;
 import com.runtimeterror.textparser.Parser;
-import static com.runtimeterror.textparser.Verbs.*;
+//import static com.runtimeterror.textparser.Verbs.*;
 
 import java.io.*;
 import java.util.*;
@@ -98,39 +98,40 @@ public class GameClient implements GameInterface, java.io.Serializable{
     public String submitPlayerString(String inputString) {
         String result = "";
         InputData parsedInput = Parser.parseInput(inputString);
+        String verb = parsedInput.getVerb();
         // check if the player requested a get command.
         if  (parsedInput == null){
             result = "I don't understand \"" +inputString +"\"";
         }
-        else if (GET.equals(parsedInput.getVerbType())){
+        else if ("GET".equals(verb)){
             result = processGet(parsedInput);
         }
         // check if the player requested a move command.
-        else if (GO.equals(parsedInput.getVerbType())) {
+        else if ("GO".equals(verb)) {
             result = processMove(parsedInput);
         }
         // check if the player requested a use command.
-        else if (USE.equals(parsedInput.getVerbType())) {
+        else if ("USE".equals(verb)) {
             result = processUse(parsedInput);
         }
         // check if the player requested a look command.
-        else if (LOOK.equals(parsedInput.getVerbType())) {
+        else if ("LOOK".equals(verb)) {
             result = processLook(parsedInput);
         }
         // check if the player requested a hide command.
-        else if (HIDE.equals(parsedInput.getVerbType())) {
+        else if ("HIDE".equals(verb)) {
             result = processHide();
         }
-        else if (SAVE.equals(parsedInput.getVerbType())) {
+        else if ("SAVE".equals(verb)) {
             result = saveGame();
         }
-        else if (LOAD.equals(parsedInput.getVerbType())) {
+        else if ("LOAD".equals(verb)) {
             result = loadGame();
         }
-        else if (WAIT.equals(parsedInput.getVerbType())) {
+        else if ("WAIT".equals(verb)) {
             result = skipPlayerTurn();
         }
-        else if (HELP.equals(parsedInput.getVerbType())) {
+        else if ("HELP".equals(verb)) {
             result = help();
         }
         if(player.getCurrRoom().equals(monster.getCurrRoom())){
