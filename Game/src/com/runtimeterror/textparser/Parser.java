@@ -94,8 +94,4 @@ public class Parser {
         return data;
     }
 
-//    public static void main(String[] args) {
-//        parseInput("pick up bolt cutters");
-//    }
-
 }

@@ -418,8 +418,6 @@ public class GameProcessorTest {
         gameMap.put("gameLoaded", new Result<>(false));
         gameMap.put("hasStairs", new Result<>(defaultRoom.hasStairs()));
         gameMap.put("stairsRoom", new Result<>(defaultRoom.getStairsNeighborName()));
-        gameMap.put("player", new Result<>(new Player()));
-        gameMap.put("monster", new Result<>(new Monster()));
         gameMap.put("startingRoom", new Result<>(defaultRoom));
         gameMap.put("helpText", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
         gameMap.put("escapeItem", new Result<>("bolt cutters"));

@@ -1,9 +1,5 @@
 package com.runtimeterror.controller;
 
-import com.runtimeterror.model.Result;
-
-import java.util.Map;
-
 public class SwingController {
     private GameInterface gi;
 

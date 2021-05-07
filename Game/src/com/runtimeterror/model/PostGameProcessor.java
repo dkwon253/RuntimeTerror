@@ -10,7 +10,7 @@ class PostGameProcessor {
         return
         apply(gameMap)
                 .pipe(this::getMessageLabel)
-                .pipe(this::processResetRound)
+//                .pipe(this::processResetRound)
                 .result();
     }
 
@@ -34,5 +34,4 @@ class PostGameProcessor {
         }
         return gameMap;
     }
-
 }

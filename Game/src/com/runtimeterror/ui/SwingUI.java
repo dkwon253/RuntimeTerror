@@ -1,10 +1,7 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
-import com.runtimeterror.model.LoadRoomData;
-import com.runtimeterror.model.Result;
-import com.runtimeterror.model.Rooms;
-import com.runtimeterror.sound.SoundManagerV2;
+import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -16,13 +13,11 @@ import java.io.IOException;
 
 
 public class SwingUI extends JFrame{
-    private SoundManagerV2 soundManagerV2 = new SoundManagerV2();
+    private SoundManager soundManager = new SoundManager();
     private String currentRoomName = "";
     private PlayerMap player = new PlayerMap();
-
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
-
     private SwingController controller;
     private JTextArea roomInfoTA;
     private JTextArea inventoryInfoTA;
@@ -70,7 +65,7 @@ public class SwingUI extends JFrame{
         setupVolumeControlsBtn();
         setupMapButton();
 
-        soundManagerV2.playBGM("Game/Sounds/BGM.wav");
+        soundManager.playBGM("Game/Sounds/BGM.wav");
         playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
     }
 
@@ -261,7 +256,7 @@ public class SwingUI extends JFrame{
             imageTitleContainer.setVisible(true);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(false);
-            soundManagerV2.stopExtraSFX();
+            soundManager.stopExtraSFX();
             roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
         }
 
@@ -293,22 +288,22 @@ public class SwingUI extends JFrame{
         @Override
         public void actionPerformed(ActionEvent e) {
             System.out.println("Vol button clicked.");
-            SoundControls sc = new SoundControls("Volume",soundManagerV2,getLocation());
+            SoundControls sc = new SoundControls("Volume",soundManager,getLocation());
             sc.setVisible(true);
         }
     }
 
     private void playRoomSounds(String roomText, String messageText){
         String[] splitString = roomText.split("\n");
-        soundManagerV2.stopRoomSFX();
+        soundManager.stopRoomSFX();
         if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {
-            soundManagerV2.playRoomSFX("Game/Sounds/bathroom.wav", true);
+            soundManager.playRoomSFX("Game/Sounds/bathroom.wav", true);
         }
         if ("Courtyard".equals(splitString[1])) {
-            soundManagerV2.playRoomSFX("Game/Sounds/wind.wav", true);
+            soundManager.playRoomSFX("Game/Sounds/wind.wav", true);
         }
         if ("Theater".equals(splitString[1])) {
-            soundManagerV2.playRoomSFX("Game/Sounds/static.wav", true);
+            soundManager.playRoomSFX("Game/Sounds/static.wav", true);
         }
     }
 
@@ -317,19 +312,19 @@ public class SwingUI extends JFrame{
             imageTitleContainer.setVisible(true);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(false);
-            soundManagerV2.stopExtraSFX();
+            soundManager.stopExtraSFX();
         }
         else if (monsterInfo == 1){
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);
-            soundManagerV2.playExtraSFX("Game/Sounds/footsteps.wav",true);
+            soundManager.playExtraSFX("Game/Sounds/footsteps.wav",true);
         }
         else{
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
-            soundManagerV2.playExtraSFX("Game/Sounds/breathing.wav",true);
+            soundManager.playExtraSFX("Game/Sounds/breathing.wav",true);
         }
     }
 }

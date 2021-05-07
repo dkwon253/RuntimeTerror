@@ -3,17 +3,17 @@ package com.runtimeterror.model;
 import com.runtimeterror.controller.GameInterface;
 import java.util.*;
 
-public class GameClientNew implements GameInterface, java.io.Serializable {
+public class GameClient implements GameInterface, java.io.Serializable {
     private Database database;
     private GameProcessor gameProcessor;
     private PostGameProcessor postGameProcessor;
     private Map<String, Result<?>> gameMap;
 
-    GameClientNew(boolean test) {
+    GameClient(boolean test) {
         // test constructor
     }
 
-    public GameClientNew() {
+    public GameClient() {
         newDatabase();
         newGameProcessor();
         newPostGameProcessor();
