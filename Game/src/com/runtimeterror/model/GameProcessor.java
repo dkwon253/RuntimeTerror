@@ -16,7 +16,6 @@ class GameProcessor {
     GameProcessor() {
     }
 
-
     void start(Map<String, Result<?>> gameMap) {
         this.gameMap = gameMap;
         Parser.parseInput(gameMap);
@@ -144,7 +143,7 @@ class GameProcessor {
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
             gameMap.put("isValidDirection", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You have changed rooms. You are now in the " + newRoom.getRoomName() + "."));
-        } else if("GO".equals(verb)) {
+        } else if ("GO".equals(verb)) {
             gameMap.put("triedToGoDirection", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You can't go that way!"));
         }
@@ -163,7 +162,7 @@ class GameProcessor {
         boolean itemExist = false;
         String lookText = "";
         System.out.println("ran");
-        for(Item item : inventory) {
+        for (Item item : inventory) {
             if (item.getName().equals(noun)) {
                 itemExist = true;
                 lookText = item.getDescription();
@@ -177,7 +176,7 @@ class GameProcessor {
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
             gameMap.put("viewLabel", new Result<>(lookText));
             gameMap.put("lookText", new Result<>(lookText));
-        } else if("LOOK".equals(verb)) {
+        } else if ("LOOK".equals(verb)) {
             gameMap.put("triedToLook", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You don't have that item in your inventory"));
         }
@@ -227,7 +226,7 @@ class GameProcessor {
         }
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
-        if("SAVE".equals(verb)){
+        if ("SAVE".equals(verb)) {
             gameMap.put("shouldSaveGame", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
         }
@@ -244,7 +243,7 @@ class GameProcessor {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
         boolean gameLoaded = (boolean) gameMap.get("gameLoaded").getResult();
-        if("LOAD".equals(verb) && !gameLoaded) {
+        if ("LOAD".equals(verb) && !gameLoaded) {
             gameMap.put("shouldLoadGame", new Result<>(true));
         }
         return gameMap;
@@ -287,7 +286,7 @@ class GameProcessor {
         String noun = inputData.getNoun();
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         Item itemToRemove = new Item();
-        if(inventory.size() == 0) {
+        if (inventory.size() == 0) {
             gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
         }
         for (Item item : inventory) {
