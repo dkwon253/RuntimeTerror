@@ -1,6 +1,6 @@
 package com.runtimeterror.textparser;
 
-public class InputData {
+public class InputData implements java.io.Serializable {
     //private Verbs verbType;
     private String verb;
     private String noun;

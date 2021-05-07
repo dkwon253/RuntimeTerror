@@ -1,15 +1,11 @@
-package com.runtimeterror.main;
-
-import com.runtimeterror.model.LoadRoomData;
-import com.runtimeterror.model.Result;
-
+package com.runtimeterror.model;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-class Database {
+public class Database {
     private Map<String, Result<?>> data = new HashMap<>();
-    Database() {
+    public Database() {
         try {
             data = LoadRoomData.loadData();
         } catch (IOException e) {
@@ -17,7 +13,7 @@ class Database {
         }
     }
 
-    Map<String, Result<?>> getDataAsHashMap() {
+    public Map<String, Result<?>> getDataAsHashMap() {
         return this.data;
     }
 }

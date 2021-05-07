@@ -213,7 +213,6 @@ public class SwingUI extends JFrame{
             System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());
         }
-        controller.resetRound();
     }
 
     private void endGame(boolean wasKilled){
