@@ -118,6 +118,8 @@ public class LoadRoomData {
         staticLabels.put("didSaveGame", "Your game was saved.");
         staticLabels.put("", "");
         gameMap.put("staticLabels", new Result<>(staticLabels));
+        gameMap.put("playerHealth", new Result<>(15));
+        gameMap.put("monsterDamage", new Result<>(5));
     }
 
     public static void setGameMapRoundDefaults(Map<String, Result<?>> gameMap) {

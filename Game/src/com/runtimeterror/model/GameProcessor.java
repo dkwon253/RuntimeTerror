@@ -260,9 +260,10 @@ class GameProcessor {
             Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
             Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
             if (playerCurrentRoom == monsterCurrentRoom) {
+                int playerHealth = (int) gameMap.get("playerHealth").getResult();
+                int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
+                gameMap.put("playerHealth", new Result<>(playerHealth - monsterDamage));
                 gameMap.put("viewLabel", new Result<>("The monster got you!"));
-                gameMap.put("isGameOver", new Result<>(true));
-                gameMap.put("isKilledByMonster", new Result<>(true));
             }
         }
         return gameMap;

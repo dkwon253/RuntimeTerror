@@ -10,6 +10,7 @@ import java.util.Map;
 class PostGameProcessor {
 
     void start(Map<String, Result<?>> gameMap) {
+        checkIfGameOver(gameMap);
         getMessageLabel(gameMap);
         processSavingGameState(gameMap);
         processLoadingGameState(gameMap);
@@ -18,6 +19,15 @@ class PostGameProcessor {
     public Map<String, Result<?>> getMessageLabel(Map<String, Result<?>> gameMap) {
         String viewLabel = (String) gameMap.get("viewLabel").getResult();
         gameMap.put("messageLabel", new Result<>(viewLabel));
+        return gameMap;
+    }
+
+    public Map<String, Result<?>> checkIfGameOver(Map<String, Result<?>> gameMap) {
+        int playerHealth = (int) gameMap.get("playerHealth").getResult();
+        if(playerHealth <= 0) {
+            gameMap.put("isGameOver", new Result<>(true));
+            gameMap.put("isKilledByMonster", new Result<>(true));
+        }
         return gameMap;
     }
 

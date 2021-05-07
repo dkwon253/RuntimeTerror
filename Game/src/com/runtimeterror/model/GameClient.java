@@ -82,6 +82,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public int getPlayerHealth() {
+        return (int) gameMap.get("playerHealth").getResult();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return -1;
     }
