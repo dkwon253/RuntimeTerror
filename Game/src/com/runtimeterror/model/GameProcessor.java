@@ -179,7 +179,7 @@ class GameProcessor {
             gameMap.put("lookText", new Result<>(lookText));
         } else if("LOOK".equals(verb)) {
             gameMap.put("triedToLook", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("triedToLook"));
+            gameMap.put("viewLabel", new Result<>("You don't have that item in your inventory"));
         }
 
         return gameMap;
@@ -225,29 +225,10 @@ class GameProcessor {
         if (isProcessed) {
             return gameMap;
         }
-
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
-
         if("SAVE".equals(verb)){
-            HashMap<String, Object> gameObjects = new HashMap<>();
-            gameObjects.put("gameMap", gameMap);
-            try {
-                FileOutputStream fos = new FileOutputStream("Game/gameData/savedGameData.txt");
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(gameObjects);
-                oos.flush();
-                oos.close();
-                fos.close();
-                gameMap.put("viewLabel", new Result<>("You saved the game"));
-            } catch (FileNotFoundException e) {
-                gameMap.put("viewLabel", new Result<>("triedToSaveGame"));
-                System.out.println("Failed to load the game files:");
-                System.out.println(e.getMessage());
-            } catch (IOException e) {
-                gameMap.put("viewLabel", new Result<>("The game failed to save."));
-                e.printStackTrace();
-            }
+            gameMap.put("shouldSaveGame", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
         }
 
@@ -260,27 +241,11 @@ class GameProcessor {
         if (isProcessed) {
             return gameMap;
         }
-
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
         boolean gameLoaded = (boolean) gameMap.get("gameLoaded").getResult();
-
         if("LOAD".equals(verb) && !gameLoaded) {
-            try {
-                FileInputStream fis = new FileInputStream("Game/gameData/savedGameData.txt");
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                @SuppressWarnings("unchecked")
-                HashMap<String, Object> data = (HashMap<String, Object>) ois.readObject();
-                fis.close();
-                gameMap = (Map<String, Result<?>>) data.get("gameMap");
-                System.out.println(gameMap);
-                gameMap.put("gameLoaded", new Result<>(true));
-                gameMap.put("viewLabel", new Result<>("Your previous game was loaded"));
-            } catch (Exception e) {
-                return gameMap;
-            }
-        } else if("LOAD".equals(verb)) {
-            gameMap.put("viewLabel", new Result<>("There was a problem loading the game."));
+            gameMap.put("shouldLoadGame", new Result<>(true));
         }
         return gameMap;
     }

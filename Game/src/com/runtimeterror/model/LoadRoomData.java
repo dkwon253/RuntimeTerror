@@ -144,6 +144,8 @@ public class LoadRoomData {
         gameMap.put("triedToUseStairs", new Result<>(false));
         gameMap.put("viewLabel", new Result<>(""));
         gameMap.put("messageLabel", new Result<>(""));
+        gameMap.put("shouldSaveGame", new Result<>(false));
+        gameMap.put("shouldLoadGame", new Result<>(false));
 
     }
 }
