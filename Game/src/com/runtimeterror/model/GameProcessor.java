@@ -17,7 +17,7 @@ class GameProcessor {
     }
 
 
-    Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
+    void start(Map<String, Result<?>> gameMap) {
         this.gameMap = gameMap;
         Parser.parseInput(gameMap);
         processHelp(gameMap);
@@ -33,7 +33,6 @@ class GameProcessor {
         processSkipPlayerTurn(gameMap);
         processMonsterEncounter(gameMap);
         processRoomChange(gameMap);
-        return gameMap;
     }
 
     Map<String, Result<?>> processHelp(Map<String, Result<?>> gameMap) {
@@ -159,6 +158,7 @@ class GameProcessor {
         }
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
+        @SuppressWarnings("unchecked")
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         boolean itemExist = false;
         String lookText = "";
