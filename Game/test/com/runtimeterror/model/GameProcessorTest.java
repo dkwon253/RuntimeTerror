@@ -442,6 +442,11 @@ public class GameProcessorTest {
         gameMap.put("triedToGetItem", new Result<>(false));
         gameMap.put("triedToHide", new Result<>(false));
         gameMap.put("triedToUseStairs", new Result<>(false));
+        gameMap.put("viewLabel", new Result<>(""));
+        gameMap.put("messageLabel", new Result<>(""));
+        gameMap.put("shouldSaveGame", new Result<>(false));
+        gameMap.put("shouldLoadGame", new Result<>(false));
+        gameMap.put("playerHealth", new Result<>(15));
         return gameMap;
     }
 }

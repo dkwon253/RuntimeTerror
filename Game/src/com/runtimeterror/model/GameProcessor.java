@@ -6,37 +6,33 @@ import com.runtimeterror.textparser.Parser;
 import java.io.*;
 import java.util.*;
 
-import static com.runtimeterror.utils.Pipe.apply;
-
 class GameProcessor {
-    private Database database;
+    Map<String, Result<?>> gameMap;
 
     GameProcessor(boolean test) {
         // test constructor
     }
 
     GameProcessor() {
-        newDatabase();
     }
 
 
-    Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
-        return
-        apply(gameMap)
-                .pipe(Parser::parseInput)
-                .pipe(this::processHelp)
-                .pipe(this::processStairs)
-                .pipe(this::processUse)
-                .pipe(this::processGet)
-                .pipe(this::processGo)
-                .pipe(this::processHide)
-                .pipe(this::processMoveMonster)
-                .pipe(this::processSaveGame)
-                .pipe(this::processLoadGame)
-                .pipe(this::processSkipPlayerTurn)
-                .pipe(this::processMonsterEncounter)
-                .pipe(this::processRoomChange)
-                .result();
+    void start(Map<String, Result<?>> gameMap) {
+        this.gameMap = gameMap;
+        Parser.parseInput(gameMap);
+        processHelp(gameMap);
+        processStairs(gameMap);
+        processUse(gameMap);
+        processGet(gameMap);
+        processGo(gameMap);
+        processLook(gameMap);
+        processHide(gameMap);
+        processMoveMonster(gameMap);
+        processSaveGame(gameMap);
+        processLoadGame(gameMap);
+        processSkipPlayerTurn(gameMap);
+        processMonsterEncounter(gameMap);
+        processRoomChange(gameMap);
     }
 
     Map<String, Result<?>> processHelp(Map<String, Result<?>> gameMap) {
@@ -49,7 +45,7 @@ class GameProcessor {
         if ("HELP".equals(verb)) {
             gameMap.put("askedForHelp", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("askedForHelp"));
+            gameMap.put("viewLabel", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
         }
         return gameMap;
     }
@@ -67,6 +63,7 @@ class GameProcessor {
         @SuppressWarnings("unchecked")
         Map<String, Rooms> rooms = (Map<String, Rooms>) gameMap.get("rooms").getResult();
         Rooms stairsRoom = rooms.get(stairsRoomName);
+        Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         if (hasStairs && "stairs".equals(noun)) {
             gameMap.put("didUseStairs", new Result<>(true));
             gameMap.put("hidden", new Result<>(false));
@@ -74,10 +71,10 @@ class GameProcessor {
             gameMap.put("didChangeRoom", new Result<>(true));
             gameMap.put("playerCurrentRoom", new Result<>(stairsRoom));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("didUseStairs"));
+            gameMap.put("viewLabel", new Result<>("The stairs have taken you to the " + stairsRoomName + "."));
         } else if ("stairs".equals(noun)) {
+            gameMap.put("viewLabel", new Result<>("There are no stairs in " + currentRoom.getRoomName() + "."));
             gameMap.put("triedToUseStairs", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("triedToUseStairs"));
         }
         return gameMap;
     }
@@ -94,7 +91,6 @@ class GameProcessor {
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
             gameMap.put("triedToUseItem", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("triedToUseItem"));
             useItem(gameMap);
         }
         return gameMap;
@@ -120,11 +116,11 @@ class GameProcessor {
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("didGetItem"));
+            gameMap.put("viewLabel", new Result<>("You have picked up a " + roomItem.getName() + "."));
         } else if ("GET".equals(verb)) {
             gameMap.put("triedToGetItem", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("triedToGetItem"));
+            gameMap.put("viewLabel", new Result<>("The " + currentRoom.getRoomName() + " does not have an item."));
         }
         return gameMap;
     }
@@ -147,11 +143,45 @@ class GameProcessor {
             gameMap.put("didChangeRoom", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
             gameMap.put("isValidDirection", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("didChangeRoom"));
+            gameMap.put("viewLabel", new Result<>("You have changed rooms. You are now in the " + newRoom.getRoomName() + "."));
         } else if("GO".equals(verb)) {
             gameMap.put("triedToGoDirection", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("triedToGoDirection"));
+            gameMap.put("viewLabel", new Result<>("You can't go that way!"));
         }
+        return gameMap;
+    }
+
+    Map<String, Result<?>> processLook(Map<String, Result<?>> gameMap) {
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        if (isProcessed) {
+            return gameMap;
+        }
+        InputData inputData = (InputData) gameMap.get("inputData").getResult();
+        String noun = inputData.getNoun();
+        @SuppressWarnings("unchecked")
+        List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+        boolean itemExist = false;
+        String lookText = "";
+        System.out.println("ran");
+        for(Item item : inventory) {
+            if (item.getName().equals(noun)) {
+                itemExist = true;
+                lookText = item.getDescription();
+                break;
+            }
+        }
+        String verb = inputData.getVerb();
+        if ("LOOK".equals(verb) && itemExist) {
+            gameMap.put("hidden", new Result<>(false));
+            gameMap.put("isProcessed", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+            gameMap.put("viewLabel", new Result<>(lookText));
+            gameMap.put("lookText", new Result<>(lookText));
+        } else if("LOOK".equals(verb)) {
+            gameMap.put("triedToLook", new Result<>(true));
+            gameMap.put("viewLabel", new Result<>("You don't have that item in your inventory"));
+        }
+
         return gameMap;
     }
 
@@ -167,10 +197,10 @@ class GameProcessor {
             gameMap.put("hidden", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("didHide"));
+            gameMap.put("viewLabel", new Result<>("You have hidden inside the " + currentRoom.getHidingLocation() + "."));
         } else if ("HIDE".equals(verb)) {
             gameMap.put("triedToHide", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("triedToHide"));
+            gameMap.put("viewLabel", new Result<>("There are no hiding spots in the " + currentRoom.getRoomName() + "."));
         }
         return gameMap;
     }
@@ -195,29 +225,10 @@ class GameProcessor {
         if (isProcessed) {
             return gameMap;
         }
-
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
-
         if("SAVE".equals(verb)){
-            HashMap<String, Object> gameObjects = new HashMap<>();
-            gameObjects.put("gameMap", gameMap);
-            try {
-                FileOutputStream fos = new FileOutputStream("Game/gameData/savedGameData.txt");
-                ObjectOutputStream oos = new ObjectOutputStream(fos);
-                oos.writeObject(gameObjects);
-                oos.flush();
-                oos.close();
-                fos.close();
-                gameMap.put("viewLabel", new Result<>("didSaveGame"));
-            } catch (FileNotFoundException e) {
-                gameMap.put("viewLabel", new Result<>("triedToSaveGame"));
-                System.out.println("Failed to load the game files:");
-                System.out.println(e.getMessage());
-            } catch (IOException e) {
-                gameMap.put("viewLabel", new Result<>("triedToSaveGame"));
-                e.printStackTrace();
-            }
+            gameMap.put("shouldSaveGame", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
         }
 
@@ -230,27 +241,11 @@ class GameProcessor {
         if (isProcessed) {
             return gameMap;
         }
-
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
         boolean gameLoaded = (boolean) gameMap.get("gameLoaded").getResult();
-
         if("LOAD".equals(verb) && !gameLoaded) {
-            try {
-                FileInputStream fis = new FileInputStream("Game/gameData/savedGameData.txt");
-                ObjectInputStream ois = new ObjectInputStream(fis);
-                @SuppressWarnings("unchecked")
-                HashMap<String, Object> data = (HashMap<String, Object>) ois.readObject();
-                fis.close();
-                gameMap = (Map<String, Result<?>>) data.get("gameMap");
-                System.out.println(gameMap);
-                gameMap.put("gameLoaded", new Result<>(true));
-                gameMap.put("viewLabel", new Result<>("didLoadGame"));
-            } catch (Exception e) {
-                return gameMap;
-            }
-        } else if("LOAD".equals(verb)) {
-            gameMap.put("viewLabel", new Result<>("triedToLoadGame"));
+            gameMap.put("shouldLoadGame", new Result<>(true));
         }
         return gameMap;
     }
@@ -265,8 +260,10 @@ class GameProcessor {
             Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
             Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
             if (playerCurrentRoom == monsterCurrentRoom) {
-                gameMap.put("isGameOver", new Result<>(true));
-                gameMap.put("isKilledByMonster", new Result<>(true));
+                int playerHealth = (int) gameMap.get("playerHealth").getResult();
+                int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
+                gameMap.put("playerHealth", new Result<>(playerHealth - monsterDamage));
+                gameMap.put("viewLabel", new Result<>("The monster got you!"));
             }
         }
         return gameMap;
@@ -284,28 +281,26 @@ class GameProcessor {
         return gameMap;
     }
 
-    Map<String, Result<?>> getGameMap() {
-        return database.getDataAsHashMap();
-    }
-
-    void newDatabase() {
-        database = new Database();
-    }
-
     @SuppressWarnings("unchecked")
     void useItem(Map<String, Result<?>> gameMap) {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         Item itemToRemove = new Item();
+        if(inventory.size() == 0) {
+            gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
+        }
         for (Item item : inventory) {
+            System.out.println("ran");
             if (item != null && noun.equals(item.getName())) {
                 gameMap.put("triedToUseItem", new Result<>(false));
                 gameMap.put("usedItem", new Result<>(true));
                 gameMap.put("itemUsed", new Result<>(noun));
-                gameMap.put("viewLabel", new Result<>("usedItem"));
+                gameMap.put("viewLabel", new Result<>("You have used your " + item.getName() + "."));
                 itemToRemove = item;
                 break;
+            } else {
+                gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
             }
         }
         inventory.remove(itemToRemove);
