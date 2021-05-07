@@ -25,11 +25,12 @@ public class Parser {
     }
 
     // pick up bolt cutters
-    private static String findVerb(String input) {
+    public static String findVerb(String input) {
         String temp = input.trim();
         temp = temp.replaceAll("\\p{Punct}", "");
         int i = temp.indexOf(" ");
         List<String> verbList = new ArrayList<>();
+        verbList.add(temp);
         if (i == -1) {
             verbList.add(temp);
         } else {
@@ -59,8 +60,7 @@ public class Parser {
         return null;
     }
 
-
-    private static String findNoun(String input, Map<String, Result<?>> gameMap) {
+    public static String findNoun(String input, Map<String, Result<?>> gameMap) {
         @SuppressWarnings("unchecked")
         List<String> listOfItems = (List<String>) gameMap.get("listOfItems").getResult();
         String temp = input.trim();
