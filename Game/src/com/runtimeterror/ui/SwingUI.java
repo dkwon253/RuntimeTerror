@@ -66,6 +66,7 @@ public class SwingUI extends JFrame {
         setPlayerHealth();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
+        //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
     }
 
