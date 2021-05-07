@@ -1,9 +1,5 @@
 package com.runtimeterror.controller;
 
-import com.runtimeterror.model.Result;
-
-import java.util.Map;
-
 public interface GameInterface {
     // Used to get a formatted string object of the room information.
     public String getRoomText();
