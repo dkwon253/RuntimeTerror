@@ -13,26 +13,32 @@ import java.io.IOException;
 
 
 public class SwingUI extends JFrame{
+
     private SoundManager soundManager = new SoundManager();
-    private String currentRoomName = "";
     private PlayerMap player = new PlayerMap();
+    private SwingController controller;
+
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
-    private SwingController controller;
+
     private JTextArea roomInfoTA;
     private JTextArea inventoryInfoTA;
     private JTextField playerInputTF;
+
     private JLabel playerStateLbl;
+    private JLabel playerHealthLbl;
     private JLabel saveGameMsgLbl;
     private JLabel playerMessageLbl;
-    private JButton submitCommandBtn;
     private JLabel monsterInRoomLbl;
     private JLabel monsterNearByLbl;
-    private JButton volumeControlsBtn;
-    private ImageIcon imageTitle;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
+
+    private ImageIcon imageTitle;
+
     private JButton mapCommandBtn;
+    private JButton volumeControlsBtn;
+    private JButton submitCommandBtn;
 
 
     // CTOR
@@ -64,6 +70,7 @@ public class SwingUI extends JFrame{
         setupSubmitCommandBtn();
         setupVolumeControlsBtn();
         setupMapButton();
+        setPlayerHealth();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
         playRoomSounds(roomInfoTA.getText(),playerMessageLbl.getText());
@@ -99,7 +106,6 @@ public class SwingUI extends JFrame{
         add(playerInputTF);
     }
 
-
     private void setupMapButton() {
         // button for map to popup
         mapCommandBtn = new JButton();
@@ -121,8 +127,15 @@ public class SwingUI extends JFrame{
 
     private void setupPlayerStateLbl() {
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
-        playerStateLbl.setBounds(25,730,430,25);
+        playerStateLbl.setBounds(25,730,430,23);
         add(playerStateLbl);
+    }
+
+    private void setPlayerHealth() {
+        int playerHealth = 20;
+        playerHealthLbl = new JLabel("Health: " +playerHealth, SwingConstants.LEFT);
+        playerHealthLbl.setBounds(200, 730, 430, 20);
+        add(playerHealthLbl);
     }
 
     private void setupInventoryInfoTA(SwingController controller) {
@@ -272,8 +285,12 @@ public class SwingUI extends JFrame{
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("PlayerMap has been clicked.");
-            player.setVisible(true);
+            if(controller.getInventory().contains("map")) {
+                System.out.println("PlayerMap has been clicked.");
+                player.setVisible(true);
+            } else {
+                playerMessageLbl.setText("You don't have the capability to do that yet.");
+            }
         }
     }
 
