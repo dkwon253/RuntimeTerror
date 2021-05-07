@@ -32,4 +32,6 @@ public interface GameInterface {
     void resetRound();
 
     String getRoomMapPath();
+
+    int getPlayerHealth();
 }

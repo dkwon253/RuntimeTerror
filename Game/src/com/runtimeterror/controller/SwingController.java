@@ -57,4 +57,8 @@ public class SwingController {
     public String getRoomMapPath() {
         return gi.getRoomMapPath();
     }
+
+    public int getPlayerHealth() {
+        return gi.getPlayerHealth();
+    }
 }

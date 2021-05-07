@@ -113,9 +113,13 @@ public class LoadRoomData {
         staticLabels.put("didLoadGame", "Your previous save has been loaded.");
         staticLabels.put("triedToLoadGame", "You cannot load that game.");
         staticLabels.put("triedToSaveGame", "There was a problem saving the game.");
+        staticLabels.put("triedToLook", "You cannot at ");
+        staticLabels.put("didLook", " ");
         staticLabels.put("didSaveGame", "Your game was saved.");
         staticLabels.put("", "");
-        gameMap.put("staticLabels", new Result<>(Collections.unmodifiableMap(staticLabels)));
+        gameMap.put("staticLabels", new Result<>(staticLabels));
+        gameMap.put("playerHealth", new Result<>(15));
+        gameMap.put("monsterDamage", new Result<>(5));
     }
 
     public static void setGameMapRoundDefaults(Map<String, Result<?>> gameMap) {
@@ -142,6 +146,8 @@ public class LoadRoomData {
         gameMap.put("triedToUseStairs", new Result<>(false));
         gameMap.put("viewLabel", new Result<>(""));
         gameMap.put("messageLabel", new Result<>(""));
+        gameMap.put("shouldSaveGame", new Result<>(false));
+        gameMap.put("shouldLoadGame", new Result<>(false));
 
     }
 }
