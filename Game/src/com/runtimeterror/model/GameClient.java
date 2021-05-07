@@ -1,6 +1,7 @@
 package com.runtimeterror.model;
 
 import com.runtimeterror.controller.GameInterface;
+
 import java.util.*;
 
 public class GameClient implements GameInterface, java.io.Serializable {
@@ -15,10 +16,12 @@ public class GameClient implements GameInterface, java.io.Serializable {
 
     public GameClient() {
         newDatabase();
+        gameMap = getGameMap();
         newGameProcessor();
         newPostGameProcessor();
-        gameMap = getGameMap();
     }
+
+
 
     void newDatabase() {
         database = new Database();

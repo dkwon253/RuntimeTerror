@@ -10,6 +10,7 @@ class TimerTest {
 
         TimerTask task = new TimerTask() {
             int counter = 10;
+            PostGameProcessor postGameProcessor = new PostGameProcessor();
             @Override
             public void run() {
                 if(counter > 0) {

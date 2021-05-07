@@ -7,5 +7,6 @@
   "SAVE": ["save"],
   "LOAD": ["load"],
   "HELP":["help"],
-  "WAIT":["wait"]
+  "WAIT":["wait"],
+  "DROP":["drop"]
 }

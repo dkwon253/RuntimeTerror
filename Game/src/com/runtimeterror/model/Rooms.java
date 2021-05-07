@@ -10,6 +10,7 @@ public class Rooms implements java.io.Serializable {
     private HashMap<String, Rooms> roomNeighbors = null;
     private String hidingLocation;
     private Item item;
+    private List<Item> roomsItems = new ArrayList<>();
     private boolean NPCVisited = false;
     private boolean NPCQuestCompleted = false;
     private String RoomImagePath;
@@ -27,7 +28,7 @@ public class Rooms implements java.io.Serializable {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.hidingLocation = hidingLocation;
-        this.item = item;
+        setItem(item);
         this.RoomImagePath = path;
         setMapImagePath(mpath);
         setStairsNeighborName(stairsNeighbor);
@@ -73,8 +74,19 @@ public class Rooms implements java.io.Serializable {
         }
     }
 
-    public void removeRoomItem() {
-        this.item = null;
+
+    public Item getAndRemoveRoomItem(String itemName) {
+        Item itemToReturn = new Item();
+        for(Item item : roomsItems) {
+            if(item.getName().equals(itemName)) {
+                itemToReturn = item;
+                break;
+            }
+        }
+        if(itemToReturn.getName() != null) {
+            roomsItems.remove(itemToReturn);
+        }
+        return itemToReturn;
     }
 
     public boolean hasStairs() {
@@ -117,10 +129,14 @@ public class Rooms implements java.io.Serializable {
     }
 
     public String getRoomDescriptionText() {
+        StringJoiner items = new StringJoiner(", ");
+        for (Item item : roomsItems) {
+            items.add(item.getName());
+        }
         String result = "Location:\n" + this.roomName;
         result += "\n\n" + this.roomDescription + "\n";
         if (this.item != null) {
-            result += "\nItem: " + this.item.getName();
+            result += "\nItem(s): " + items.toString();
         }
         result += "\nExits:";
         String[] directions = {"north", "east", "south", "west"};
@@ -133,7 +149,18 @@ public class Rooms implements java.io.Serializable {
     }
 
     public void setItem(Item item) {
-        this.item = item;
+        if(item != null) {
+            this.item = item;
+            roomsItems.add(item);
+        }
+    }
+
+    public void addItem(Item item) {
+        roomsItems.add(item);
+    }
+
+    public List<Item> getRoomsItems() {
+        return this.roomsItems;
     }
 
 //    public String getNPC_Dialoge(Player player) {

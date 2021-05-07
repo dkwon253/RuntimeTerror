@@ -26,6 +26,7 @@ class GameProcessor {
         processGo(gameMap);
         processLook(gameMap);
         processHide(gameMap);
+        processDrop(gameMap);
         processMoveMonster(gameMap);
         processSaveGame(gameMap);
         processLoadGame(gameMap);
@@ -109,8 +110,7 @@ class GameProcessor {
         if ("GET".equals(verb) && noun != null && roomItem != null && noun.equals(roomItem.getName())) {
             @SuppressWarnings("unchecked")
             List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
-            inventory.add(currentRoom.getItem());
-            currentRoom.removeRoomItem();
+            inventory.add(currentRoom.getAndRemoveRoomItem(noun));
             gameMap.put("didGetItem", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("hidden", new Result<>(false));
@@ -201,6 +201,39 @@ class GameProcessor {
             gameMap.put("triedToHide", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("There are no hiding spots in the " + currentRoom.getRoomName() + "."));
         }
+        return gameMap;
+    }
+
+    private Map<String, Result<?>> processDrop(Map<String, Result<?>> gameMap) {
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        if (isProcessed) {
+            return gameMap;
+        }
+        InputData inputData = (InputData) gameMap.get("inputData").getResult();
+        String verb = inputData.getVerb();
+        String noun = inputData.getNoun();
+        Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+        boolean isInInventory = false;
+        Item itemToAdd = new Item();
+        for(Item item : inventory) {
+            if(item.getName().equals(noun)) {
+                isInInventory = true;
+                itemToAdd = item;
+                break;
+            }
+        }
+        if("DROP".equals(verb) && isInInventory && itemToAdd.getName() != null) {
+            currentRoom.addItem(itemToAdd);
+            System.out.println(currentRoom.getRoomsItems());
+            inventory.remove(itemToAdd);
+            gameMap.put("viewLabel", new Result<>("You dropped a(n) " + itemToAdd.getName() + " in the " + currentRoom.getRoomName()));
+            gameMap.put("isProcessed", new Result<>(true));
+        } else if("DROP".equals(verb)) {
+            gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + " to drop."));
+            gameMap.put("isProcessed", new Result<>(true));
+        }
+
         return gameMap;
     }
 
