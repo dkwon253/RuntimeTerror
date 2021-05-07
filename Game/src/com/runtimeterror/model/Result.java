@@ -1,6 +1,6 @@
 package com.runtimeterror.model;
 
-public class Result<T> {
+public class Result<T> implements java.io.Serializable {
     private final T result;
 
     public Result(T result) {

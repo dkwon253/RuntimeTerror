@@ -3,23 +3,21 @@ package com.runtimeterror.model;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LoadRoomData {
 
     static Rooms defaultRoom;
 
-    public static Map<String, Result<?>> loadData() throws IOException{
+    public static Map<String, Result<?>> loadData() throws IOException {
         Map<String, Result<?>> gameMap = new HashMap<>();
         HashMap<String, Rooms> roomList = new HashMap<>();
         List<String> listOfItems = new ArrayList<>();
         setupRoomData(roomList, listOfItems);
         setupNeighbors(roomList);
         setupGameMapDefaults(gameMap, roomList, listOfItems);
+        setUpStaticLabels(gameMap);
         return gameMap;
     }
 
@@ -38,15 +36,15 @@ public class LoadRoomData {
             String mapPath = tokens[11];
 
             Rooms newRoom;
-            if(itemName == null){
+            if (itemName == null) {
                 newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath, stairsNeighbor);
 
-            }else{
+            } else {
                 listOfItems.add(itemName);
                 newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription), path, mapPath, stairsNeighbor);
 
             }
-            if(i.get() == 0) {
+            if (i.get() == 0) {
                 defaultRoom = newRoom;
             }
             roomList.put(roomName, newRoom);
@@ -75,8 +73,8 @@ public class LoadRoomData {
             String stairs = "null".equals(tokens[10]) ? null : tokens[10];
 
             HashMap<String, Rooms> neighbor = new HashMap<>();
-            neighbor.put("east",  roomList.get(east));
-            neighbor.put("west",  roomList.get(west));
+            neighbor.put("east", roomList.get(east));
+            neighbor.put("west", roomList.get(west));
             neighbor.put("north", roomList.get(north));
             neighbor.put("south", roomList.get(south));
 
@@ -90,7 +88,6 @@ public class LoadRoomData {
         gameMap.put("playerCurrentRoom", new Result<>(defaultRoom));
         gameMap.put("availableRooms", new Result<>(defaultRoom.getRoomNeighbors()));
         gameMap.put("rooms", new Result<>(roomList));
-        gameMap.put("triedToUseItem", new Result<>(false));
         gameMap.put("inventory", new Result<>(new ArrayList<Item>()));
         gameMap.put("gameLoaded", new Result<>(false));
         gameMap.put("hasStairs", new Result<>(defaultRoom.hasStairs()));
@@ -102,6 +99,25 @@ public class LoadRoomData {
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
         gameMap.put("listOfItems", new Result<>(listOfItems));
         setGameMapRoundDefaults(gameMap);
+    }
+
+    private static void setUpStaticLabels(Map<String, Result<?>> gameMap) {
+        Map<String, String> staticLabels  = new HashMap<>();
+        staticLabels.put("didUseStairs", "You used the stairs.");
+        staticLabels.put("triedToUseStairs", "There are no stairs in this room.");
+        staticLabels.put("triedToUseItem", "You don't have that item.");
+        staticLabels.put("usedItem", "You used an item.");
+        staticLabels.put("didGetItem", "You picked up an item.");
+        staticLabels.put("didChangeRoom", "You went in a direction");
+        staticLabels.put("triedToGoDirection", "You can't go that direction.");
+        staticLabels.put("triedToGetItem", "The room doesn't have that item.");
+        staticLabels.put("triedToHide", "You can't hide in this room.");
+        staticLabels.put("didLoadGame", "Your previous save has been loaded.");
+        staticLabels.put("triedToLoadGame", "You cannot load that game.");
+        staticLabels.put("triedToSaveGame", "There was a problem saving the game.");
+        staticLabels.put("didSaveGame", "Your game was saved.");
+        staticLabels.put("", "");
+        gameMap.put("staticLabels", new Result<>(Collections.unmodifiableMap(staticLabels)));
     }
 
     public static void setGameMapRoundDefaults(Map<String, Result<?>> gameMap) {
@@ -126,5 +142,8 @@ public class LoadRoomData {
         gameMap.put("triedToGetItem", new Result<>(false));
         gameMap.put("triedToHide", new Result<>(false));
         gameMap.put("triedToUseStairs", new Result<>(false));
+        gameMap.put("viewLabel", new Result<>(""));
+        gameMap.put("messageLabel", new Result<>(""));
+
     }
 }
