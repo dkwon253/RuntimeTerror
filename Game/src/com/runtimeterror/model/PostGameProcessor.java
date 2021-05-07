@@ -2,25 +2,18 @@ package com.runtimeterror.model;
 
 import java.util.Map;
 
-import static com.runtimeterror.utils.Pipe.apply;
 
 class PostGameProcessor {
 
     Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
-        return
-        apply(gameMap)
-                .pipe(this::getMessageLabel)
+        getMessageLabel(gameMap);
 //                .pipe(this::processResetRound)
-                .result();
+        return gameMap;
     }
 
     public Map<String, Result<?>> getMessageLabel(Map<String, Result<?>> gameMap) {
         String viewLabel = (String) gameMap.get("viewLabel").getResult();
-        System.out.println(viewLabel);
-        @SuppressWarnings("unchecked")
-        Map<String, String> staticLabels = (Map<String, String>) gameMap.get("staticLabels").getResult();
-        String labelText = staticLabels.get(viewLabel);
-        gameMap.put("messageLabel", new Result<>(labelText));
+        gameMap.put("messageLabel", new Result<>(viewLabel));
         return gameMap;
     }
 
