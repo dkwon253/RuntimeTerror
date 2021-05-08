@@ -43,7 +43,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
     public String submitPlayerString(String userInput) {
         gameMap.put("input", new Result<>(userInput));
         gameProcessor.start(gameMap);
-        postGameProcessor.start(gameMap);
+        gameMap = postGameProcessor.start(gameMap);
         return (String) gameMap.get("helpText").getResult();
     }
 

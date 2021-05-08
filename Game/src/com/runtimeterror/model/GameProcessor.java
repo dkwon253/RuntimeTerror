@@ -290,9 +290,7 @@ class GameProcessor {
         String noun = inputData.getNoun();
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         Item itemToRemove = new Item();
-        if (inventory.size() == 0) {
-            gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
-        }
+        gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
         for (Item item : inventory) {
             if (item != null && noun.equals(item.getName())) {
                 gameMap.put("triedToUseItem", new Result<>(false));
@@ -301,8 +299,6 @@ class GameProcessor {
                 gameMap.put("viewLabel", new Result<>("You have used your " + item.getName() + "."));
                 itemToRemove = item;
                 break;
-            } else {
-                gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
             }
         }
         inventory.remove(itemToRemove);
