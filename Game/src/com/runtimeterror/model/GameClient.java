@@ -22,7 +22,6 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
 
-
     void newDatabase() {
         database = new Database();
     }
@@ -50,7 +49,6 @@ public class GameClient implements GameInterface, java.io.Serializable {
     @Override
     public String getRoomText() {
         Rooms room = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        System.out.println(room);
         return room.getRoomDescriptionText();
     }
 
@@ -91,16 +89,12 @@ public class GameClient implements GameInterface, java.io.Serializable {
 
     @Override
     public boolean hasMap() {
-        boolean result = false;
         @SuppressWarnings("unchecked")
         List<Item> inv = (List<Item>) gameMap.get("inventory").getResult();
-        for(Item item: inv) {
-            if(item.getName().equals("map")) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+        Item foundItem =
+                inv.stream().filter(item -> item.getName().equals("map"))
+                        .findFirst().orElse(null);
+        return foundItem == null;
     }
 
     @Override

@@ -76,16 +76,10 @@ public class Rooms implements java.io.Serializable {
 
 
     public Item getAndRemoveRoomItem(String itemName) {
-        Item itemToReturn = new Item();
-        for(Item item : roomsItems) {
-            if(item.getName().equals(itemName)) {
-                itemToReturn = item;
-                break;
-            }
-        }
-        if(itemToReturn.getName() != null) {
-            roomsItems.remove(itemToReturn);
-        }
+        Item itemToReturn = roomsItems.stream()
+                .filter(item -> item.getName().equals(itemName))
+                .findFirst().orElse(null);
+        roomsItems.remove(itemToReturn);
         return itemToReturn;
     }
 

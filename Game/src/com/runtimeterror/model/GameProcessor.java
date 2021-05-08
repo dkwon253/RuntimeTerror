@@ -5,6 +5,7 @@ import com.runtimeterror.textparser.Parser;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 class GameProcessor {
     Map<String, Result<?>> gameMap;
@@ -212,22 +213,16 @@ class GameProcessor {
         Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         @SuppressWarnings("unchecked")
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
-        boolean isInInventory = false;
-        Item itemToAdd = new Item();
-        for(Item item : inventory) {
-            if(item.getName().equals(noun)) {
-                isInInventory = true;
-                itemToAdd = item;
-                break;
-            }
-        }
-        if("DROP".equals(verb) && isInInventory && itemToAdd.getName() != null) {
+        Item itemToAdd = inventory.stream()
+                .filter(item -> item.getName().equals(noun))
+                .findFirst().orElse(null);
+
+        if ("DROP".equals(verb) && itemToAdd != null) {
             currentRoom.addItem(itemToAdd);
-            System.out.println(currentRoom.getRoomsItems());
             inventory.remove(itemToAdd);
             gameMap.put("viewLabel", new Result<>("You dropped a(n) " + itemToAdd.getName() + " in the " + currentRoom.getRoomName()));
             gameMap.put("isProcessed", new Result<>(true));
-        } else if("DROP".equals(verb)) {
+        } else if ("DROP".equals(verb)) {
             gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + " to drop."));
             gameMap.put("isProcessed", new Result<>(true));
         }
@@ -283,7 +278,6 @@ class GameProcessor {
         return gameMap;
     }
 
-
     @SuppressWarnings("unchecked")
     void useItem(Map<String, Result<?>> gameMap) {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
@@ -303,5 +297,4 @@ class GameProcessor {
         }
         inventory.remove(itemToRemove);
     }
-
 }
