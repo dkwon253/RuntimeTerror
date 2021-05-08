@@ -44,4 +44,6 @@ public interface GameInterface {
     String getDialogue();
 
     boolean isHealthIncrease();
+
+    int timeToEndGame();
 }

@@ -33,13 +33,13 @@ public class SwingUI extends JFrame {
     private JButton mapCommandBtn;
     private JButton volumeControlsBtn;
     private JButton submitCommandBtn;
-    private int gameTime = 300;
+    private int gameTime;
+    private Timer timer;
 
     // CTOR
     public SwingUI(String title, SwingController controller) {
         super(title);
         this.controller = controller;
-
         setLocation(100, 100);
         setSize(FRAME_X_SIZE, FRAME_Y_SIZE);
         setResizable(false);
@@ -228,7 +228,8 @@ public class SwingUI extends JFrame {
     }
 
     private void setupTimer() {
-        Timer timer = new Timer(1000, new GameTimer());
+        gameTime = controller.getTimeToEndGame();
+        timer = new Timer(1000, new GameTimer());
         timer.start();
     }
 
@@ -243,11 +244,11 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private void endGame(boolean wasKilled) {
+    private void endGame(boolean isKilled) {
         Image img = null;
         String message = "";
         String iconImage = "Game/Icons/";
-        if (wasKilled) {
+        if (isKilled) {
             iconImage += "skull.png";
             message = "You are now dead";
         } else {
@@ -275,21 +276,27 @@ public class SwingUI extends JFrame {
         if (n == 1) {
             System.exit(0);
         } else {
-            controller.startNewGame();
-            playerMessageLbl.setText("Game restarted");
-            String roomData = controller.getRoomDesc();
-            roomInfoTA.setText(roomData);
-            String invData = controller.getInventory();
-            inventoryInfoTA.setText(invData);
-            playerStateLbl.setText("Status: Visible");
-            playerInputTF.setText("");
-            playRoomSounds(roomData, "");
-            imageTitleContainer.setVisible(true);
-            monsterInRoomLbl.setVisible(false);
-            monsterNearByLbl.setVisible(false);
-            soundManager.stopExtraSFX();
-            roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+            resetGame();
         }
+    }
+
+    private void resetGame() {
+        controller.startNewGame();
+        timer.stop();
+        playerMessageLbl.setText("Game restarted");
+        String roomData = controller.getRoomDesc();
+        roomInfoTA.setText(roomData);
+        String invData = controller.getInventory();
+        inventoryInfoTA.setText(invData);
+        playerStateLbl.setText("Status: Visible");
+        playerInputTF.setText("");
+        playRoomSounds(roomData, "");
+        setupTimer();
+        imageTitleContainer.setVisible(true);
+        monsterInRoomLbl.setVisible(false);
+        monsterNearByLbl.setVisible(false);
+        soundManager.stopExtraSFX();
+        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
     }
 
     private class HandleSubmitBtnClick implements ActionListener {
@@ -323,7 +330,11 @@ public class SwingUI extends JFrame {
     private class GameTimer implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
+            if(gameTime <= 0) {
+                endGame(true);
+            } else {
+                playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
+            }
         }
 
         private String computeTime() {

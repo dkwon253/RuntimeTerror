@@ -103,6 +103,7 @@ public class LoadRoomData {
         gameMap.put("helpText", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
         gameMap.put("listOfItems", new Result<>(listOfItems));
+        gameMap.put("timeToEndGame", new Result<>(300));
         setGameMapRoundDefaults(gameMap);
     }
 

@@ -15,6 +15,10 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     public GameClient() {
+        setupGame();
+    }
+
+    private void setupGame() {
         newDatabase();
         gameMap = getGameMap();
         newGameProcessor();
@@ -121,12 +125,18 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public int timeToEndGame() {
+        return (int) gameMap.get("timeToEndGame").getResult();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return -1;
     }
 
     @Override
     public void reset() {
+        setupGame();
     }
 
     @Override

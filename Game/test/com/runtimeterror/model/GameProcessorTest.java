@@ -451,6 +451,7 @@ public class GameProcessorTest {
         gameMap.put("dialogueLabel", new Result<>(""));
         gameMap.put("itemUsedItem", new Result<>(new Item()));
         gameMap.put("didIncreaseHealth", new Result<>(false));
+        gameMap.put("timeToEndGame", new Result<>(300));
         return gameMap;
     }
 }
