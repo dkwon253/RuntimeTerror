@@ -294,6 +294,7 @@ class GameProcessor {
                 gameMap.put("triedToUseItem", new Result<>(false));
                 gameMap.put("usedItem", new Result<>(true));
                 gameMap.put("itemUsed", new Result<>(noun));
+                gameMap.put("itemUsedItem", new Result<>(item));
                 gameMap.put("viewLabel", new Result<>("You have used your " + item.getName() + "."));
                 itemToRemove = item;
                 break;

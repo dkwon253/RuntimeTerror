@@ -137,6 +137,7 @@ public class LoadRoomData {
         gameMap.put("addendumText", new Result<>(""));
         gameMap.put("itemUsed", new Result<>(""));
         gameMap.put("usedItem", new Result<>(false));
+        gameMap.put("itemUsedItem", new Result<>(new Item()));
         gameMap.put("triedToUseItem", new Result<>(false));
         gameMap.put("askedForHelp", new Result<>(false));
         gameMap.put("shouldMonsterChangeRooms", new Result<>(false));
@@ -154,6 +155,7 @@ public class LoadRoomData {
         gameMap.put("shouldSaveGame", new Result<>(false));
         gameMap.put("shouldLoadGame", new Result<>(false));
         gameMap.put("dialogueLabel", new Result<>(""));
+        gameMap.put("didIncreaseHealth", new Result<>(false));
 
     }
 }

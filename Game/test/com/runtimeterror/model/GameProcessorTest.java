@@ -449,6 +449,8 @@ public class GameProcessorTest {
         gameMap.put("playerHealth", new Result<>(15));
         gameMap.put("monsterDamage", new Result<>(5));
         gameMap.put("dialogueLabel", new Result<>(""));
+        gameMap.put("itemUsedItem", new Result<>(new Item()));
+        gameMap.put("didIncreaseHealth", new Result<>(false));
         return gameMap;
     }
 }

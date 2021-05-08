@@ -10,6 +10,7 @@ class PostGameProcessor {
     Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
         processMonsterEncounter(gameMap);
         processRoomChange(gameMap);
+        processHealthIncrease(gameMap);
         processGameOverCheck(gameMap);
         processSavingGameState(gameMap);
         processGetMessageLabel(gameMap);
@@ -25,7 +26,7 @@ class PostGameProcessor {
                 int playerHealth = (int) gameMap.get("playerHealth").getResult();
                 int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
                 gameMap.put("playerHealth", new Result<>(playerHealth - monsterDamage));
-                gameMap.put("viewLabel", new Result<>("The monster got you!"));
+                gameMap.put("viewLabel", new Result<>("The monster is here!"));
             }
         }
         return gameMap;
@@ -39,6 +40,18 @@ class PostGameProcessor {
             gameMap.put("hasStairs", new Result<>(newRoom.hasStairs()));
             gameMap.put("stairsRoom", new Result<>(newRoom.getStairsNeighborName()));
             gameMap.put(("availableRooms"), new Result<>(newRoom.getRoomNeighbors()));
+        }
+        return gameMap;
+    }
+
+    Map<String, Result<?>> processHealthIncrease(Map<String, Result<?>> gameMap) {
+        boolean usedItem = (boolean) gameMap.get("usedItem").getResult();
+        Item itemUsedItem = (Item) gameMap.get("itemUsedItem").getResult();
+        if (usedItem && itemUsedItem.getType().equals("health")) {
+            int playerHealth = (int) gameMap.get("playerHealth").getResult();
+            gameMap.put("playerHealth", new Result<>(playerHealth + 5));
+            gameMap.put("viewLabel", new Result<>("You have increased your health!"));
+            gameMap.put("didIncreaseHealth", new Result<>(true));
         }
         return gameMap;
     }

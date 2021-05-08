@@ -28,6 +28,10 @@ public class Item implements java.io.Serializable{
         return description;
     }
 
+    public String getType() {
+        return type;
+    }
+
     @Override
     public String toString() {
         return "Item{" +

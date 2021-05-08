@@ -42,4 +42,6 @@ public interface GameInterface {
     boolean isMonsterSameRoom();
 
     String getDialogue();
+
+    boolean isHealthIncrease();
 }
