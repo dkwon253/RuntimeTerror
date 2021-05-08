@@ -20,6 +20,7 @@ public class Rooms implements java.io.Serializable {
     private String stairsNeighborName;
     private final Map<String, String> dialogueMap = new HashMap<>();
     private String dialogueItem;
+    private String roomType;
 
 
     //Constructor
@@ -27,14 +28,15 @@ public class Rooms implements java.io.Serializable {
     public Rooms() {
     }
 
-    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mpath,
-                 String stairsNeighbor, String dialogueItem, String dialogueFirst, String dialogueSecond) {
+    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mPath,
+                 String stairsNeighbor, String dialogueItem, String dialogueFirst, String dialogueSecond, String roomType) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.hidingLocation = hidingLocation;
+        setRoomType(roomType);
         setItem(item);
         this.RoomImagePath = path;
-        setMapImagePath(mpath);
+        setMapImagePath(mPath);
         setStairsNeighborName(stairsNeighbor);
         setDialogue(dialogueItem, dialogueFirst, dialogueSecond);
     }
@@ -164,5 +166,13 @@ public class Rooms implements java.io.Serializable {
             dialogueMap.put("", dialogueFirst);
             dialogueMap.put(dialogueItem, dialogueSecond);
         }
+    }
+
+    private void setRoomType(String roomType) {
+        this.roomType = roomType;
+    }
+
+    public String getRoomType() {
+        return roomType;
     }
 }

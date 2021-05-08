@@ -34,6 +34,7 @@ public class LoadRoomData {
             String dialogueItem = "null".equals(tokens[13]) ? null : tokens[13];
             String dialogueFirst = "null".equals(tokens[14]) ? null : tokens[14];
             String dialogueSecond = "null".equals(tokens[15]) ? null : tokens[15];
+            String roomType = "null".equals(tokens[16]) ? null : tokens[16];
             String description = tokens[9];
             String path = tokens[10];
             String mapPath = tokens[11];
@@ -41,12 +42,13 @@ public class LoadRoomData {
             Rooms newRoom;
             if (itemName == null) {
                 newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath,
-                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond);
+                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
 
             } else {
                 listOfItems.add(itemName);
                 newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType,
-                        itemDescription), path, mapPath, stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond);
+                        itemDescription), path, mapPath, stairsNeighbor, dialogueItem, dialogueFirst,
+                        dialogueSecond, roomType);
 
             }
             if (i.get() == 0) {

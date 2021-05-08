@@ -11,6 +11,7 @@ class PostGameProcessor {
         processMonsterEncounter(gameMap);
         processRoomChange(gameMap);
         processHealthIncrease(gameMap);
+        processEscape(gameMap);
         processGameOverCheck(gameMap);
         processSavingGameState(gameMap);
         processGetMessageLabel(gameMap);
@@ -55,6 +56,17 @@ class PostGameProcessor {
         }
         return gameMap;
     }
+    Map<String, Result<?>> processEscape(Map<String, Result<?>> gameMap) {
+        boolean usedItem = (boolean) gameMap.get("usedItem").getResult();
+        Item itemUsedItem = (Item) gameMap.get("itemUsedItem").getResult();
+        Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        if (usedItem && itemUsedItem.getType().equals("escape") && playerCurrentRoom.getRoomType().equals("escape")) {
+            gameMap.put("viewLabel", new Result<>("You have used the " + itemUsedItem.getName() + " to escape!"));
+            gameMap.put("isGameOver", new Result<>(true));
+        }
+        return gameMap;
+    }
+
 
     Map<String, Result<?>> processGetMessageLabel(Map<String, Result<?>> gameMap) {
         String viewLabel = (String) gameMap.get("viewLabel").getResult();
