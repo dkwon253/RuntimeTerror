@@ -71,4 +71,6 @@ public class SwingController {
     public String getDialogue() {return gi.getDialogue();}
 
     public boolean isHealthIncrease() {return gi.isHealthIncrease();}
+
+    public int getTimeToEndGame() {return gi.timeToEndGame();}
 }
