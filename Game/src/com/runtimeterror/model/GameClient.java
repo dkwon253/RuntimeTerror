@@ -103,6 +103,13 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public boolean isMonsterSameRoom() {
+        Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
+        Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        return monsterCurrentRoom == playerCurrentRoom;
+    }
+
+    @Override
     public int getMonsterLocation() {
         return -1;
     }

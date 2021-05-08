@@ -216,6 +216,7 @@ public class SwingUI extends JFrame {
         handleMonsterData(controller.getMonsterData());
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
+        System.out.println(controller.isMonsterSameRoom());
         if (controller.isGameOver()) {
             System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());

@@ -38,4 +38,6 @@ public interface GameInterface {
     boolean hasMap();
 
     boolean isMonsterNear();
+
+    boolean isMonsterSameRoom();
 }
