@@ -14,7 +14,7 @@ import java.io.IOException;
 public class SwingUI extends JFrame {
 
     private SoundManager soundManager = new SoundManager();
-    private PlayerMap player = new PlayerMap();
+    private PlayerMap roomMap = new PlayerMap();
     private SwingController controller;
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
@@ -33,6 +33,7 @@ public class SwingUI extends JFrame {
     private JButton mapCommandBtn;
     private JButton volumeControlsBtn;
     private JButton submitCommandBtn;
+    private int gameTime = 300;
 
     // CTOR
     public SwingUI(String title, SwingController controller) {
@@ -51,6 +52,7 @@ public class SwingUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         setupImageTitle(imgTitle);
         setupMonster();
         setupImageContainer();
@@ -64,10 +66,43 @@ public class SwingUI extends JFrame {
         setupVolumeControlsBtn();
         setupMapButton();
         setPlayerHealth();
+        setupTimer();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
         //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
+    }
+
+    private void processSubmitInput() {
+        String inputText = playerInputTF.getText().toLowerCase();
+        controller.processInput(inputText);
+        String result = controller.getMessageLabel();
+        playerMessageLbl.setText(result);
+        String roomData = controller.getRoomDesc();
+        roomInfoTA.setText(roomData);
+        String invData = controller.getInventory();
+        inventoryInfoTA.setText(invData);
+        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
+        changeHealthColors();
+        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+        roomMap.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
+        if (controller.getStatus()) {
+            playerStateLbl.setText("Status: Hidden");
+        } else {
+            playerStateLbl.setText("Status: Visible");
+        }
+        if (controller.hasMap()) {
+            mapCommandBtn.setVisible(true);
+        }
+        handleMonsterData(controller.getMonsterData());
+        playerInputTF.setText("");
+        playRoomSounds(roomData, result);
+        System.out.println(controller.isMonsterSameRoom());
+        if (controller.isGameOver()) {
+            System.out.println("Handle game over case here...");
+            endGame(controller.isKilledByMonster());
+        }
+        controller.resetRound();
     }
 
     private void setupVolumeControlsBtn() {
@@ -105,6 +140,7 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setBounds(300, 800, 75, 25);
         mapCommandBtn.setText("Map");
         mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
+        mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
     }
 
@@ -128,6 +164,7 @@ public class SwingUI extends JFrame {
     private void setPlayerHealth() {
         playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.LEFT);
         playerHealthLbl.setBounds(200, 730, 430, 20);
+        playerHealthLbl.setForeground(Color.green);
         add(playerHealthLbl);
     }
 
@@ -190,31 +227,20 @@ public class SwingUI extends JFrame {
         add(monsterNearByLbl);
     }
 
-    private void processSubmitInput() {
-        String inputText = playerInputTF.getText().toLowerCase();
-        controller.processInput(inputText);
-        String result = controller.getMessageLabel();
-        playerMessageLbl.setText(result);
-        String roomData = controller.getRoomDesc();
-        roomInfoTA.setText(roomData);
-        String invData = controller.getInventory();
-        inventoryInfoTA.setText(invData);
-        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
-        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
-        player.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
-        if (controller.getStatus()) {
-            playerStateLbl.setText("Status: Hidden");
+    private void setupTimer() {
+        Timer timer = new Timer(1000, new GameTimer());
+        timer.start();
+    }
+
+
+    private void changeHealthColors() {
+        if(controller.getPlayerHealth() == 15) {
+            playerHealthLbl.setForeground(Color.green);
+        } else if (controller.getPlayerHealth() == 10) {
+            playerHealthLbl.setForeground(Color.orange);
         } else {
-            playerStateLbl.setText("Status: Visible");
+            playerHealthLbl.setForeground(Color.red);
         }
-        handleMonsterData(controller.getMonsterData());
-        playerInputTF.setText("");
-        playRoomSounds(roomData, result);
-        if (controller.isGameOver()) {
-            System.out.println("Handle game over case here...");
-            endGame(controller.isKilledByMonster());
-        }
-        controller.resetRound();
     }
 
     private void endGame(boolean wasKilled) {
@@ -264,7 +290,6 @@ public class SwingUI extends JFrame {
             soundManager.stopExtraSFX();
             roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
         }
-
     }
 
     private class HandleSubmitBtnClick implements ActionListener {
@@ -276,14 +301,7 @@ public class SwingUI extends JFrame {
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            if (controller.getInventory().contains("map")) {
-                System.out.println("PlayerMap has been clicked.");
-                player.setVisible(true);
-            } else {
-                playerMessageLbl.setText("You don't have the capability to do that yet.");
-            }
-        }
+        public void actionPerformed(ActionEvent e) { roomMap.setVisible(true); }
     }
 
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {
@@ -299,6 +317,24 @@ public class SwingUI extends JFrame {
             System.out.println("Vol button clicked.");
             SoundControls sc = new SoundControls("Volume", soundManager, getLocation());
             sc.setVisible(true);
+        }
+    }
+
+    private class GameTimer implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
+        }
+
+        private String computeTime() {
+            gameTime -= 1;
+//            int hours = gameTime/3600;
+            int gameModulo = gameTime%3600;
+            int minutes = gameModulo/60;
+            int seconds = gameModulo%60;
+            String minuteString = (minutes < 10 ? "0" : "") + minutes;
+            String secondsString = (seconds < 10 ? "0" : "") + seconds;
+            return minuteString + ":" + secondsString;
         }
     }
 

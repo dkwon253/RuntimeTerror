@@ -61,4 +61,14 @@ public class SwingController {
     public int getPlayerHealth() {
         return gi.getPlayerHealth();
     }
+
+    public boolean hasMap() { return gi.hasMap(); }
+
+    public boolean isMonsterNear() {return gi.isMonsterNear();}
+
+    public boolean isMonsterSameRoom() {return gi.isMonsterSameRoom();}
+
+    public String getDialogue() {return gi.getDialogue();}
+
+    public boolean isHealthIncrease() {return gi.isHealthIncrease();}
 }

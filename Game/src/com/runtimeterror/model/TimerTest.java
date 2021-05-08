@@ -1,15 +1,16 @@
 package com.runtimeterror.model;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 class TimerTest {
 
     public static void main(String[] args) {
+
         Timer timer = new Timer();
 
         TimerTask task = new TimerTask() {
             int counter = 10;
+            PostGameProcessor postGameProcessor = new PostGameProcessor();
             @Override
             public void run() {
                 if(counter > 0) {

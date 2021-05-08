@@ -34,4 +34,14 @@ public interface GameInterface {
     String getRoomMapPath();
 
     int getPlayerHealth();
+
+    boolean hasMap();
+
+    boolean isMonsterNear();
+
+    boolean isMonsterSameRoom();
+
+    String getDialogue();
+
+    boolean isHealthIncrease();
 }
