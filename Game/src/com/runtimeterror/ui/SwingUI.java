@@ -19,7 +19,6 @@ public class SwingUI extends JFrame {
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA;
-    private JTextArea dialogueInfoTA;
     private JTextArea inventoryInfoTA;
     private JTextField playerInputTF;
     private JLabel playerStateLbl;
@@ -34,6 +33,7 @@ public class SwingUI extends JFrame {
     private JButton mapCommandBtn;
     private JButton volumeControlsBtn;
     private JButton submitCommandBtn;
+    private int gameTime = 300;
 
     // CTOR
     public SwingUI(String title, SwingController controller) {
@@ -57,7 +57,6 @@ public class SwingUI extends JFrame {
         setupMonster();
         setupImageContainer();
         setupRoomInfoTA(controller);
-//        setupDialogue();
         setupPlayerMessageLbl();
         setupInventoryInfoTA(controller);
         setupPlayerStateLbl();
@@ -67,6 +66,7 @@ public class SwingUI extends JFrame {
         setupVolumeControlsBtn();
         setupMapButton();
         setPlayerHealth();
+        setupTimer();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
@@ -103,7 +103,6 @@ public class SwingUI extends JFrame {
         }
         controller.resetRound();
     }
-
 
     private void setupVolumeControlsBtn() {
         volumeControlsBtn = new JButton();
@@ -168,17 +167,6 @@ public class SwingUI extends JFrame {
         add(playerHealthLbl);
     }
 
-    private void setupDialogue() {
-        dialogueInfoTA = new JTextArea(25, 40);
-        dialogueInfoTA.setBounds(25, 415, 430, 300);
-        dialogueInfoTA.setEditable(false);
-        dialogueInfoTA.setLineWrap(true);
-        dialogueInfoTA.setWrapStyleWord(true);
-        dialogueInfoTA.setText("bluevdrfdvddffdb");
-        add(dialogueInfoTA);
-    }
-
-
     private void setupInventoryInfoTA(SwingController controller) {
         inventoryInfoTA = new JTextArea(5, 40);
         inventoryInfoTA.setBounds(25, 645, 430, 75);
@@ -237,6 +225,12 @@ public class SwingUI extends JFrame {
         add(monsterInRoomLbl);
         add(monsterNearByLbl);
     }
+
+    private void setupTimer() {
+        Timer timer = new Timer(1000, new GameTimer());
+        timer.start();
+    }
+
 
     private void changeHealthColors() {
         if(controller.getPlayerHealth() == 15) {
@@ -322,6 +316,24 @@ public class SwingUI extends JFrame {
             System.out.println("Vol button clicked.");
             SoundControls sc = new SoundControls("Volume", soundManager, getLocation());
             sc.setVisible(true);
+        }
+    }
+
+    private class GameTimer implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
+        }
+
+        private String computeTime() {
+            gameTime -= 1;
+//            int hours = gameTime/3600;
+            int gameModulo = gameTime%3600;
+            int minutes = gameModulo/60;
+            int seconds = gameModulo%60;
+            String minuteString = (minutes < 10 ? "0" : "") + minutes;
+            String secondsString = (seconds < 10 ? "0" : "") + seconds;
+            return minuteString + ":" + secondsString;
         }
     }
 
