@@ -91,10 +91,15 @@ public class GameClient implements GameInterface, java.io.Serializable {
     public boolean hasMap() {
         @SuppressWarnings("unchecked")
         List<Item> inv = (List<Item>) gameMap.get("inventory").getResult();
-        Item foundItem =
-                inv.stream().filter(item -> item.getName().equals("map"))
-                        .findFirst().orElse(null);
-        return foundItem == null;
+        return inv.stream().filter(item -> item.getName().equals("map")).findFirst().orElse(null) != null;
+    }
+
+    @Override
+    public boolean isMonsterNear() {
+        @SuppressWarnings("unchecked")
+        Map<String, Rooms> rooms = (Map<String, Rooms>) gameMap.get("availableRooms").getResult();
+        Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
+        return rooms.values().stream().filter(room -> room == monsterCurrentRoom).findFirst().orElse(null) != null;
     }
 
     @Override

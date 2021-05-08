@@ -63,4 +63,6 @@ public class SwingController {
     }
 
     public boolean hasMap() { return gi.hasMap(); }
+
+    public boolean isMonsterNear() {return gi.isMonsterNear();}
 }

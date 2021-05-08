@@ -36,4 +36,6 @@ public interface GameInterface {
     int getPlayerHealth();
 
     boolean hasMap();
+
+    boolean isMonsterNear();
 }
