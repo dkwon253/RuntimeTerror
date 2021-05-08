@@ -31,8 +31,6 @@ class GameProcessor {
         processSaveGame(gameMap);
         processLoadGame(gameMap);
         processSkipPlayerTurn(gameMap);
-        processMonsterEncounter(gameMap);
-        processRoomChange(gameMap);
     }
 
     Map<String, Result<?>> processHelp(Map<String, Result<?>> gameMap) {
@@ -106,8 +104,7 @@ class GameProcessor {
         String verb = inputData.getVerb();
         String noun = inputData.getNoun();
         Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        Item roomItem = currentRoom.getItem();
-        if ("GET".equals(verb) && noun != null && roomItem != null && noun.equals(roomItem.getName())) {
+        if ("GET".equals(verb) && noun != null && currentRoom.doesItemExist(noun)) {
             @SuppressWarnings("unchecked")
             List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
             inventory.add(currentRoom.getAndRemoveRoomItem(noun));
@@ -115,7 +112,7 @@ class GameProcessor {
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("You have picked up a " + roomItem.getName() + "."));
+            gameMap.put("viewLabel", new Result<>("You have picked up a " + noun + "."));
         } else if ("GET".equals(verb)) {
             gameMap.put("triedToGetItem", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
@@ -204,7 +201,7 @@ class GameProcessor {
         return gameMap;
     }
 
-    private Map<String, Result<?>> processDrop(Map<String, Result<?>> gameMap) {
+    Map<String, Result<?>> processDrop(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
             return gameMap;
@@ -213,6 +210,7 @@ class GameProcessor {
         String verb = inputData.getVerb();
         String noun = inputData.getNoun();
         Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        @SuppressWarnings("unchecked")
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         boolean isInInventory = false;
         Item itemToAdd = new Item();
@@ -267,7 +265,6 @@ class GameProcessor {
         return gameMap;
     }
 
-    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processLoadGame(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
@@ -286,32 +283,6 @@ class GameProcessor {
         return gameMap;
     }
 
-    Map<String, Result<?>> processMonsterEncounter(Map<String, Result<?>> gameMap) {
-        boolean didMonsterMove = (boolean) gameMap.get("didMonsterMove").getResult();
-        if (didMonsterMove) {
-            Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-            Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
-            if (playerCurrentRoom == monsterCurrentRoom) {
-                int playerHealth = (int) gameMap.get("playerHealth").getResult();
-                int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
-                gameMap.put("playerHealth", new Result<>(playerHealth - monsterDamage));
-                gameMap.put("viewLabel", new Result<>("The monster got you!"));
-            }
-        }
-        return gameMap;
-    }
-
-    Map<String, Result<?>> processRoomChange(Map<String, Result<?>> gameMap) {
-        gameMap.put("isProcessed", new Result<>(false));
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-        if (didChangeRoom) {
-            Rooms newRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-            gameMap.put("hasStairs", new Result<>(newRoom.hasStairs()));
-            gameMap.put("stairsRoom", new Result<>(newRoom.getStairsNeighborName()));
-            gameMap.put(("availableRooms"), new Result<>(newRoom.getRoomNeighbors()));
-        }
-        return gameMap;
-    }
 
     @SuppressWarnings("unchecked")
     void useItem(Map<String, Result<?>> gameMap) {
@@ -323,7 +294,6 @@ class GameProcessor {
             gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
         }
         for (Item item : inventory) {
-            System.out.println("ran");
             if (item != null && noun.equals(item.getName())) {
                 gameMap.put("triedToUseItem", new Result<>(false));
                 gameMap.put("usedItem", new Result<>(true));

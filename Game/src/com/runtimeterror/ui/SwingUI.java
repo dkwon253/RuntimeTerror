@@ -14,7 +14,7 @@ import java.io.IOException;
 public class SwingUI extends JFrame {
 
     private SoundManager soundManager = new SoundManager();
-    private PlayerMap player = new PlayerMap();
+    private PlayerMap roomMap = new PlayerMap();
     private SwingController controller;
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
@@ -51,6 +51,7 @@ public class SwingUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         setupImageTitle(imgTitle);
         setupMonster();
         setupImageContainer();
@@ -104,6 +105,7 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setBounds(300, 800, 75, 25);
         mapCommandBtn.setText("Map");
         mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
+        mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
     }
 
@@ -127,6 +129,7 @@ public class SwingUI extends JFrame {
     private void setPlayerHealth() {
         playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.LEFT);
         playerHealthLbl.setBounds(200, 730, 430, 20);
+        playerHealthLbl.setForeground(Color.green);
         add(playerHealthLbl);
     }
 
@@ -199,12 +202,16 @@ public class SwingUI extends JFrame {
         String invData = controller.getInventory();
         inventoryInfoTA.setText(invData);
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
+        changeHealthColors();
         roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
-        player.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
+        roomMap.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
         if (controller.getStatus()) {
             playerStateLbl.setText("Status: Hidden");
         } else {
             playerStateLbl.setText("Status: Visible");
+        }
+        if (controller.hasMap()) {
+            mapCommandBtn.setVisible(true);
         }
         handleMonsterData(controller.getMonsterData());
         playerInputTF.setText("");
@@ -214,6 +221,16 @@ public class SwingUI extends JFrame {
             endGame(controller.isKilledByMonster());
         }
         controller.resetRound();
+    }
+
+    private void changeHealthColors() {
+        if(controller.getPlayerHealth() == 15) {
+            playerHealthLbl.setForeground(Color.green);
+        } else if (controller.getPlayerHealth() == 10) {
+            playerHealthLbl.setForeground(Color.orange);
+        } else {
+            playerHealthLbl.setForeground(Color.red);
+        }
     }
 
     private void endGame(boolean wasKilled) {
@@ -263,7 +280,6 @@ public class SwingUI extends JFrame {
             soundManager.stopExtraSFX();
             roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
         }
-
     }
 
     private class HandleSubmitBtnClick implements ActionListener {
@@ -275,14 +291,7 @@ public class SwingUI extends JFrame {
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) {
-            if (controller.getInventory().contains("map")) {
-                System.out.println("PlayerMap has been clicked.");
-                player.setVisible(true);
-            } else {
-                playerMessageLbl.setText("You don't have the capability to do that yet.");
-            }
-        }
+        public void actionPerformed(ActionEvent e) { roomMap.setVisible(true); }
     }
 
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {

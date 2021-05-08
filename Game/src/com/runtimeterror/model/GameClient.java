@@ -90,6 +90,20 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public boolean hasMap() {
+        boolean result = false;
+        @SuppressWarnings("unchecked")
+        List<Item> inv = (List<Item>) gameMap.get("inventory").getResult();
+        for(Item item: inv) {
+            if(item.getName().equals("map")) {
+                result = true;
+                break;
+            }
+        }
+        return result;
+    }
+
+    @Override
     public int getMonsterLocation() {
         return -1;
     }

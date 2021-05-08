@@ -135,7 +135,7 @@ public class Rooms implements java.io.Serializable {
         }
         String result = "Location:\n" + this.roomName;
         result += "\n\n" + this.roomDescription + "\n";
-        if (this.item != null) {
+        if (!this.roomsItems.isEmpty()) {
             result += "\nItem(s): " + items.toString();
         }
         result += "\nExits:";
@@ -161,6 +161,17 @@ public class Rooms implements java.io.Serializable {
 
     public List<Item> getRoomsItems() {
         return this.roomsItems;
+    }
+
+    public boolean doesItemExist(String item) {
+        boolean result = false;
+        for(Item roomItem: roomsItems) {
+            if (roomItem.getName().equals(item)) {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
 //    public String getNPC_Dialoge(Player player) {

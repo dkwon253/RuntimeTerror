@@ -34,4 +34,6 @@ public interface GameInterface {
     String getRoomMapPath();
 
     int getPlayerHealth();
+
+    boolean hasMap();
 }

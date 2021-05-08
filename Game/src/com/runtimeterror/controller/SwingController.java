@@ -61,4 +61,6 @@ public class SwingController {
     public int getPlayerHealth() {
         return gi.getPlayerHealth();
     }
+
+    public boolean hasMap() { return gi.hasMap(); }
 }
