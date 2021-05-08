@@ -1,11 +1,11 @@
 package com.runtimeterror.model;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 class TimerTest {
 
     public static void main(String[] args) {
+
         Timer timer = new Timer();
 
         TimerTask task = new TimerTask() {

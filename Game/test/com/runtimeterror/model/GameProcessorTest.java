@@ -448,6 +448,7 @@ public class GameProcessorTest {
         gameMap.put("shouldLoadGame", new Result<>(false));
         gameMap.put("playerHealth", new Result<>(15));
         gameMap.put("monsterDamage", new Result<>(5));
+        gameMap.put("dialogueLabel", new Result<>(""));
         return gameMap;
     }
 }

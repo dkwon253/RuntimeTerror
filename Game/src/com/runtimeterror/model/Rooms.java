@@ -10,7 +10,7 @@ public class Rooms implements java.io.Serializable {
     private HashMap<String, Rooms> roomNeighbors = null;
     private String hidingLocation;
     private Item item;
-    private List<Item> roomsItems = new ArrayList<>();
+    private final List<Item> roomsItems = new ArrayList<>();
     private boolean NPCVisited = false;
     private boolean NPCQuestCompleted = false;
     private String RoomImagePath;
@@ -18,13 +18,17 @@ public class Rooms implements java.io.Serializable {
     private Rooms stairsNeighbor;
     private String RoomMapPath;
     private String stairsNeighborName;
-
+    private final Map<String, String> dialogueMap = new HashMap<>();
+    private String dialogueItem;
 
 
     //Constructor
 
-    public Rooms(){}
-    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mpath, String stairsNeighbor) {
+    public Rooms() {
+    }
+
+    public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mpath,
+                 String stairsNeighbor, String dialogueItem, String dialogueFirst, String dialogueSecond) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.hidingLocation = hidingLocation;
@@ -32,10 +36,7 @@ public class Rooms implements java.io.Serializable {
         this.RoomImagePath = path;
         setMapImagePath(mpath);
         setStairsNeighborName(stairsNeighbor);
-    }
-
-    public void getRoomItem() {
-        System.out.println(item.getDescription());
+        setDialogue(dialogueItem, dialogueFirst, dialogueSecond);
     }
 
     //Getters & Setters
@@ -47,18 +48,6 @@ public class Rooms implements java.io.Serializable {
         return RoomImagePath;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public String getRoomDescription() {
-        return roomDescription;
-    }
-
-    public void setRoomDescription(String roomDescription) {
-        this.roomDescription = roomDescription;
-    }
-
     public HashMap<String, Rooms> getRoomNeighbors() {
         return roomNeighbors;
     }
@@ -68,7 +57,7 @@ public class Rooms implements java.io.Serializable {
     }
 
     public void setStairsNeighbor(Rooms stairsNeighbor) {
-        if(stairsNeighbor != null) {
+        if (stairsNeighbor != null) {
             this.stairsNeighbor = stairsNeighbor;
             setHasStairs();
         }
@@ -87,16 +76,9 @@ public class Rooms implements java.io.Serializable {
         return hasStairs;
     }
 
-    public Rooms getStairsNeighbor() {
-        return stairsNeighbor;
-    }
 
     public String getHidingLocation() {
         return hidingLocation;
-    }
-
-    public void setHidingLocation(String hidingLocation) {
-        this.hidingLocation = hidingLocation;
     }
 
     private void setHasStairs() {
@@ -116,13 +98,13 @@ public class Rooms implements java.io.Serializable {
     }
 
     public void setStairsNeighborName(String neighborName) {
-        if(neighborName != null) {
+        if (neighborName != null) {
             this.stairsNeighborName = neighborName;
             setHasStairs();
         }
     }
 
-    public String getRoomDescriptionText() {
+    public String getRoomDescriptionText(String itemUsed) {
         StringJoiner items = new StringJoiner(", ");
         for (Item item : roomsItems) {
             items.add(item.getName());
@@ -139,11 +121,16 @@ public class Rooms implements java.io.Serializable {
                 result += " " + direction;
             }
         }
+        if(NPCQuestCompleted) {
+            result += "\n\n" + dialogueDeterminer(dialogueItem);
+        } else {
+            result += "\n\n" + dialogueDeterminer(itemUsed);
+        }
         return result;
     }
 
     public void setItem(Item item) {
-        if(item != null) {
+        if (item != null) {
             this.item = item;
             roomsItems.add(item);
         }
@@ -153,13 +140,9 @@ public class Rooms implements java.io.Serializable {
         roomsItems.add(item);
     }
 
-    public List<Item> getRoomsItems() {
-        return this.roomsItems;
-    }
-
     public boolean doesItemExist(String item) {
         boolean result = false;
-        for(Item roomItem: roomsItems) {
+        for (Item roomItem : roomsItems) {
             if (roomItem.getName().equals(item)) {
                 result = true;
                 break;
@@ -168,44 +151,18 @@ public class Rooms implements java.io.Serializable {
         return result;
     }
 
-//    public String getNPC_Dialoge(Player player) {
-//        String result = "";
-//
-//        if (NPCQuestCompleted) {
-//            return "";
-//        }
-//
-//        if (this.roomName.equals("Bedroom Two") && NPCVisited) {
-//            result = "\n\n\"Looks like you have not brought me any delicious food yet. You wont be getting any advice from me young one. You can bet you will be eaten alive pretty soon.\"";
-//        }
-//
-//        if (this.roomName.equals("Bedroom Two") && !NPCVisited) {
-//            NPCVisited = true;
-//            result = "\n\nHearing your footsteps the old man wakes up and opens his eyes. \"Well, well, look what we have here. Another potential meal for that monster. Young one, you only have a slim chance of escaping that evil monster. I am locked up and have no chance of escaping. Go to the kitchen and bring me some delicious food, and I will give you a hint that will help you in escaping from the cursed building.\"";
-//        }
-//
-//        if (this.roomName.equals("Bedroom Two") && player.getInventory().contains("cake")) {
-//            result = " \n\n\"Thank you for bringing some of this delicious cake. For having taken this risk upon yourself, I will give you this advice. Go down to the basement level, in one of those rooms you will find some cutters that will help you open some doors throughout this building. Finding those cutters is your only way to escape. Now go!!!!!!\" ";
-//            NPCQuestCompleted = true;
-//            player.removeItemFromInventory("cake");
-//
-//        }
-//
-//        return result;
-//
-//    }
-
-
-    public Item removeItemFromRoom(String itemName) {
-        if (this.item != null) {
-            if (item.getName().equals(itemName)) {
-                Item temp = this.item;
-                this.item = null;
-                return temp;
-            } else {
-                return null;
-            }
+    public String dialogueDeterminer(String item) {
+        if(item.equals(dialogueItem)){
+            NPCQuestCompleted = true;
         }
-        return null;
+        return dialogueMap.getOrDefault(item, "");
+    }
+
+    private void setDialogue(String dialogueItem, String dialogueFirst, String dialogueSecond) {
+        if(dialogueItem != null) {
+            this.dialogueItem = dialogueItem;
+            dialogueMap.put("", dialogueFirst);
+            dialogueMap.put(dialogueItem, dialogueSecond);
+        }
     }
 }

@@ -84,13 +84,16 @@ class GameProcessor {
             return gameMap;
         }
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
+        String noun = inputData.getNoun();
         String verb = inputData.getVerb();
-        if ("USE".equals(verb)) {
+        if ("USE".equals(verb) && noun != null) {
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
             gameMap.put("triedToUseItem", new Result<>(true));
             useItem(gameMap);
+        } else if("USE".equals(verb)) {
+            gameMap.put("viewLabel", new Result<>("You can't use that."));
         }
         return gameMap;
     }
@@ -117,7 +120,7 @@ class GameProcessor {
         } else if ("GET".equals(verb)) {
             gameMap.put("triedToGetItem", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("The " + currentRoom.getRoomName() + " does not have an item."));
+            gameMap.put("viewLabel", new Result<>("The " + currentRoom.getRoomName() + " does not have that item."));
         }
         return gameMap;
     }
@@ -282,6 +285,7 @@ class GameProcessor {
     void useItem(Map<String, Result<?>> gameMap) {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
+        System.out.println(noun);
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         Item itemToRemove = new Item();
         gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
@@ -295,6 +299,7 @@ class GameProcessor {
                 break;
             }
         }
+        System.out.println((String) gameMap.get("dialogueLabel").getResult());
         inventory.remove(itemToRemove);
     }
 }

@@ -40,4 +40,6 @@ public interface GameInterface {
     boolean isMonsterNear();
 
     boolean isMonsterSameRoom();
+
+    String getDialogue();
 }

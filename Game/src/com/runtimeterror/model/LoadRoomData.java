@@ -31,17 +31,22 @@ public class LoadRoomData {
             String itemDescription = "null".equals(tokens[3]) ? null : tokens[3];
             String hidingSpot = "null".equals(tokens[4]) ? null : tokens[4];
             String stairsNeighbor = "null".equals(tokens[12]) ? null : tokens[12];
+            String dialogueItem = "null".equals(tokens[13]) ? null : tokens[13];
+            String dialogueFirst = "null".equals(tokens[14]) ? null : tokens[14];
+            String dialogueSecond = "null".equals(tokens[15]) ? null : tokens[15];
             String description = tokens[9];
             String path = tokens[10];
             String mapPath = tokens[11];
 
             Rooms newRoom;
             if (itemName == null) {
-                newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath, stairsNeighbor);
+                newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath,
+                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond);
 
             } else {
                 listOfItems.add(itemName);
-                newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription), path, mapPath, stairsNeighbor);
+                newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType,
+                        itemDescription), path, mapPath, stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond);
 
             }
             if (i.get() == 0) {
@@ -148,6 +153,7 @@ public class LoadRoomData {
         gameMap.put("messageLabel", new Result<>(""));
         gameMap.put("shouldSaveGame", new Result<>(false));
         gameMap.put("shouldLoadGame", new Result<>(false));
+        gameMap.put("dialogueLabel", new Result<>(""));
 
     }
 }

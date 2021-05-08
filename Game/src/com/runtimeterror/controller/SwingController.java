@@ -67,4 +67,6 @@ public class SwingController {
     public boolean isMonsterNear() {return gi.isMonsterNear();}
 
     public boolean isMonsterSameRoom() {return gi.isMonsterSameRoom();}
+
+    public String getDialogue() {return gi.getDialogue();}
 }

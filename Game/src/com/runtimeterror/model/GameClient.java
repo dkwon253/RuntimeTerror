@@ -49,7 +49,8 @@ public class GameClient implements GameInterface, java.io.Serializable {
     @Override
     public String getRoomText() {
         Rooms room = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        return room.getRoomDescriptionText();
+        String itemUsed = (String) gameMap.get("itemUsed").getResult();
+        return room.getRoomDescriptionText(itemUsed);
     }
 
     @Override
@@ -107,6 +108,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
         Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
         Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         return monsterCurrentRoom == playerCurrentRoom;
+    }
+
+    @Override
+    public String getDialogue() {
+        return (String) gameMap.get("dialogueLabel").getResult();
     }
 
     @Override

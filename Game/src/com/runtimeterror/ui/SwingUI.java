@@ -19,6 +19,7 @@ public class SwingUI extends JFrame {
     private final int FRAME_X_SIZE = 520;
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA;
+    private JTextArea dialogueInfoTA;
     private JTextArea inventoryInfoTA;
     private JTextField playerInputTF;
     private JLabel playerStateLbl;
@@ -56,6 +57,7 @@ public class SwingUI extends JFrame {
         setupMonster();
         setupImageContainer();
         setupRoomInfoTA(controller);
+//        setupDialogue();
         setupPlayerMessageLbl();
         setupInventoryInfoTA(controller);
         setupPlayerStateLbl();
@@ -69,6 +71,39 @@ public class SwingUI extends JFrame {
         soundManager.playBGM("Game/Sounds/BGM.wav");
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
     }
+
+    private void processSubmitInput() {
+        String inputText = playerInputTF.getText().toLowerCase();
+        controller.processInput(inputText);
+        String result = controller.getMessageLabel();
+        playerMessageLbl.setText(result);
+        String roomData = controller.getRoomDesc();
+        roomInfoTA.setText(roomData);
+        String invData = controller.getInventory();
+        inventoryInfoTA.setText(invData);
+        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
+        changeHealthColors();
+        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+        roomMap.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
+        if (controller.getStatus()) {
+            playerStateLbl.setText("Status: Hidden");
+        } else {
+            playerStateLbl.setText("Status: Visible");
+        }
+        if (controller.hasMap()) {
+            mapCommandBtn.setVisible(true);
+        }
+        handleMonsterData(controller.getMonsterData());
+        playerInputTF.setText("");
+        playRoomSounds(roomData, result);
+        System.out.println(controller.isMonsterSameRoom());
+        if (controller.isGameOver()) {
+            System.out.println("Handle game over case here...");
+            endGame(controller.isKilledByMonster());
+        }
+        controller.resetRound();
+    }
+
 
     private void setupVolumeControlsBtn() {
         volumeControlsBtn = new JButton();
@@ -133,6 +168,17 @@ public class SwingUI extends JFrame {
         add(playerHealthLbl);
     }
 
+    private void setupDialogue() {
+        dialogueInfoTA = new JTextArea(25, 40);
+        dialogueInfoTA.setBounds(25, 415, 430, 300);
+        dialogueInfoTA.setEditable(false);
+        dialogueInfoTA.setLineWrap(true);
+        dialogueInfoTA.setWrapStyleWord(true);
+        dialogueInfoTA.setText("bluevdrfdvddffdb");
+        add(dialogueInfoTA);
+    }
+
+
     private void setupInventoryInfoTA(SwingController controller) {
         inventoryInfoTA = new JTextArea(5, 40);
         inventoryInfoTA.setBounds(25, 645, 430, 75);
@@ -190,38 +236,6 @@ public class SwingUI extends JFrame {
         monsterNearByLbl.setVisible(false);
         add(monsterInRoomLbl);
         add(monsterNearByLbl);
-    }
-
-    private void processSubmitInput() {
-        String inputText = playerInputTF.getText().toLowerCase();
-        controller.processInput(inputText);
-        String result = controller.getMessageLabel();
-        playerMessageLbl.setText(result);
-        String roomData = controller.getRoomDesc();
-        roomInfoTA.setText(roomData);
-        String invData = controller.getInventory();
-        inventoryInfoTA.setText(invData);
-        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
-        changeHealthColors();
-        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
-        roomMap.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
-        if (controller.getStatus()) {
-            playerStateLbl.setText("Status: Hidden");
-        } else {
-            playerStateLbl.setText("Status: Visible");
-        }
-        if (controller.hasMap()) {
-            mapCommandBtn.setVisible(true);
-        }
-        handleMonsterData(controller.getMonsterData());
-        playerInputTF.setText("");
-        playRoomSounds(roomData, result);
-        System.out.println(controller.isMonsterSameRoom());
-        if (controller.isGameOver()) {
-            System.out.println("Handle game over case here...");
-            endGame(controller.isKilledByMonster());
-        }
-        controller.resetRound();
     }
 
     private void changeHealthColors() {
