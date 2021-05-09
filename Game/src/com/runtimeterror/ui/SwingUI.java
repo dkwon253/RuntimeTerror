@@ -30,7 +30,7 @@ public class SwingUI extends JFrame {
     private JLabel playerMessageLbl;
     private JLabel monsterInRoomLbl;
     private JLabel monsterNearByLbl;
-    private PlayerInventory playerUsableInventoryLbl;
+    private PlayerInventory playerInventory;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
     private ImageIcon imageTitle;
@@ -77,7 +77,7 @@ public class SwingUI extends JFrame {
         soundManager.playBGM("Game/Sounds/BGM.wav");
         //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
-        playerUsableInventoryLbl = new PlayerInventory();
+        playerInventory = new PlayerInventory();
     }
 
     private void processSubmitInput(String inputText) {
@@ -99,10 +99,10 @@ public class SwingUI extends JFrame {
         }
         boolean hasMap = controller.hasMap();
         mapCommandBtn.setVisible(hasMap);
-        if(!hasMap) {
+        if (!hasMap) {
             roomMap.setVisible(false);
         }
-        playerUsableInventoryLbl.updateUsableInventory();
+        playerInventory.updateUsableInventory();
         handleMonsterData();
         System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
@@ -255,7 +255,7 @@ public class SwingUI extends JFrame {
 
 
     private void changeHealthColors() {
-        if(controller.getPlayerHealth() == 15) {
+        if (controller.getPlayerHealth() == 15) {
             playerHealthLbl.setForeground(Color.green);
         } else if (controller.getPlayerHealth() == 10) {
             playerHealthLbl.setForeground(Color.orange);
@@ -329,13 +329,16 @@ public class SwingUI extends JFrame {
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) { roomMap.setVisible(true); }
+        public void actionPerformed(ActionEvent e) {
+            roomMap.setVisible(true);
+        }
     }
 
     private class HandlePlayerInventoryBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            playerUsableInventoryLbl.setVisible(true); }
+            playerInventory.setVisible(true);
+        }
     }
 
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {
@@ -354,10 +357,10 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private class GameTimer implements ActionListener{
+    private class GameTimer implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(gameTime <= 0) {
+            if (gameTime <= 0) {
                 endGame(true);
             } else {
                 playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
@@ -367,21 +370,20 @@ public class SwingUI extends JFrame {
         private String computeTime() {
             gameTime -= 1;
 //            int hours = gameTime/3600;
-            int gameModulo = gameTime%3600;
-            int minutes = gameModulo/60;
-            int seconds = gameModulo%60;
+            int gameModulo = gameTime % 3600;
+            int minutes = gameModulo / 60;
+            int seconds = gameModulo % 60;
             String minuteString = (minutes < 10 ? "0" : "") + minutes;
             String secondsString = (seconds < 10 ? "0" : "") + seconds;
             return minuteString + ":" + secondsString;
         }
     }
 
-    private class PlayerInventory extends JFrame{
-
-        private JLabel playerUsableInventoryLbl;
+    private class PlayerInventory extends JFrame {
 
         PlayerInventory() {
-            setSize(550, 350);
+            setLayout(new GridLayout(controller.getPlayerItems().size(), 3));
+            setSize(600, 600);
             setResizable(false);
             setTitle("Usable Inventory");
             setLocation(500, 500);
@@ -389,31 +391,32 @@ public class SwingUI extends JFrame {
         }
 
         void updateUsableInventory() {
-            for(Item item: controller.getPlayerItems()) {
-                Image usableInventory = null;
-                try {
-                    usableInventory = ImageIO.read(new File(item.getItemImagePath()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                System.out.println(item.getItemImagePath());
-                System.out.println("ran");
-                playerUsableInventoryLbl = new JLabel(new ImageIcon(usableInventory), SwingConstants.CENTER);
-                playerUsableInventoryLbl.setBounds(100, 450, 500, 260);
-                playerUsableInventoryLbl.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
-                        processSubmitInput("use " + item.getName());
-                        System.out.println(item.getName());
+            getContentPane().removeAll();
+            for (Item item : controller.getPlayerItems()) {
+                if (item.getItemImagePath() != null) {
+                    JLabel playerUsableInventoryLbl = new JLabel();
+                    Image scaledImage = null;
+                    Image usableInventory = null;
+                    try {
+                        usableInventory = ImageIO.read(new File(item.getItemImagePath()));
+                        scaledImage = usableInventory.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                });
-                add(playerUsableInventoryLbl);
+                    playerUsableInventoryLbl.setIcon(new ImageIcon(scaledImage));
+                    playerUsableInventoryLbl.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            super.mouseClicked(e);
+                            processSubmitInput("use " + item.getName());
+                            System.out.println(item.getName());
+                        }
+                    });
+                    add(playerUsableInventoryLbl);
+                }
             }
-        }
-
-        private JLabel getPlayerUsableInventoryLbl() {
-            return playerUsableInventoryLbl;
+            revalidate();
+            repaint();
         }
     }
 
@@ -433,12 +436,12 @@ public class SwingUI extends JFrame {
     }
 
     private void handleMonsterData() {
-        if(controller.isMonsterSameRoom()) {
+        if (controller.isMonsterSameRoom()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
-        } else if(controller.isMonsterNear()) {
+        } else if (controller.isMonsterNear()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);
