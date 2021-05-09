@@ -90,8 +90,10 @@ public class SwingUI extends JFrame {
         } else {
             playerStateLbl.setText("Status: Visible");
         }
-        if (controller.hasMap()) {
-            mapCommandBtn.setVisible(true);
+        boolean hasMap = controller.hasMap();
+        mapCommandBtn.setVisible(hasMap);
+        if(!hasMap) {
+            roomMap.setVisible(false);
         }
         handleMonsterData();
         playerInputTF.setText("");
@@ -282,6 +284,8 @@ public class SwingUI extends JFrame {
     private void resetGame() {
         controller.startNewGame();
         playerMessageLbl.setText("Game restarted");
+        mapCommandBtn.setVisible(false);
+        roomMap.setVisible(false);
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();
