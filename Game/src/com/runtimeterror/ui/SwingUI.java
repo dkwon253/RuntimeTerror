@@ -1,6 +1,7 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
+import com.runtimeterror.model.Item;
 import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
@@ -8,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,10 +30,12 @@ public class SwingUI extends JFrame {
     private JLabel playerMessageLbl;
     private JLabel monsterInRoomLbl;
     private JLabel monsterNearByLbl;
+    private PlayerInventory playerInventory;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
     private ImageIcon imageTitle;
     private JButton mapCommandBtn;
+    private JButton inventoryBtn;
     private JButton volumeControlsBtn;
     private JButton submitCommandBtn;
     private int gameTime;
@@ -67,10 +72,12 @@ public class SwingUI extends JFrame {
         setupMapButton();
         setPlayerHealth();
         setupTimer();
+        setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
         //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
+        playerInventory = new PlayerInventory();
     }
 
     private void processSubmitInput(String inputText) {
@@ -90,10 +97,19 @@ public class SwingUI extends JFrame {
         } else {
             playerStateLbl.setText("Status: Visible");
         }
-        if (controller.hasMap()) {
-            mapCommandBtn.setVisible(true);
+        boolean hasMap = controller.hasMap();
+        mapCommandBtn.setVisible(hasMap);
+        boolean hasItems = controller.hasItems();
+        inventoryBtn.setVisible(hasItems);
+        if(!hasItems) {
+            playerInventory.setVisible(false);
         }
+        if (!hasMap) {
+            roomMap.setVisible(false);
+        }
+        playerInventory.updateUsableInventory();
         handleMonsterData();
+        System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
         System.out.println(controller.isMonsterNear());
@@ -142,6 +158,16 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
     }
+
+    private void setupInventoryButton() {
+        inventoryBtn = new JButton();
+        inventoryBtn.setBounds(205, 800, 90, 25);
+        inventoryBtn.setText("Inventory");
+        inventoryBtn.addActionListener(new HandlePlayerInventoryBtnClick());
+        inventoryBtn.setVisible(false);
+        add(inventoryBtn);
+    }
+
 
     private void setupSaveGameMsgLbl() {
         saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
@@ -234,7 +260,7 @@ public class SwingUI extends JFrame {
 
 
     private void changeHealthColors() {
-        if(controller.getPlayerHealth() == 15) {
+        if (controller.getPlayerHealth() == 15) {
             playerHealthLbl.setForeground(Color.green);
         } else if (controller.getPlayerHealth() == 10) {
             playerHealthLbl.setForeground(Color.orange);
@@ -282,6 +308,8 @@ public class SwingUI extends JFrame {
     private void resetGame() {
         controller.startNewGame();
         playerMessageLbl.setText("Game restarted");
+        mapCommandBtn.setVisible(false);
+        roomMap.setVisible(false);
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();
@@ -306,7 +334,16 @@ public class SwingUI extends JFrame {
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) { roomMap.setVisible(true); }
+        public void actionPerformed(ActionEvent e) {
+            roomMap.setVisible(true);
+        }
+    }
+
+    private class HandlePlayerInventoryBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            playerInventory.setVisible(true);
+        }
     }
 
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {
@@ -325,10 +362,10 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private class GameTimer implements ActionListener{
+    private class GameTimer implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(gameTime <= 0) {
+            if (gameTime <= 0) {
                 endGame(true);
             } else {
                 playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
@@ -338,14 +375,56 @@ public class SwingUI extends JFrame {
         private String computeTime() {
             gameTime -= 1;
 //            int hours = gameTime/3600;
-            int gameModulo = gameTime%3600;
-            int minutes = gameModulo/60;
-            int seconds = gameModulo%60;
+            int gameModulo = gameTime % 3600;
+            int minutes = gameModulo / 60;
+            int seconds = gameModulo % 60;
             String minuteString = (minutes < 10 ? "0" : "") + minutes;
             String secondsString = (seconds < 10 ? "0" : "") + seconds;
             return minuteString + ":" + secondsString;
         }
     }
+
+    private class PlayerInventory extends JFrame {
+
+        PlayerInventory() {
+            setLayout(new GridLayout(controller.getPlayerItems().size(), 3));
+            setSize(600, 600);
+            setResizable(false);
+            setTitle("Usable Inventory");
+            setLocation(500, 500);
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+
+        void updateUsableInventory() {
+            getContentPane().removeAll();
+            for (Item item : controller.getPlayerItems()) {
+                if (item.getItemImagePath() != null) {
+                    JLabel playerUsableInventoryLbl = new JLabel();
+                    Image scaledImage = null;
+                    Image usableInventory = null;
+                    try {
+                        usableInventory = ImageIO.read(new File(item.getItemImagePath()));
+                        scaledImage = usableInventory.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    playerUsableInventoryLbl.setIcon(new ImageIcon(scaledImage));
+                    playerUsableInventoryLbl.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            super.mouseClicked(e);
+                            processSubmitInput("use " + item.getName());
+                            System.out.println(item.getName());
+                        }
+                    });
+                    add(playerUsableInventoryLbl);
+                }
+            }
+            revalidate();
+            repaint();
+        }
+    }
+
 
     private void playRoomSounds(String roomText, String messageText) {
         String[] splitString = roomText.split("\n");
@@ -362,12 +441,12 @@ public class SwingUI extends JFrame {
     }
 
     private void handleMonsterData() {
-        if(controller.isMonsterSameRoom()) {
+        if (controller.isMonsterSameRoom()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
-        } else if(controller.isMonsterNear()) {
+        } else if (controller.isMonsterNear()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);

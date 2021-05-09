@@ -59,8 +59,9 @@ class PostGameProcessor {
     Map<String, Result<?>> processEscape(Map<String, Result<?>> gameMap) {
         boolean usedItem = (boolean) gameMap.get("usedItem").getResult();
         Item itemUsedItem = (Item) gameMap.get("itemUsedItem").getResult();
+        System.out.println(usedItem);
         Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        if (usedItem && itemUsedItem.getType().equals("escape") && playerCurrentRoom.getRoomType().equals("escape")) {
+        if (usedItem && "escape".equals(itemUsedItem.getType()) && "escape".equals(playerCurrentRoom.getRoomType())) {
             gameMap.put("viewLabel", new Result<>("You have used the " + itemUsedItem.getName() + " to escape!"));
             gameMap.put("isGameOver", new Result<>(true));
         }

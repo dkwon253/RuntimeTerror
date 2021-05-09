@@ -160,23 +160,13 @@ class GameProcessor {
         String noun = inputData.getNoun();
         @SuppressWarnings("unchecked")
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
-        boolean itemExist = false;
-        String lookText = "";
-        System.out.println("ran");
-        for (Item item : inventory) {
-            if (item.getName().equals(noun)) {
-                itemExist = true;
-                lookText = item.getDescription();
-                break;
-            }
-        }
+        Item foundItem = inventory.stream().filter(item -> item.getName().equals(noun)).findFirst().orElse(null);
         String verb = inputData.getVerb();
-        if ("LOOK".equals(verb) && itemExist) {
+        if ("LOOK".equals(verb) && foundItem != null) {
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>(lookText));
-            gameMap.put("lookText", new Result<>(lookText));
+            gameMap.put("viewLabel", new Result<>(foundItem.getDescription()));
         } else if ("LOOK".equals(verb)) {
             gameMap.put("triedToLook", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You don't have that item in your inventory"));
@@ -223,7 +213,8 @@ class GameProcessor {
         if ("DROP".equals(verb) && itemToAdd != null) {
             currentRoom.addItem(itemToAdd);
             inventory.remove(itemToAdd);
-            gameMap.put("viewLabel", new Result<>("You dropped a(n) " + itemToAdd.getName() + " in the " + currentRoom.getRoomName()));
+            gameMap.put("viewLabel", new Result<>("You dropped a(n) " + itemToAdd.getName() + " in the "
+                    + currentRoom.getRoomName()));
             gameMap.put("isProcessed", new Result<>(true));
         } else if ("DROP".equals(verb)) {
             gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + " to drop."));

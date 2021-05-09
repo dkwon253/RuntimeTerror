@@ -187,7 +187,7 @@ public class GameProcessorTest {
         gameMap.put("hidden", new Result<>(true));
         gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
         Rooms newRoom = new Rooms();
-        Item newItem = new Item("axe", "axe", "sharp axe");
+        Item newItem = new Item("axe", "axe", "sharp axe", "");
         newRoom.setItem(newItem);
         gameMap.put("playerCurrentRoom", new Result<>(newRoom));
         gameProcessor.processGet(gameMap);
@@ -199,7 +199,7 @@ public class GameProcessorTest {
     public void testProcessGet_didGetItemIsTrue_whenVerbIsGETAndItemInRoom() {
         gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
         Rooms newRoom = new Rooms();
-        Item newItem = new Item("axe", "axe", "sharp axe");
+        Item newItem = new Item("axe", "axe", "sharp axe", "");
         newRoom.setItem(newItem);
         gameMap.put("playerCurrentRoom", new Result<>(newRoom));
         gameProcessor.processGet(gameMap);
@@ -219,7 +219,7 @@ public class GameProcessorTest {
     public void testProcessGet_shouldMonsterChangeRoomsIsTrue_whenVerbIsGETAndItemInRoom() {
         gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
         Rooms newRoom = new Rooms();
-        Item newItem = new Item("axe", "axe", "sharp axe");
+        Item newItem = new Item("axe", "axe", "sharp axe", "");
         newRoom.setItem(newItem);
         gameMap.put("playerCurrentRoom", new Result<>(newRoom));
         gameProcessor.processGet(gameMap);

@@ -130,6 +130,20 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<Item> playerInventory() {
+        List<Item> itemList = (List<Item>) gameMap.get("inventory").getResult();
+        return Collections.unmodifiableList(itemList);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean hasItems() {
+        List<Item> itemList = (List<Item>) gameMap.get("inventory").getResult();
+        return itemList.size() > 0;
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }

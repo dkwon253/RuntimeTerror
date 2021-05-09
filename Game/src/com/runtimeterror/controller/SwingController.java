@@ -1,5 +1,9 @@
 package com.runtimeterror.controller;
 
+import com.runtimeterror.model.Item;
+
+import java.util.List;
+
 public class SwingController {
     private GameInterface gi;
 
@@ -73,4 +77,8 @@ public class SwingController {
     public boolean isHealthIncrease() {return gi.isHealthIncrease();}
 
     public int getTimeToEndGame() {return gi.timeToEndGame();}
+
+    public List<Item> getPlayerItems() {return gi.playerInventory();}
+
+    public boolean hasItems() {return gi.hasItems();}
 }
