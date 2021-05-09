@@ -104,7 +104,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
         @SuppressWarnings("unchecked")
         Map<String, Rooms> rooms = (Map<String, Rooms>) gameMap.get("availableRooms").getResult();
         Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
-        return rooms.values().stream().filter(room -> room == monsterCurrentRoom).findFirst().orElse(null) != null;
+        return rooms.containsValue(monsterCurrentRoom);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
 
     @Override
     public int getMonsterLocation() {
-        return -1;
+        return 0;
     }
 
     @Override
