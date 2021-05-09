@@ -73,8 +73,7 @@ public class SwingUI extends JFrame {
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
     }
 
-    private void processSubmitInput() {
-        String inputText = playerInputTF.getText().toLowerCase();
+    private void processSubmitInput(String inputText) {
         controller.processInput(inputText);
         String result = controller.getMessageLabel();
         playerMessageLbl.setText(result);
@@ -94,10 +93,10 @@ public class SwingUI extends JFrame {
         if (controller.hasMap()) {
             mapCommandBtn.setVisible(true);
         }
-        handleMonsterData(controller.getMonsterData());
+        handleMonsterData();
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
-        System.out.println(controller.isMonsterSameRoom());
+        System.out.println(controller.isMonsterNear());
         if (controller.isGameOver()) {
             System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());
@@ -245,6 +244,7 @@ public class SwingUI extends JFrame {
     }
 
     private void endGame(boolean isKilled) {
+        timer.stop();
         Image img = null;
         String message = "";
         String iconImage = "Game/Icons/";
@@ -272,7 +272,6 @@ public class SwingUI extends JFrame {
                 options,
                 options[0]
         );
-        System.out.println("you choose: " + n);
         if (n == 1) {
             System.exit(0);
         } else {
@@ -282,7 +281,6 @@ public class SwingUI extends JFrame {
 
     private void resetGame() {
         controller.startNewGame();
-        timer.stop();
         playerMessageLbl.setText("Game restarted");
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
@@ -302,7 +300,7 @@ public class SwingUI extends JFrame {
     private class HandleSubmitBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            processSubmitInput();
+            processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
 
@@ -314,7 +312,7 @@ public class SwingUI extends JFrame {
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            processSubmitInput();
+            processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
 
@@ -363,22 +361,22 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private void handleMonsterData(int monsterInfo) {
-        if (monsterInfo == -1) {
-            imageTitleContainer.setVisible(true);
-            monsterInRoomLbl.setVisible(false);
+    private void handleMonsterData() {
+        if(controller.isMonsterSameRoom()) {
+            imageTitleContainer.setVisible(false);
+            monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
-            soundManager.stopExtraSFX();
-        } else if (monsterInfo == 1) {
+            soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
+        } else if(controller.isMonsterNear()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);
             soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
         } else {
-            imageTitleContainer.setVisible(false);
-            monsterInRoomLbl.setVisible(true);
+            imageTitleContainer.setVisible(true);
+            monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(false);
-            soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
+            soundManager.stopExtraSFX();
         }
     }
 }

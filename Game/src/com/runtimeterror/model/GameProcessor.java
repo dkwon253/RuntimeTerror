@@ -285,7 +285,6 @@ class GameProcessor {
     void useItem(Map<String, Result<?>> gameMap) {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
-        System.out.println(noun);
         List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
         Item itemToRemove = new Item();
         gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
@@ -300,7 +299,6 @@ class GameProcessor {
                 break;
             }
         }
-        System.out.println((String) gameMap.get("dialogueLabel").getResult());
         inventory.remove(itemToRemove);
     }
 }
