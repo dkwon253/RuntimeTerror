@@ -99,6 +99,11 @@ public class SwingUI extends JFrame {
         }
         boolean hasMap = controller.hasMap();
         mapCommandBtn.setVisible(hasMap);
+        boolean hasItems = controller.hasItems();
+        inventoryBtn.setVisible(hasItems);
+        if(!hasItems) {
+            playerInventory.setVisible(false);
+        }
         if (!hasMap) {
             roomMap.setVisible(false);
         }
@@ -159,7 +164,7 @@ public class SwingUI extends JFrame {
         inventoryBtn.setBounds(205, 800, 90, 25);
         inventoryBtn.setText("Inventory");
         inventoryBtn.addActionListener(new HandlePlayerInventoryBtnClick());
-        inventoryBtn.setVisible(true);
+        inventoryBtn.setVisible(false);
         add(inventoryBtn);
     }
 

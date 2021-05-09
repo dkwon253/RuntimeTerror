@@ -52,4 +52,6 @@ public interface GameInterface {
     int timeToEndGame();
 
     List<Item> playerInventory();
+
+    boolean hasItems();
 }

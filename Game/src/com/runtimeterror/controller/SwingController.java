@@ -79,4 +79,6 @@ public class SwingController {
     public int getTimeToEndGame() {return gi.timeToEndGame();}
 
     public List<Item> getPlayerItems() {return gi.playerInventory();}
+
+    public boolean hasItems() {return gi.hasItems();}
 }
