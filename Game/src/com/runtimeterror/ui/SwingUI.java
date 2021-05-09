@@ -1,6 +1,7 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
+import com.runtimeterror.model.Item;
 import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
@@ -8,6 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,7 +30,7 @@ public class SwingUI extends JFrame {
     private JLabel playerMessageLbl;
     private JLabel monsterInRoomLbl;
     private JLabel monsterNearByLbl;
-    private PlayerInventory playerUsableInventoryLbl = new PlayerInventory();
+    private PlayerInventory playerUsableInventoryLbl;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
     private ImageIcon imageTitle;
@@ -74,6 +77,7 @@ public class SwingUI extends JFrame {
         soundManager.playBGM("Game/Sounds/BGM.wav");
         //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
+        playerUsableInventoryLbl = new PlayerInventory();
     }
 
     private void processSubmitInput(String inputText) {
@@ -98,6 +102,7 @@ public class SwingUI extends JFrame {
         if(!hasMap) {
             roomMap.setVisible(false);
         }
+        playerUsableInventoryLbl.updateUsableInventory();
         handleMonsterData();
         System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
@@ -329,7 +334,8 @@ public class SwingUI extends JFrame {
 
     private class HandlePlayerInventoryBtnClick implements ActionListener {
         @Override
-        public void actionPerformed(ActionEvent e) { playerUsableInventoryLbl.setVisible(true); }
+        public void actionPerformed(ActionEvent e) {
+            playerUsableInventoryLbl.setVisible(true); }
     }
 
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {
@@ -369,6 +375,48 @@ public class SwingUI extends JFrame {
             return minuteString + ":" + secondsString;
         }
     }
+
+    private class PlayerInventory extends JFrame{
+
+        private JLabel playerUsableInventoryLbl;
+
+        PlayerInventory() {
+            setSize(550, 350);
+            setResizable(false);
+            setTitle("Usable Inventory");
+            setLocation(500, 500);
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        }
+
+        void updateUsableInventory() {
+            for(Item item: controller.getPlayerItems()) {
+                Image usableInventory = null;
+                try {
+                    usableInventory = ImageIO.read(new File(item.getItemImagePath()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(item.getItemImagePath());
+                System.out.println("ran");
+                playerUsableInventoryLbl = new JLabel(new ImageIcon(usableInventory), SwingConstants.CENTER);
+                playerUsableInventoryLbl.setBounds(100, 450, 500, 260);
+                playerUsableInventoryLbl.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        processSubmitInput("use " + item.getName());
+                        System.out.println(item.getName());
+                    }
+                });
+                add(playerUsableInventoryLbl);
+            }
+        }
+
+        private JLabel getPlayerUsableInventoryLbl() {
+            return playerUsableInventoryLbl;
+        }
+    }
+
 
     private void playRoomSounds(String roomText, String messageText) {
         String[] splitString = roomText.split("\n");
