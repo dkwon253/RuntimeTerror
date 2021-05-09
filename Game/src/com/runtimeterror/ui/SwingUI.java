@@ -27,10 +27,12 @@ public class SwingUI extends JFrame {
     private JLabel playerMessageLbl;
     private JLabel monsterInRoomLbl;
     private JLabel monsterNearByLbl;
+    private PlayerInventory playerUsableInventoryLbl = new PlayerInventory();
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
     private ImageIcon imageTitle;
     private JButton mapCommandBtn;
+    private JButton inventoryBtn;
     private JButton volumeControlsBtn;
     private JButton submitCommandBtn;
     private int gameTime;
@@ -67,6 +69,7 @@ public class SwingUI extends JFrame {
         setupMapButton();
         setPlayerHealth();
         setupTimer();
+        setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
         //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
@@ -145,6 +148,16 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
     }
+
+    private void setupInventoryButton() {
+        inventoryBtn = new JButton();
+        inventoryBtn.setBounds(205, 800, 90, 25);
+        inventoryBtn.setText("Inventory");
+        inventoryBtn.addActionListener(new HandlePlayerInventoryBtnClick());
+        inventoryBtn.setVisible(true);
+        add(inventoryBtn);
+    }
+
 
     private void setupSaveGameMsgLbl() {
         saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
@@ -312,6 +325,11 @@ public class SwingUI extends JFrame {
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) { roomMap.setVisible(true); }
+    }
+
+    private class HandlePlayerInventoryBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) { playerUsableInventoryLbl.setVisible(true); }
     }
 
     private class HandleEnterPressOnPlayerInputTF implements ActionListener {
