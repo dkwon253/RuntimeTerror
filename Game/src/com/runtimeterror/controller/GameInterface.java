@@ -1,5 +1,9 @@
 package com.runtimeterror.controller;
 
+import com.runtimeterror.model.Item;
+
+import java.util.List;
+
 public interface GameInterface {
     // Used to get a formatted string object of the room information.
     public String getRoomText();
@@ -46,4 +50,6 @@ public interface GameInterface {
     boolean isHealthIncrease();
 
     int timeToEndGame();
+
+    List<Item> playerInventory();
 }
