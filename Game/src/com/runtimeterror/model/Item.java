@@ -50,6 +50,7 @@ public class Item implements java.io.Serializable {
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
+                ", imagePath='" + itemImagePath + '\'' +
                 '}';
     }
 }

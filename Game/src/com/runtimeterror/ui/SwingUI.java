@@ -96,6 +96,7 @@ public class SwingUI extends JFrame {
             roomMap.setVisible(false);
         }
         handleMonsterData();
+        System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
         System.out.println(controller.isMonsterNear());
