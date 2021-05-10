@@ -80,5 +80,7 @@ public class SwingController {
 
     public List<Item> getPlayerItems() {return gi.playerInventory();}
 
+    public List<Item> getRoomItems() {return gi.getRoomItems();}
+
     public boolean hasItems() {return gi.hasItems();}
 }

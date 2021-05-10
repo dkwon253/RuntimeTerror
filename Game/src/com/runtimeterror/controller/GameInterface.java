@@ -54,4 +54,6 @@ public interface GameInterface {
     List<Item> playerInventory();
 
     boolean hasItems();
+
+    List<Item> getRoomItems();
 }

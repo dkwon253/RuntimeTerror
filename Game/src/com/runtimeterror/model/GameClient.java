@@ -144,6 +144,12 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public List<Item> getRoomItems() {
+        Rooms room = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        return room.getRoomsItems();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }
