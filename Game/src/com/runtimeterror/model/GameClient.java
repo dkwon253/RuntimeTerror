@@ -148,6 +148,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
     public List<Item> getRoomItems() {
         Rooms room = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         return room.getRoomsItems();
+    }
 
     public boolean isPlayerClosedToDying() {
         return (boolean) gameMap.get("isCloseToDying").getResult();
