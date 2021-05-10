@@ -3,7 +3,6 @@ package com.runtimeterror.model;
 import java.io.*;
 import java.util.*;
 
-
 class PostGameProcessor {
 
     Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
@@ -37,8 +36,11 @@ class PostGameProcessor {
             if (playerCurrentRoom == monsterCurrentRoom) {
                 int playerHealth = (int) gameMap.get("playerHealth").getResult();
                 int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
-                gameMap.put("playerHealth", new Result<>(playerHealth - monsterDamage));
-                gameMap.put("viewLabel", new Result<>("The monster is here!"));
+                int lowPlayerHealth = (int) gameMap.get("lowPlayerHealth").getResult();
+                playerHealth -= monsterDamage;
+                gameMap.put("playerHealth", new Result<>(playerHealth));
+                gameMap.put("isCloseToDying", new Result<>(playerHealth == lowPlayerHealth));
+                gameMap.put("viewLabel", new Result<>("The monster hit you for 5 HP!"));
             }
         }
         return gameMap;
@@ -134,6 +136,7 @@ class PostGameProcessor {
         Queue<Rooms> roomsQueue = new LinkedList<>();
         @SuppressWarnings("unchecked")
         HashMap<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
+        Rooms rooms = allRooms.get("Master Bedroom");
         List<Rooms> monsterAvailableRooms = new ArrayList<>();
         roomsQueue.add(newRoom);
         Rooms room;
@@ -146,8 +149,8 @@ class PostGameProcessor {
             }
         }
         int randomInt = new Random().nextInt(monsterAvailableRooms.size());
-        gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
+        //gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
+        gameMap.put(("monsterCurrentRoom"), new Result<>(rooms));
         return gameMap;
     }
-
 }

@@ -144,6 +144,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public boolean isPlayerClosedToDying() {
+        return (boolean) gameMap.get("isCloseToDying").getResult();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }

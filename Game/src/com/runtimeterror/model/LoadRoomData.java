@@ -105,6 +105,7 @@ public class LoadRoomData {
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
         gameMap.put("listOfItems", new Result<>(listOfItems));
         gameMap.put("timeToEndGame", new Result<>(300));
+        gameMap.put("lowPlayerHealth", new Result<>(5));
         setGameMapRoundDefaults(gameMap);
     }
 
@@ -160,6 +161,6 @@ public class LoadRoomData {
         gameMap.put("shouldLoadGame", new Result<>(false));
         gameMap.put("dialogueLabel", new Result<>(""));
         gameMap.put("didIncreaseHealth", new Result<>(false));
-
+        gameMap.put("isCloseToDying", new Result<>(false));
     }
 }
