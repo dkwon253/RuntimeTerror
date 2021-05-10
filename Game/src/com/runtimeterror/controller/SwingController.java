@@ -83,4 +83,6 @@ public class SwingController {
     public List<Item> getRoomItems() {return gi.getRoomItems();}
 
     public boolean hasItems() {return gi.hasItems();}
+
+    public boolean isCloseToDying() { return gi.isPlayerClosedToDying(); }
 }

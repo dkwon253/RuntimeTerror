@@ -26,6 +26,7 @@ public class SwingUI extends JFrame {
     private JTextArea inventoryInfoTA;
     private JTextField playerInputTF;
     private JLabel playerStateLbl;
+    private JLabel gameTimerLbl;
     private JLabel playerHealthLbl;
     private JLabel saveGameMsgLbl;
     private JLabel playerMessageLbl;
@@ -72,7 +73,8 @@ public class SwingUI extends JFrame {
         setupSubmitCommandBtn();
         setupVolumeControlsBtn();
         setupMapButton();
-        setPlayerHealth();
+        setupPlayerHealth();
+        setupGameTimer();
         setupTimer();
         setupInventoryButton();
 
@@ -85,7 +87,11 @@ public class SwingUI extends JFrame {
     private void processSubmitInput(String inputText) {
         controller.processInput(inputText);
         String result = controller.getMessageLabel();
-        playerMessageLbl.setText(result);
+        if (controller.isCloseToDying()) {
+            playerMessageLbl.setText("You are dangerously closed to dying!");
+        } else {
+            playerMessageLbl.setText(result);
+        }
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();
@@ -105,7 +111,7 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setVisible(hasMap);
         boolean hasItems = controller.hasItems();
         inventoryBtn.setVisible(hasItems);
-        if(!hasItems) {
+        if (!hasItems) {
             playerInventory.setVisible(false);
         }
         if (!hasMap) {
@@ -172,7 +178,6 @@ public class SwingUI extends JFrame {
         add(inventoryBtn);
     }
 
-
     private void setupSaveGameMsgLbl() {
         saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
         saveGameMsgLbl.setBounds(25, 780, 430, 25);
@@ -186,15 +191,25 @@ public class SwingUI extends JFrame {
 
     private void setupPlayerStateLbl() {
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
-        playerStateLbl.setBounds(25, 730, 430, 23);
+        playerStateLbl.setBounds(25, 730, 430, 20);
         add(playerStateLbl);
     }
 
-    private void setPlayerHealth() {
-        playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.LEFT);
+    private void setupPlayerHealth() {
+        //playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.CENTER);
+        playerHealthLbl = new JLabel();
         playerHealthLbl.setBounds(200, 730, 430, 20);
+        playerHealthLbl.setHorizontalTextPosition(SwingConstants.CENTER);
+        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         playerHealthLbl.setForeground(Color.green);
         add(playerHealthLbl);
+    }
+
+    private void setupGameTimer() {
+        gameTimerLbl = new JLabel();
+        gameTimerLbl.setBounds(350, 730, 430, 20);
+        gameTimerLbl.setForeground(Color.black);
+        add(gameTimerLbl);
     }
 
     private void setupInventoryInfoTA(SwingController controller) {
@@ -262,14 +277,13 @@ public class SwingUI extends JFrame {
         timer.start();
     }
 
-
     private void changeHealthColors() {
-        if (controller.getPlayerHealth() == 15) {
-            playerHealthLbl.setForeground(Color.green);
-        } else if (controller.getPlayerHealth() == 10) {
+        if (controller.getPlayerHealth() <= 5) {
+            playerHealthLbl.setForeground(Color.red);
+        } else if (controller.getPlayerHealth() <= 10) {
             playerHealthLbl.setForeground(Color.orange);
         } else {
-            playerHealthLbl.setForeground(Color.red);
+            playerHealthLbl.setForeground(Color.green);
         }
     }
 
@@ -315,6 +329,7 @@ public class SwingUI extends JFrame {
         if (isKilled) {
             iconImage += "skull.png";
             message = "You are now dead";
+            playerMessageLbl.setText(message);
         } else {
             iconImage += "freedom.png";
         }
@@ -356,11 +371,46 @@ public class SwingUI extends JFrame {
         playerInputTF.setText("");
         playRoomSounds(roomData, "");
         setupTimer();
+        playerHealthLbl.setForeground(Color.green);
+        playerHealthLbl.setText("Health: " +controller.getPlayerHealth());
         imageTitleContainer.setVisible(true);
         monsterInRoomLbl.setVisible(false);
         monsterNearByLbl.setVisible(false);
         soundManager.stopExtraSFX();
         roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+    }
+
+    private void playRoomSounds(String roomText, String messageText) {
+        String[] splitString = roomText.split("\n");
+        soundManager.stopRoomSFX();
+        if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {
+            soundManager.playRoomSFX("Game/Sounds/bathroom.wav", true);
+        }
+        if ("Courtyard".equals(splitString[1])) {
+            soundManager.playRoomSFX("Game/Sounds/wind.wav", true);
+        }
+        if ("Theater".equals(splitString[1])) {
+            soundManager.playRoomSFX("Game/Sounds/static.wav", true);
+        }
+    }
+
+    private void handleMonsterData() {
+        if (controller.isMonsterSameRoom()) {
+            imageTitleContainer.setVisible(false);
+            monsterInRoomLbl.setVisible(true);
+            monsterNearByLbl.setVisible(false);
+            soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
+        } else if (controller.isMonsterNear()) {
+            imageTitleContainer.setVisible(false);
+            monsterInRoomLbl.setVisible(false);
+            monsterNearByLbl.setVisible(true);
+            soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
+        } else {
+            imageTitleContainer.setVisible(true);
+            monsterInRoomLbl.setVisible(false);
+            monsterNearByLbl.setVisible(false);
+            soundManager.stopExtraSFX();
+        }
     }
 
     private class HandleSubmitBtnClick implements ActionListener {
@@ -406,13 +456,14 @@ public class SwingUI extends JFrame {
             if (gameTime <= 0) {
                 endGame(true);
             } else {
-                playerHealthLbl.setText("Health: " + controller.getPlayerHealth() + " " + computeTime());
+                changeTimerColor();
+                gameTimerLbl.setHorizontalTextPosition(SwingConstants.RIGHT);
+                gameTimerLbl.setText("Timer: " + computeTime());
             }
         }
 
         private String computeTime() {
             gameTime -= 1;
-//            int hours = gameTime/3600;
             int gameModulo = gameTime % 3600;
             int minutes = gameModulo / 60;
             int seconds = gameModulo % 60;
@@ -420,10 +471,19 @@ public class SwingUI extends JFrame {
             String secondsString = (seconds < 10 ? "0" : "") + seconds;
             return minuteString + ":" + secondsString;
         }
+
+        private void changeTimerColor() {
+            if (gameTime <= 60) {
+                gameTimerLbl.setForeground(Color.red);
+            } else if(gameTime <= 120) {
+                gameTimerLbl.setForeground(Color.orange);
+            } else {
+                gameTimerLbl.setForeground(Color.black);
+            }
+        }
     }
 
     private class PlayerInventory extends JFrame {
-
         PlayerInventory() {
             setLayout(new GridLayout(controller.getPlayerItems().size(), 3));
             setSize(600, 600);
@@ -460,40 +520,6 @@ public class SwingUI extends JFrame {
             }
             revalidate();
             repaint();
-        }
-    }
-
-
-    private void playRoomSounds(String roomText, String messageText) {
-        String[] splitString = roomText.split("\n");
-        soundManager.stopRoomSFX();
-        if ("Master Bathroom".equals(splitString[1]) || "Bathroom Two".equals(splitString[1]) || "Bathroom Three".equals(splitString[1])) {
-            soundManager.playRoomSFX("Game/Sounds/bathroom.wav", true);
-        }
-        if ("Courtyard".equals(splitString[1])) {
-            soundManager.playRoomSFX("Game/Sounds/wind.wav", true);
-        }
-        if ("Theater".equals(splitString[1])) {
-            soundManager.playRoomSFX("Game/Sounds/static.wav", true);
-        }
-    }
-
-    private void handleMonsterData() {
-        if (controller.isMonsterSameRoom()) {
-            imageTitleContainer.setVisible(false);
-            monsterInRoomLbl.setVisible(true);
-            monsterNearByLbl.setVisible(false);
-            soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
-        } else if (controller.isMonsterNear()) {
-            imageTitleContainer.setVisible(false);
-            monsterInRoomLbl.setVisible(false);
-            monsterNearByLbl.setVisible(true);
-            soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
-        } else {
-            imageTitleContainer.setVisible(true);
-            monsterInRoomLbl.setVisible(false);
-            monsterNearByLbl.setVisible(false);
-            soundManager.stopExtraSFX();
         }
     }
 }
