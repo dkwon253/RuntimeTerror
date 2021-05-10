@@ -13,7 +13,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
+import java.util.Random;
 
 public class SwingUI extends JFrame {
 
@@ -64,6 +64,7 @@ public class SwingUI extends JFrame {
         setupMonster();
         setupImageContainer();
         setupRoomInfoTA(controller);
+        setupRoomItemPic(controller);
         setupPlayerMessageLbl();
         setupInventoryInfoTA(controller);
         setupPlayerStateLbl();
@@ -98,6 +99,8 @@ public class SwingUI extends JFrame {
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         changeHealthColors();
         roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+        //roomItemContainer.setIcon(new ImageIcon());
+        setupRoomItemPic(controller);
         roomMap.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
         if (controller.getStatus()) {
             playerStateLbl.setText("Status: Hidden");
@@ -282,6 +285,40 @@ public class SwingUI extends JFrame {
         } else {
             playerHealthLbl.setForeground(Color.green);
         }
+    }
+
+    private void setupRoomItemPic(SwingController controller) {
+        //getContentPane().removeAll();
+        roomImageContainer.removeAll();
+        for (Item item : controller.getRoomItems()) {
+            if (item.getItemImagePath() != null) {
+                JLabel roomItemLbl = new JLabel();
+                Image scaledImage = null;
+                Image usableInventory = null;
+                try {
+                    usableInventory = ImageIO.read(new File(item.getItemImagePath()));
+                    scaledImage = usableInventory.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                roomItemLbl.setIcon(new ImageIcon(scaledImage));
+                roomItemLbl.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        processSubmitInput("get " + item.getName());
+                        System.out.println(item.getName());
+                    }
+                });
+                Random random = new Random();
+                int x = random.nextInt(400)+50;
+                int y = random.nextInt(150)+75;
+                roomItemLbl.setBounds(x, y, 50, 50);
+                roomImageContainer.add(roomItemLbl);
+            }
+        }
+        revalidate();
+        repaint();
     }
 
     private void endGame(boolean isKilled) {

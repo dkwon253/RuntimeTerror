@@ -55,5 +55,8 @@ public interface GameInterface {
 
     boolean hasItems();
 
+    List<Item> getRoomItems();
+
     boolean isPlayerClosedToDying();
+
 }

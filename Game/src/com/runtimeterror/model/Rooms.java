@@ -175,4 +175,8 @@ public class Rooms implements java.io.Serializable {
     public String getRoomType() {
         return roomType;
     }
+
+    public List<Item> getRoomsItems() {
+        return roomsItems;
+    }
 }
