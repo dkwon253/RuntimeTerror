@@ -188,13 +188,16 @@ public class SwingUI extends JFrame {
 
     private void setupPlayerStateLbl() {
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
-        playerStateLbl.setBounds(25, 730, 430, 23);
+        playerStateLbl.setBounds(25, 730, 430, 20);
         add(playerStateLbl);
     }
 
     private void setupPlayerHealth() {
-        playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.LEFT);
+        //playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.CENTER);
+        playerHealthLbl = new JLabel();
         playerHealthLbl.setBounds(200, 730, 430, 20);
+        playerHealthLbl.setHorizontalTextPosition(SwingConstants.CENTER);
+        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         playerHealthLbl.setForeground(Color.green);
         add(playerHealthLbl);
     }
@@ -417,6 +420,7 @@ public class SwingUI extends JFrame {
                 endGame(true);
             } else {
                 changeTimerColor();
+                gameTimerLbl.setHorizontalTextPosition(SwingConstants.RIGHT);
                 gameTimerLbl.setText("Timer: " + computeTime());
             }
         }
