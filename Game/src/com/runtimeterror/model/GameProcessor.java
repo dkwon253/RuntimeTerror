@@ -91,16 +91,13 @@ class GameProcessor {
         Rooms stairsRoom = rooms.get(stairsRoomName);
         Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         if (hasStairs && "stairs".equals(noun)) {
-            gameMap.put("didUseStairs", new Result<>(true));
-            gameMap.put("hidden", new Result<>(false));
+            gameMap.put("roomToChangeTo", new Result<>(stairsRoom));
+            gameMap.put("shouldChangeRoomFlag", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("didChangeRoom", new Result<>(true));
-            gameMap.put("playerCurrentRoom", new Result<>(stairsRoom));
             gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("The stairs have taken you to the " + stairsRoomName + "."));
         } else if ("stairs".equals(noun)) {
             gameMap.put("viewLabel", new Result<>("There are no stairs in " + currentRoom.getRoomName() + "."));
-            gameMap.put("triedToUseStairs", new Result<>(true));
         }
         return gameMap;
     }
