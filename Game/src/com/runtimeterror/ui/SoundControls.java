@@ -1,6 +1,6 @@
 package com.runtimeterror.ui;
 
-import com.runtimeterror.sound.SoundManagerV2;
+import com.runtimeterror.sound.SoundManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -24,9 +24,9 @@ public class SoundControls extends JFrame {
     private JCheckBox BGMChk;
     private JCheckBox SFXChk;
 
-    private SoundManagerV2 sm;
+    private SoundManager sm;
 
-    public SoundControls(String title, SoundManagerV2 sm, Point location){
+    public SoundControls(String title, SoundManager sm, Point location){
         super(title);
         this.sm = sm;
         setLocation((int)location.getX()+25, (int)location.getY()+25);

@@ -1,8 +1,8 @@
 package com.runtimeterror.controller;
 
-import com.runtimeterror.model.Result;
+import com.runtimeterror.model.Item;
 
-import java.util.Map;
+import java.util.List;
 
 public interface GameInterface {
     // Used to get a formatted string object of the room information.
@@ -36,4 +36,29 @@ public interface GameInterface {
     void resetRound();
 
     String getRoomMapPath();
+
+    int getPlayerHealth();
+
+    boolean hasMap();
+
+    boolean isMonsterNear();
+
+    boolean isMonsterSameRoom();
+
+    String getDialogue();
+
+    boolean isHealthIncrease();
+
+    int timeToEndGame();
+
+    List<Item> playerInventory();
+
+    boolean hasItems();
+
+    List<Item> getRoomItems();
+
+    boolean isPlayerClosedToDying();
+
+    String getMonsterLabel();
+
 }

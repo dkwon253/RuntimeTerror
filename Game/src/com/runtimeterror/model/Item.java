@@ -1,18 +1,22 @@
 package com.runtimeterror.model;
 
-public class Item implements java.io.Serializable{
+public class Item implements java.io.Serializable {
 
     // FIELDS
-    private  String name;
-    private  String type;
-    private  String description;
+    private String name;
+    private String type;
+    private String description;
+    private String itemImagePath;
 
     //CONSTRUCTOR
-    public Item(){}
-    public Item(String name, String type, String description) {
+    public Item() {
+    }
+
+    public Item(String name, String type, String description, String imagePath) {
         this.name = name;
         this.type = type;
         this.description = description;
+        setItemImagePath(imagePath);
     }
 
     //GETTER
@@ -20,12 +24,20 @@ public class Item implements java.io.Serializable{
         return name;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public String getType() {
         return type;
     }
 
-    public String getDescription() {
-        return description;
+    public void setItemImagePath(String path) {
+        itemImagePath = path;
+    }
+
+    public String getItemImagePath() {
+        return itemImagePath;
     }
 
     @Override
@@ -34,7 +46,7 @@ public class Item implements java.io.Serializable{
                 "name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", description='" + description + '\'' +
+                ", imagePath='" + itemImagePath + '\'' +
                 '}';
     }
-
 }

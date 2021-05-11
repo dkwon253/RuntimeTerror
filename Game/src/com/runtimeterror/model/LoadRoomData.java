@@ -3,27 +3,25 @@ package com.runtimeterror.model;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class LoadRoomData {
 
     static Rooms defaultRoom;
 
-    public static Map<String, Result<?>> loadData() throws IOException{
+    public static Map<String, Result<?>> loadData() throws IOException {
         Map<String, Result<?>> gameMap = new HashMap<>();
         HashMap<String, Rooms> roomList = new HashMap<>();
+        List<String> weaponList = new ArrayList<>();
         List<String> listOfItems = new ArrayList<>();
-        setupRoomData(roomList, listOfItems);
+        setupRoomData(roomList, listOfItems, weaponList);
         setupNeighbors(roomList);
-        setupGameMapDefaults(gameMap, roomList, listOfItems);
+        setupGameMapDefaults(gameMap, roomList, listOfItems, weaponList);
         return gameMap;
     }
 
-    private static void setupRoomData(HashMap<String, Rooms> roomList, List<String> listOfItems) throws IOException {
+    private static void setupRoomData(HashMap<String, Rooms> roomList, List<String> listOfItems, List<String> weaponList) throws IOException {
         AtomicInteger i = new AtomicInteger();
         Files.lines(Path.of("Game/RoomData/data.csv")).forEach(line -> {
             String[] tokens = line.split(",");
@@ -33,20 +31,31 @@ public class LoadRoomData {
             String itemDescription = "null".equals(tokens[3]) ? null : tokens[3];
             String hidingSpot = "null".equals(tokens[4]) ? null : tokens[4];
             String stairsNeighbor = "null".equals(tokens[12]) ? null : tokens[12];
+            String dialogueItem = "null".equals(tokens[13]) ? null : tokens[13];
+            String dialogueFirst = "null".equals(tokens[14]) ? null : tokens[14];
+            String dialogueSecond = "null".equals(tokens[15]) ? null : tokens[15];
+            String roomType = "null".equals(tokens[16]) ? null : tokens[16];
+            String itemImagePath = "null".equals(tokens[17]) ? null : tokens[17];
             String description = tokens[9];
             String path = tokens[10];
             String mapPath = tokens[11];
 
             Rooms newRoom;
-            if(itemName == null){
-                newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath, stairsNeighbor);
+            if (itemName == null) {
+                newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath,
+                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
 
-            }else{
+
+            } else {
                 listOfItems.add(itemName);
-                newRoom = new Rooms(roomName, description, hidingSpot, new Item(itemName, itemType, itemDescription), path, mapPath, stairsNeighbor);
-
+                Item item = new Item(itemName, itemType, itemDescription, itemImagePath);
+                newRoom = new Rooms(roomName, description, hidingSpot, item, path, mapPath,
+                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
+                if ("weapon".equals(itemType)) {
+                    weaponList.add(itemName);
+                }
             }
-            if(i.get() == 0) {
+            if (i.get() == 0) {
                 defaultRoom = newRoom;
             }
             roomList.put(roomName, newRoom);
@@ -75,8 +84,8 @@ public class LoadRoomData {
             String stairs = "null".equals(tokens[10]) ? null : tokens[10];
 
             HashMap<String, Rooms> neighbor = new HashMap<>();
-            neighbor.put("east",  roomList.get(east));
-            neighbor.put("west",  roomList.get(west));
+            neighbor.put("east", roomList.get(east));
+            neighbor.put("west", roomList.get(west));
             neighbor.put("north", roomList.get(north));
             neighbor.put("south", roomList.get(south));
 
@@ -85,22 +94,26 @@ public class LoadRoomData {
         });
     }
 
-    private static void setupGameMapDefaults(Map<String, Result<?>> gameMap, HashMap<String, Rooms> roomList, List<String> listOfItems) {
+    private static void setupGameMapDefaults(Map<String, Result<?>> gameMap, HashMap<String, Rooms> roomList, List<String> listOfItems, List<String> weaponList) {
         gameMap.put("monsterCurrentRoom", new Result<>(new Rooms()));
         gameMap.put("playerCurrentRoom", new Result<>(defaultRoom));
         gameMap.put("availableRooms", new Result<>(defaultRoom.getRoomNeighbors()));
         gameMap.put("rooms", new Result<>(roomList));
-        gameMap.put("triedToUseItem", new Result<>(false));
         gameMap.put("inventory", new Result<>(new ArrayList<Item>()));
         gameMap.put("gameLoaded", new Result<>(false));
         gameMap.put("hasStairs", new Result<>(defaultRoom.hasStairs()));
         gameMap.put("stairsRoom", new Result<>(defaultRoom.getStairsNeighborName()));
-        gameMap.put("player", new Result<>(new Player()));
-        gameMap.put("monster", new Result<>(new Monster()));
         gameMap.put("startingRoom", new Result<>(defaultRoom));
         gameMap.put("helpText", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
         gameMap.put("listOfItems", new Result<>(listOfItems));
+        gameMap.put("listOfWeapons", new Result<>(weaponList));
+        gameMap.put("timeToEndGame", new Result<>(300));
+        gameMap.put("lowPlayerHealth", new Result<>(5));
+        gameMap.put("playerHealth", new Result<>(15));
+        gameMap.put("monsterDamage", new Result<>(5));
+        gameMap.put("nonUseItems", new Result<>(new ArrayList<>(Arrays.asList("stairs", "elevator"))));
+        gameMap.put("weaponInventory", new Result<>(new ArrayList<Item>()));
         setGameMapRoundDefaults(gameMap);
     }
 
@@ -114,9 +127,10 @@ public class LoadRoomData {
         gameMap.put("addendumText", new Result<>(""));
         gameMap.put("itemUsed", new Result<>(""));
         gameMap.put("usedItem", new Result<>(false));
+        gameMap.put("itemUsedItem", new Result<>(new Item()));
         gameMap.put("triedToUseItem", new Result<>(false));
         gameMap.put("askedForHelp", new Result<>(false));
-        gameMap.put("shouldMonsterChangeRooms", new Result<>(false));
+        gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(false));
         gameMap.put("didMonsterMove", new Result<>(false));
         gameMap.put("isGameOver", new Result<>(false));
         gameMap.put("isKilledByMonster", new Result<>(false));
@@ -126,5 +140,24 @@ public class LoadRoomData {
         gameMap.put("triedToGetItem", new Result<>(false));
         gameMap.put("triedToHide", new Result<>(false));
         gameMap.put("triedToUseStairs", new Result<>(false));
+        gameMap.put("viewLabel", new Result<>(""));
+        gameMap.put("messageLabel", new Result<>(""));
+        gameMap.put("shouldSaveGame", new Result<>(false));
+        gameMap.put("shouldLoadGame", new Result<>(false));
+        gameMap.put("dialogueLabel", new Result<>(""));
+        gameMap.put("didIncreaseHealth", new Result<>(false));
+        gameMap.put("isCloseToDying", new Result<>(false));
+        gameMap.put("isCombat", new Result<>(false));
+        gameMap.put("didFightMonster", new Result<>(false));
+        gameMap.put("shouldDecreaseHealthFlag", new Result<>(false));
+        gameMap.put("shouldUseItemFlag", new Result<>(false));
+        gameMap.put("shouldGetItemFlag", new Result<>(false));
+        gameMap.put("itemToGetItem", new Result<>(new Item()));
+        gameMap.put("itemToGet", new Result<>(""));
+        gameMap.put("roomToRemoveItemFrom", new Result<>(new Rooms()));
+        gameMap.put("roomToChangeTo", new Result<>(new Rooms()));
+        gameMap.put("shouldChangeRoomFlag", new Result<>(false));
+        gameMap.put("monsterLabel", new Result<>(""));
+
     }
 }

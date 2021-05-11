@@ -1,8 +1,8 @@
 package com.runtimeterror.controller;
 
-import com.runtimeterror.model.Result;
+import com.runtimeterror.model.Item;
 
-import java.util.Map;
+import java.util.List;
 
 public class SwingController {
     private GameInterface gi;
@@ -61,4 +61,31 @@ public class SwingController {
     public String getRoomMapPath() {
         return gi.getRoomMapPath();
     }
+
+    public int getPlayerHealth() {
+        return gi.getPlayerHealth();
+    }
+
+    public boolean hasMap() { return gi.hasMap(); }
+
+    public boolean isMonsterNear() {return gi.isMonsterNear();}
+
+    public boolean isMonsterSameRoom() {return gi.isMonsterSameRoom();}
+
+    public String getDialogue() {return gi.getDialogue();}
+
+    public boolean isHealthIncrease() {return gi.isHealthIncrease();}
+
+    public int getTimeToEndGame() {return gi.timeToEndGame();}
+
+    public List<Item> getPlayerItems() {return gi.playerInventory();}
+
+    public List<Item> getRoomItems() {return gi.getRoomItems();}
+
+    public boolean hasItems() {return gi.hasItems();}
+
+    public boolean isCloseToDying() { return gi.isPlayerClosedToDying(); }
+
+    public String getMonsterLabel() {return gi.getMonsterLabel();}
+
 }
