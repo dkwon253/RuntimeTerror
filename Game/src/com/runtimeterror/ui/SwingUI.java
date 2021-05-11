@@ -79,7 +79,6 @@ public class SwingUI extends JFrame {
         setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
-        //soundManager.playHeartSFX("Game/Sounds/heartbeatNorm.wav",true);
 
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
@@ -315,6 +314,39 @@ public class SwingUI extends JFrame {
         repaint();
     }
 
+    private void setupRoomItemPic(SwingController controller) {
+        roomImageContainer.removeAll();
+        for (Item item : controller.getRoomItems()) {
+            if (item.getItemImagePath() != null) {
+                JLabel roomItemLbl = new JLabel();
+                Image scaledImage = null;
+                Image usableInventory = null;
+                try {
+                    usableInventory = ImageIO.read(new File(item.getItemImagePath()));
+                    scaledImage = usableInventory.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                roomItemLbl.setIcon(new ImageIcon(scaledImage));
+                roomItemLbl.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        processSubmitInput("get " + item.getName());
+                        System.out.println(item.getName());
+                    }
+                });
+                Random random = new Random();
+                int x = random.nextInt(425)+10;
+                int y = random.nextInt(190)+10;
+                roomItemLbl.setBounds(x, y, 50, 50);
+                roomImageContainer.add(roomItemLbl);
+            }
+        }
+        revalidate();
+        repaint();
+    }
+
     private void endGame(boolean isKilled) {
         timer.stop();
         Image img = null;
@@ -398,7 +430,6 @@ public class SwingUI extends JFrame {
         }
         img = img.getScaledInstance(560, 350, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
-
     }
 
     private void playRoomSounds(String roomText, String messageText) {

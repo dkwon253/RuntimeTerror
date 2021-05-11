@@ -87,4 +87,5 @@ public class SwingController {
     public boolean isCloseToDying() { return gi.isPlayerClosedToDying(); }
 
     public String getMonsterLabel() {return gi.getMonsterLabel();}
+
 }

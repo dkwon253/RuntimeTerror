@@ -158,5 +158,6 @@ public class LoadRoomData {
         gameMap.put("roomToChangeTo", new Result<>(new Rooms()));
         gameMap.put("shouldChangeRoomFlag", new Result<>(false));
         gameMap.put("monsterLabel", new Result<>(""));
+
     }
 }

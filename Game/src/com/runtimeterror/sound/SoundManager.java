@@ -5,20 +5,24 @@ import java.io.File;
 
 public class SoundManager {
     private Clip BGM;
+    private Clip HBG;
     private Clip roomSFX;
     private Clip extraSFX;
     private Clip heartSFX;
     private boolean BGMOff = false;
+    private boolean HBGOff = false;
     private boolean SFXOff = false;
     private boolean SFXLoop = false;
     private boolean extraLoop = false;
     private boolean heartLoop = false;
     private float BMGVol = 0.5f;
+    private float HBGVol = 0.5f;
     private float SFXVol = 0.6f;
 
     public SoundManager() {
         try {
             BGM = AudioSystem.getClip();
+            HBG = AudioSystem.getClip();
             roomSFX = AudioSystem.getClip();
             extraSFX = AudioSystem.getClip();
             heartSFX = AudioSystem.getClip();
@@ -26,7 +30,7 @@ public class SoundManager {
             lue.printStackTrace();
         }
     }
-    //Play background music
+
     public void playBGM(String BGMFile) {
 
         if (BGM.isOpen()) {
@@ -61,6 +65,7 @@ public class SoundManager {
         BGM.start();
         BGMOff = false;
     }
+
     //play sound for specific rooms
     public void playRoomSFX(String SFXFile, boolean loop) {
         if (roomSFX.isOpen()) {
@@ -97,6 +102,7 @@ public class SoundManager {
         roomSFX.stop();
         extraSFX.stop();
         heartSFX.stop();
+
     }
 
     public void turnOnSFX() {
@@ -190,6 +196,9 @@ public class SoundManager {
     public boolean isBGMActive() {
         return BGM.isActive();
     }
+    public boolean isHBGActive() {
+        return HBG.isActive();
+    }
 
     public boolean isRoomSFXActive() {
         return roomSFX.isActive();
@@ -239,6 +248,9 @@ public class SoundManager {
 
     public boolean isBGMOff() {
         return BGMOff;
+    }
+    public boolean isHBGOff() {
+        return HBGOff;
     }
 
     public boolean isSFXOff() {

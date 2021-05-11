@@ -24,10 +24,6 @@ public class Item implements java.io.Serializable {
         return name;
     }
 
-//    public String getType() {
-//        return type;
-//    }
-
     public String getDescription() {
         return description;
     }
