@@ -80,7 +80,7 @@ public class SwingUI extends JFrame {
         setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
-        //soundManager.playHeartSFX("Game/Sounds/heartbeatNorm.wav",true);
+        //soundManager.playHBG("Game/Sounds/heartbeatNorm.wav");
 
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
@@ -404,9 +404,6 @@ public class SwingUI extends JFrame {
         }
         img = img.getScaledInstance(560, 350, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
-//        soundManager.stopHeartSFX();
-//        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
-
     }
 
     private void playRoomSounds(String roomText, String messageText) {

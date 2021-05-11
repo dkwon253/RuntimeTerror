@@ -5,20 +5,24 @@ import java.io.File;
 
 public class SoundManager {
     private Clip BGM;
+    private Clip HBG;
     private Clip roomSFX;
     private Clip extraSFX;
     private Clip heartSFX;
     private boolean BGMOff = false;
+    private boolean HBGOff = false;
     private boolean SFXOff = false;
     private boolean SFXLoop = false;
     private boolean extraLoop = false;
     private boolean heartLoop = false;
     private float BMGVol = 0.5f;
+    private float HBGVol = 0.5f;
     private float SFXVol = 0.6f;
 
     public SoundManager() {
         try {
             BGM = AudioSystem.getClip();
+            HBG = AudioSystem.getClip();
             roomSFX = AudioSystem.getClip();
             extraSFX = AudioSystem.getClip();
             heartSFX = AudioSystem.getClip();
@@ -61,6 +65,45 @@ public class SoundManager {
         BGM.start();
         BGMOff = false;
     }
+
+    //background constant heartbeat
+    public void playHBG(String HBGFile) {
+
+        if (HBG.isOpen()) {
+            HBG.close();
+        }
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(HBGFile));
+            HBG.open(audioInputStream);
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        HBG.loop(Clip.LOOP_CONTINUOUSLY);
+        if (!HBGOff) {
+            HBG.start();
+            heartSFX.stop();
+            setBGMVolume(HBGVol);
+        }
+    }
+
+    public void stopHBG() {
+        HBG.stop();
+    }
+
+    public void turnOffHBG() {
+        stopBGM();
+        HBGOff = true;
+    }
+
+    public void turnOnHBG() {
+        HBG.setMicrosecondPosition(0L);
+        HBG.start();
+        HBGOff = false;
+    }
+
+
     //play sound for specific rooms
     public void playRoomSFX(String SFXFile, boolean loop) {
         if (roomSFX.isOpen()) {
@@ -97,6 +140,7 @@ public class SoundManager {
         roomSFX.stop();
         extraSFX.stop();
         heartSFX.stop();
+
     }
 
     public void turnOnSFX() {
@@ -116,6 +160,7 @@ public class SoundManager {
 
         heartSFX.setMicrosecondPosition(0L);
         heartSFX.start();
+
 
         if (heartLoop) {
             heartSFX.loop(Clip.LOOP_CONTINUOUSLY);
@@ -156,6 +201,7 @@ public class SoundManager {
     public void playHeartSFX(String SFXFile, boolean loop) {
         if (heartSFX.isOpen()) {
             heartSFX.close();
+            HBG.close();
         }
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(SFXFile));
@@ -184,11 +230,14 @@ public class SoundManager {
     }
 
     public boolean isActive() {
-        return (BGM.isActive() || roomSFX.isActive() || extraSFX.isActive() || heartSFX.isActive());
+        return (BGM.isActive() ||  HBG.isActive() || roomSFX.isActive() || extraSFX.isActive() || heartSFX.isActive());
     }
 
     public boolean isBGMActive() {
         return BGM.isActive();
+    }
+    public boolean isHBGActive() {
+        return HBG.isActive();
     }
 
     public boolean isRoomSFXActive() {
@@ -239,6 +288,9 @@ public class SoundManager {
 
     public boolean isBGMOff() {
         return BGMOff;
+    }
+    public boolean isHBGOff() {
+        return HBGOff;
     }
 
     public boolean isSFXOff() {
