@@ -20,7 +20,7 @@ public class SwingUI extends JFrame {
     private SoundManager soundManager = new SoundManager();
     private PlayerMap roomMap = new PlayerMap();
     private SwingController controller;
-    private final int FRAME_X_SIZE = 520;
+    private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA;
     private JTextArea inventoryInfoTA;
@@ -98,10 +98,9 @@ public class SwingUI extends JFrame {
         inventoryInfoTA.setText(invData);
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         changeHealthColors();
-        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
-        //roomItemContainer.setIcon(new ImageIcon());
+        roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
         setupRoomItemPic(controller);
-        roomMap.getMapLocationLbl().setIcon(new ImageIcon(controller.getRoomMapPath()));
+        roomMap.getMapLocationLbl().setIcon(getResizedMap(controller.getRoomMapPath()));
         if (controller.getStatus()) {
             playerStateLbl.setText("Status: Hidden");
         } else {
@@ -132,7 +131,7 @@ public class SwingUI extends JFrame {
 
     private void setupVolumeControlsBtn() {
         volumeControlsBtn = new JButton();
-        volumeControlsBtn.setBounds(25, 800, 50, 50);
+        volumeControlsBtn.setBounds(45, 810, 50, 50);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
@@ -147,7 +146,7 @@ public class SwingUI extends JFrame {
 
     private void setupSubmitCommandBtn() {
         submitCommandBtn = new JButton();
-        submitCommandBtn.setBounds(380, 800, 75, 25);
+        submitCommandBtn.setBounds(455, 825, 75, 25);
         submitCommandBtn.setText("Do it");
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
         add(submitCommandBtn);
@@ -155,14 +154,14 @@ public class SwingUI extends JFrame {
 
     private void setupPlayerInputTF() {
         playerInputTF = new JTextField();
-        playerInputTF.setBounds(25, 755, 430, 25);
+        playerInputTF.setBounds(30, 750, 500, 25);
         playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
         add(playerInputTF);
     }
 
     private void setupMapButton() {
         mapCommandBtn = new JButton();
-        mapCommandBtn.setBounds(300, 800, 75, 25);
+        mapCommandBtn.setBounds(300, 825, 75, 25);
         mapCommandBtn.setText("Map");
         mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
         mapCommandBtn.setVisible(false);
@@ -171,7 +170,7 @@ public class SwingUI extends JFrame {
 
     private void setupInventoryButton() {
         inventoryBtn = new JButton();
-        inventoryBtn.setBounds(205, 800, 90, 25);
+        inventoryBtn.setBounds(205, 825, 90, 25);
         inventoryBtn.setText("Inventory");
         inventoryBtn.addActionListener(new HandlePlayerInventoryBtnClick());
         inventoryBtn.setVisible(false);
@@ -180,7 +179,7 @@ public class SwingUI extends JFrame {
 
     private void setupSaveGameMsgLbl() {
         saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
-        saveGameMsgLbl.setBounds(25, 780, 430, 25);
+        saveGameMsgLbl.setBounds(30, 780, 500, 25);
         JLabel label = new JLabel("I'm bold");
         Font font = new Font("Courier", Font.BOLD, 12);
         saveGameMsgLbl.setFont(font);
@@ -191,14 +190,14 @@ public class SwingUI extends JFrame {
 
     private void setupPlayerStateLbl() {
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
-        playerStateLbl.setBounds(25, 730, 430, 20);
+        playerStateLbl.setBounds(30, 730, 500, 20);
         add(playerStateLbl);
     }
 
     private void setupPlayerHealth() {
         //playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.CENTER);
         playerHealthLbl = new JLabel();
-        playerHealthLbl.setBounds(200, 730, 430, 20);
+        playerHealthLbl.setBounds(250, 730, 500, 20);
         playerHealthLbl.setHorizontalTextPosition(SwingConstants.CENTER);
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         playerHealthLbl.setForeground(Color.green);
@@ -207,14 +206,14 @@ public class SwingUI extends JFrame {
 
     private void setupGameTimer() {
         gameTimerLbl = new JLabel();
-        gameTimerLbl.setBounds(350, 730, 430, 20);
+        gameTimerLbl.setBounds(450, 730, 500, 20);
         gameTimerLbl.setForeground(Color.black);
         add(gameTimerLbl);
     }
 
     private void setupInventoryInfoTA(SwingController controller) {
         inventoryInfoTA = new JTextArea(5, 40);
-        inventoryInfoTA.setBounds(25, 645, 430, 75);
+        inventoryInfoTA.setBounds(30, 645, 500, 75);
         inventoryInfoTA.setEditable(false);
         inventoryInfoTA.setLineWrap(true);
         inventoryInfoTA.setWrapStyleWord(true);
@@ -224,13 +223,13 @@ public class SwingUI extends JFrame {
 
     private void setupPlayerMessageLbl() {
         playerMessageLbl = new JLabel("", SwingConstants.CENTER);
-        playerMessageLbl.setBounds(25, 615, 430, 25);
+        playerMessageLbl.setBounds(30, 615, 500, 25);
         add(playerMessageLbl);
     }
 
     private void setupRoomInfoTA(SwingController controller) {
         roomInfoTA = new JTextArea(25, 40);
-        roomInfoTA.setBounds(25, 315, 430, 300);
+        roomInfoTA.setBounds(30, 315, 500, 300);
         roomInfoTA.setEditable(false);
         roomInfoTA.setLineWrap(true);
         roomInfoTA.setWrapStyleWord(true);
@@ -239,29 +238,29 @@ public class SwingUI extends JFrame {
     }
 
     private void setupImageContainer() {
-        Image roomImage = null;
-        try {
-            roomImage = ImageIO.read(new File("Game/Icons/masterbathroom.jpg"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        Image roomImage = null;
+//        try {
+//            roomImage = ImageIO.read(new File("Game/Icons/masterbathroom.jpg"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
-        roomImageContainer = new JLabel(new ImageIcon(roomImage), SwingConstants.CENTER);
-        roomImageContainer.setBounds(0, 50, 500, 260);
+        roomImageContainer = new JLabel(getResizedRoomImage("Game/Icons/masterbathroom.jpg"));
+        roomImageContainer.setBounds(30, 50, 500, 260);
         add(roomImageContainer);
     }
 
     private void setupImageTitle(Image imgTitle) {
         imageTitle = new ImageIcon(imgTitle);
         imageTitleContainer = new JLabel(imageTitle, SwingConstants.CENTER);
-        imageTitleContainer.setBounds(0, 10, 500, 40);
+        imageTitleContainer.setBounds(30, 10, 500, 40);
         add(imageTitleContainer);
     }
 
     private void setupMonster() {
         monsterInRoomLbl = new JLabel("The monster is Here!!!", SwingConstants.CENTER);
         monsterNearByLbl = new JLabel("The monster is close...", SwingConstants.CENTER);
-        monsterInRoomLbl.setBounds(25, 20, 430, 25);
+        monsterInRoomLbl.setBounds(30, 20, 500, 25);
         monsterNearByLbl.setBounds(monsterInRoomLbl.getBounds());
         monsterInRoomLbl.setForeground(Color.RED);
         monsterNearByLbl.setForeground(Color.BLACK);
@@ -288,7 +287,6 @@ public class SwingUI extends JFrame {
     }
 
     private void setupRoomItemPic(SwingController controller) {
-        //getContentPane().removeAll();
         roomImageContainer.removeAll();
         for (Item item : controller.getRoomItems()) {
             if (item.getItemImagePath() != null) {
@@ -311,8 +309,8 @@ public class SwingUI extends JFrame {
                     }
                 });
                 Random random = new Random();
-                int x = random.nextInt(400)+50;
-                int y = random.nextInt(150)+75;
+                int x = random.nextInt(425)+10;
+                int y = random.nextInt(190)+10;
                 roomItemLbl.setBounds(x, y, 50, 50);
                 roomImageContainer.add(roomItemLbl);
             }
@@ -377,7 +375,29 @@ public class SwingUI extends JFrame {
         monsterInRoomLbl.setVisible(false);
         monsterNearByLbl.setVisible(false);
         soundManager.stopExtraSFX();
-        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+        roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
+    }
+
+    private ImageIcon getResizedRoomImage(String imagePath){
+        Image img = null;
+        try {
+            img = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        img = img.getScaledInstance(500, 260, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
+    private ImageIcon getResizedMap(String imagePath){
+        Image img = null;
+        try {
+            img = ImageIO.read(new File(imagePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        img = img.getScaledInstance(560, 350, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
     }
 
     private void playRoomSounds(String roomText, String messageText) {
