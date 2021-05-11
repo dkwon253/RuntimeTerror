@@ -365,6 +365,10 @@ public class SwingUI extends JFrame {
         playerMessageLbl.setText("Game restarted");
         mapCommandBtn.setVisible(false);
         roomMap.setVisible(false);
+        inventoryBtn.setVisible(false);
+        playerInventory.setVisible(false);
+        playerInventory.updateUsableInventory();
+        setupRoomItemPic(controller);
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();

@@ -25,7 +25,6 @@ public class GameClient implements GameInterface, java.io.Serializable {
         newPostGameProcessor();
     }
 
-
     void newDatabase() {
         database = new Database();
     }
