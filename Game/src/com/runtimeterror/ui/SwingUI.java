@@ -404,8 +404,8 @@ public class SwingUI extends JFrame {
         }
         img = img.getScaledInstance(560, 350, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
-        soundManager.stopHeartSFX();
-        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+//        soundManager.stopHeartSFX();
+//        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
 
     }
 
