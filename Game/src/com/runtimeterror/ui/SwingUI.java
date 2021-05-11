@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+
 public class SwingUI extends JFrame {
 
     private SoundManager soundManager = new SoundManager();
@@ -79,7 +80,8 @@ public class SwingUI extends JFrame {
         setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
-        //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
+        //soundManager.playHeartSFX("Game/Sounds/heartbeatNorm.wav",true);
+
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
     }
@@ -377,6 +379,7 @@ public class SwingUI extends JFrame {
         monsterInRoomLbl.setVisible(false);
         monsterNearByLbl.setVisible(false);
         soundManager.stopExtraSFX();
+        soundManager.stopHeartSFX();
         roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
     }
 
@@ -400,16 +403,20 @@ public class SwingUI extends JFrame {
             monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
+            //soundManager.playHeartSFX("Game/Sounds/heartbeatFast", true);
         } else if (controller.isMonsterNear()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);
             soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
+            soundManager.playHeartSFX("Game/Sounds/heartbeatMed.wav", true);
+
         } else {
             imageTitleContainer.setVisible(true);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(false);
             soundManager.stopExtraSFX();
+            soundManager.stopHeartSFX();
         }
     }
 
