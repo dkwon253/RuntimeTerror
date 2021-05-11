@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 class GameProcessor {
-    Map<String, Result<?>> gameMap;
 
     GameProcessor(boolean test) {
         // test constructor
@@ -18,8 +17,8 @@ class GameProcessor {
     }
 
     void start(Map<String, Result<?>> gameMap) {
-        this.gameMap = gameMap;
         Parser.parseInput(gameMap);
+        processCombat(gameMap);
         processHelp(gameMap);
         processStairs(gameMap);
         processUse(gameMap);
@@ -34,6 +33,34 @@ class GameProcessor {
         processSkipPlayerTurn(gameMap);
     }
 
+    @SuppressWarnings("unchecked")
+    Map<String, Result<?>> processCombat(Map<String, Result<?>> gameMap) {
+        InputData inputData = (InputData) gameMap.get("inputData").getResult();
+        String verb = inputData.getVerb();
+        String noun = inputData.getNoun();
+        Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
+        if (playerCurrentRoom == monsterCurrentRoom) {
+            List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+            List<String> listOfWeapons = (List<String>) gameMap.get("listOfWeapons").getResult();
+            boolean isWeapon = listOfWeapons.stream().anyMatch(weaponItem -> weaponItem.equals(noun));
+            Item item = inventory.stream().filter(invItem -> invItem.getName().equals(noun)).findFirst().orElse(null);
+            if ("USE".equals(verb) && isWeapon && item != null) {
+                gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
+                gameMap.put("shouldUseItemFlag", new Result<>(true));
+                gameMap.put("itemUsedItem", new Result<>(item));
+                gameMap.put("itemUsed", new Result<>(noun));
+                gameMap.put("shouldDecreaseHealthFlag", new Result<>(false));
+                gameMap.put("monsterLabel", new Result<>("You fought the monster using your " + noun + " and won!"));
+            } else {
+                gameMap.put("monsterLabel", new Result<>("You chickened out and didn't fight the monster. You have lost health."));
+                gameMap.put("shouldDecreaseHealthFlag", new Result<>(true));
+                gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
+            }
+        }
+        return gameMap;
+    }
+
     Map<String, Result<?>> processHelp(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
@@ -44,13 +71,13 @@ class GameProcessor {
         if ("HELP".equals(verb)) {
             gameMap.put("askedForHelp", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
+            gameMap.put("viewLabel", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,HELP"));
         }
         return gameMap;
     }
 
     Map<String, Result<?>> processStairs(Map<String, Result<?>> gameMap) {
-        boolean isProcessed = (boolean) gameMap.getOrDefault("isProcessed", new Result<>(false)).getResult();
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
             return gameMap;
         }
@@ -69,7 +96,7 @@ class GameProcessor {
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("didChangeRoom", new Result<>(true));
             gameMap.put("playerCurrentRoom", new Result<>(stairsRoom));
-            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("The stairs have taken you to the " + stairsRoomName + "."));
         } else if ("stairs".equals(noun)) {
             gameMap.put("viewLabel", new Result<>("There are no stairs in " + currentRoom.getRoomName() + "."));
@@ -78,6 +105,7 @@ class GameProcessor {
         return gameMap;
     }
 
+    @SuppressWarnings("unchecked")
     Map<String, Result<?>> processUse(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
@@ -86,14 +114,22 @@ class GameProcessor {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String noun = inputData.getNoun();
         String verb = inputData.getVerb();
-        if ("USE".equals(verb) && noun != null) {
-            gameMap.put("hidden", new Result<>(false));
-            gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("triedToUseItem", new Result<>(true));
-            useItem(gameMap);
-        } else if("USE".equals(verb)) {
-            gameMap.put("viewLabel", new Result<>("You can't use that."));
+        List<String> nonUseItems = (List<String>) gameMap.get("nonUseItems").getResult();
+        List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+        if ("USE".equals(verb) && !nonUseItems.contains(noun)) {
+            Item foundItem = inventory.stream().filter((item) -> item.getName().equals(noun)).findFirst().orElse(null);
+            if (foundItem != null) {
+                gameMap.put("isProcessed", new Result<>(true));
+                gameMap.put("shouldUseItemFlag", new Result<>(true));
+                gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
+                gameMap.put("usedItem", new Result<>(true));
+                gameMap.put("itemUsed", new Result<>(noun));
+                gameMap.put("itemUsedItem", new Result<>(foundItem));
+                gameMap.put("viewLabel", new Result<>("You have used your " + foundItem.getName() + "."));
+            } else {
+                gameMap.put("isProcessed", new Result<>(true));
+                gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
+            }
         }
         return gameMap;
     }
@@ -103,22 +139,19 @@ class GameProcessor {
         if (isProcessed) {
             return gameMap;
         }
-
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
         String noun = inputData.getNoun();
         Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        if ("GET".equals(verb) && noun != null && currentRoom.doesItemExist(noun)) {
-            @SuppressWarnings("unchecked")
-            List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
-            inventory.add(currentRoom.getAndRemoveRoomItem(noun));
-            gameMap.put("didGetItem", new Result<>(true));
+        Item roomItem = currentRoom.doesItemExist(noun);
+        if ("GET".equals(verb) && noun != null && roomItem != null) {
+            gameMap.put("roomToRemoveItemFrom", new Result<>(currentRoom));
+            gameMap.put("itemToGet", new Result<>(noun));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("hidden", new Result<>(false));
-            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You have picked up a " + noun + "."));
+            gameMap.put("shouldGetItemFlag", new Result<>(true));
         } else if ("GET".equals(verb)) {
-            gameMap.put("triedToGetItem", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("The " + currentRoom.getRoomName() + " does not have that item."));
         }
@@ -137,15 +170,13 @@ class GameProcessor {
         String verb = inputData.getVerb();
         Rooms newRoom = availableRooms.get(noun);
         if ("GO".equals(verb) && newRoom != null) {
-            gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("playerCurrentRoom", new Result<>(newRoom));
-            gameMap.put("didChangeRoom", new Result<>(true));
-            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
-            gameMap.put("isValidDirection", new Result<>(true));
+            gameMap.put("roomToChangeTo", new Result<>(newRoom));
+            gameMap.put("shouldChangeRoomFlag", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You have changed rooms. You are now in the " + newRoom.getRoomName() + "."));
         } else if ("GO".equals(verb)) {
-            gameMap.put("triedToGoDirection", new Result<>(true));
+            gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You can't go that way!"));
         }
         return gameMap;
@@ -165,7 +196,7 @@ class GameProcessor {
         if ("LOOK".equals(verb) && foundItem != null) {
             gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>(foundItem.getDescription()));
         } else if ("LOOK".equals(verb)) {
             gameMap.put("triedToLook", new Result<>(true));
@@ -186,7 +217,7 @@ class GameProcessor {
         if ("HIDE".equals(verb) && currentRoom.getHidingLocation() != null) {
             gameMap.put("hidden", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("shouldMonsterChangeRooms", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You have hidden inside the " + currentRoom.getHidingLocation() + "."));
         } else if ("HIDE".equals(verb)) {
             gameMap.put("triedToHide", new Result<>(true));
@@ -225,8 +256,8 @@ class GameProcessor {
     }
 
     Map<String, Result<?>> processMoveMonster(Map<String, Result<?>> gameMap) {
-        boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
-        if (shouldMonsterChangeRooms) {
+        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
+        if (shouldMonsterChangeRoomFlag) {
             Random r = new Random();
             @SuppressWarnings("unchecked")
             Map<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
@@ -270,26 +301,5 @@ class GameProcessor {
 
     Map<String, Result<?>> processSkipPlayerTurn(Map<String, Result<?>> gameMap) {
         return gameMap;
-    }
-
-    @SuppressWarnings("unchecked")
-    void useItem(Map<String, Result<?>> gameMap) {
-        InputData inputData = (InputData) gameMap.get("inputData").getResult();
-        String noun = inputData.getNoun();
-        List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
-        Item itemToRemove = new Item();
-        gameMap.put("viewLabel", new Result<>("You don't have a(n) " + noun + "."));
-        for (Item item : inventory) {
-            if (item != null && noun.equals(item.getName())) {
-                gameMap.put("triedToUseItem", new Result<>(false));
-                gameMap.put("usedItem", new Result<>(true));
-                gameMap.put("itemUsed", new Result<>(noun));
-                gameMap.put("itemUsedItem", new Result<>(item));
-                gameMap.put("viewLabel", new Result<>("You have used your " + item.getName() + "."));
-                itemToRemove = item;
-                break;
-            }
-        }
-        inventory.remove(itemToRemove);
     }
 }

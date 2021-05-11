@@ -142,15 +142,8 @@ public class Rooms implements java.io.Serializable {
         roomsItems.add(item);
     }
 
-    public boolean doesItemExist(String item) {
-        boolean result = false;
-        for (Item roomItem : roomsItems) {
-            if (roomItem.getName().equals(item)) {
-                result = true;
-                break;
-            }
-        }
-        return result;
+    public Item doesItemExist(String item) {
+        return roomsItems.stream().filter(roomItem -> roomItem.getName().equals(item)).findFirst().orElse(null);
     }
 
     public String dialogueDeterminer(String item) {
@@ -174,5 +167,9 @@ public class Rooms implements java.io.Serializable {
 
     public String getRoomType() {
         return roomType;
+    }
+
+    public List<Item> getRoomsItems() {
+        return roomsItems;
     }
 }

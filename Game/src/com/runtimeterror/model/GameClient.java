@@ -25,7 +25,6 @@ public class GameClient implements GameInterface, java.io.Serializable {
         newPostGameProcessor();
     }
 
-
     void newDatabase() {
         database = new Database();
     }
@@ -144,8 +143,19 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+
+    public List<Item> getRoomItems() {
+        Rooms room = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        return room.getRoomsItems();
+    }
+
     public boolean isPlayerClosedToDying() {
         return (boolean) gameMap.get("isCloseToDying").getResult();
+    }
+
+    @Override
+    public String getMonsterLabel() {
+        return (String) gameMap.get("monsterLabel").getResult();
     }
 
     @Override
