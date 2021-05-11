@@ -13,15 +13,15 @@ public class LoadRoomData {
     public static Map<String, Result<?>> loadData() throws IOException {
         Map<String, Result<?>> gameMap = new HashMap<>();
         HashMap<String, Rooms> roomList = new HashMap<>();
+        List<String> weaponList = new ArrayList<>();
         List<String> listOfItems = new ArrayList<>();
-        setupRoomData(roomList, listOfItems);
+        setupRoomData(roomList, listOfItems, weaponList);
         setupNeighbors(roomList);
-        setupGameMapDefaults(gameMap, roomList, listOfItems);
-        setUpStaticLabels(gameMap);
+        setupGameMapDefaults(gameMap, roomList, listOfItems, weaponList);
         return gameMap;
     }
 
-    private static void setupRoomData(HashMap<String, Rooms> roomList, List<String> listOfItems) throws IOException {
+    private static void setupRoomData(HashMap<String, Rooms> roomList, List<String> listOfItems, List<String> weaponList) throws IOException {
         AtomicInteger i = new AtomicInteger();
         Files.lines(Path.of("Game/RoomData/data.csv")).forEach(line -> {
             String[] tokens = line.split(",");
@@ -45,12 +45,15 @@ public class LoadRoomData {
                 newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath,
                         stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
 
+
             } else {
                 listOfItems.add(itemName);
                 Item item = new Item(itemName, itemType, itemDescription, itemImagePath);
                 newRoom = new Rooms(roomName, description, hidingSpot, item, path, mapPath,
                         stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
-
+                if ("weapon".equals(itemType)) {
+                    weaponList.add(itemName);
+                }
             }
             if (i.get() == 0) {
                 defaultRoom = newRoom;
@@ -91,7 +94,7 @@ public class LoadRoomData {
         });
     }
 
-    private static void setupGameMapDefaults(Map<String, Result<?>> gameMap, HashMap<String, Rooms> roomList, List<String> listOfItems) {
+    private static void setupGameMapDefaults(Map<String, Result<?>> gameMap, HashMap<String, Rooms> roomList, List<String> listOfItems, List<String> weaponList) {
         gameMap.put("monsterCurrentRoom", new Result<>(new Rooms()));
         gameMap.put("playerCurrentRoom", new Result<>(defaultRoom));
         gameMap.put("availableRooms", new Result<>(defaultRoom.getRoomNeighbors()));
@@ -104,32 +107,14 @@ public class LoadRoomData {
         gameMap.put("helpText", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
         gameMap.put("listOfItems", new Result<>(listOfItems));
+        gameMap.put("listOfWeapons", new Result<>(weaponList));
         gameMap.put("timeToEndGame", new Result<>(300));
         gameMap.put("lowPlayerHealth", new Result<>(5));
-        setGameMapRoundDefaults(gameMap);
-    }
-
-    private static void setUpStaticLabels(Map<String, Result<?>> gameMap) {
-        Map<String, String> staticLabels  = new HashMap<>();
-        staticLabels.put("didUseStairs", "You used the stairs.");
-        staticLabels.put("triedToUseStairs", "There are no stairs in this room.");
-        staticLabels.put("triedToUseItem", "You don't have that item.");
-        staticLabels.put("usedItem", "You used an item.");
-        staticLabels.put("didGetItem", "You picked up an item.");
-        staticLabels.put("didChangeRoom", "You went in a direction");
-        staticLabels.put("triedToGoDirection", "You can't go that direction.");
-        staticLabels.put("triedToGetItem", "The room doesn't have that item.");
-        staticLabels.put("triedToHide", "You can't hide in this room.");
-        staticLabels.put("didLoadGame", "Your previous save has been loaded.");
-        staticLabels.put("triedToLoadGame", "You cannot load that game.");
-        staticLabels.put("triedToSaveGame", "There was a problem saving the game.");
-        staticLabels.put("triedToLook", "You cannot at ");
-        staticLabels.put("didLook", " ");
-        staticLabels.put("didSaveGame", "Your game was saved.");
-        staticLabels.put("", "");
-        gameMap.put("staticLabels", new Result<>(staticLabels));
         gameMap.put("playerHealth", new Result<>(15));
         gameMap.put("monsterDamage", new Result<>(5));
+        gameMap.put("nonUseItems", new Result<>(new ArrayList<>(Arrays.asList("stairs", "elevator"))));
+        gameMap.put("weaponInventory", new Result<>(new ArrayList<Item>()));
+        setGameMapRoundDefaults(gameMap);
     }
 
     public static void setGameMapRoundDefaults(Map<String, Result<?>> gameMap) {
@@ -145,7 +130,7 @@ public class LoadRoomData {
         gameMap.put("itemUsedItem", new Result<>(new Item()));
         gameMap.put("triedToUseItem", new Result<>(false));
         gameMap.put("askedForHelp", new Result<>(false));
-        gameMap.put("shouldMonsterChangeRooms", new Result<>(false));
+        gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(false));
         gameMap.put("didMonsterMove", new Result<>(false));
         gameMap.put("isGameOver", new Result<>(false));
         gameMap.put("isKilledByMonster", new Result<>(false));
@@ -162,5 +147,17 @@ public class LoadRoomData {
         gameMap.put("dialogueLabel", new Result<>(""));
         gameMap.put("didIncreaseHealth", new Result<>(false));
         gameMap.put("isCloseToDying", new Result<>(false));
+        gameMap.put("isCombat", new Result<>(false));
+        gameMap.put("didFightMonster", new Result<>(false));
+        gameMap.put("shouldDecreaseHealthFlag", new Result<>(false));
+        gameMap.put("shouldUseItemFlag", new Result<>(false));
+        gameMap.put("shouldGetItemFlag", new Result<>(false));
+        gameMap.put("itemToGetItem", new Result<>(new Item()));
+        gameMap.put("itemToGet", new Result<>(""));
+        gameMap.put("roomToRemoveItemFrom", new Result<>(new Rooms()));
+        gameMap.put("roomToChangeTo", new Result<>(new Rooms()));
+        gameMap.put("shouldChangeRoomFlag", new Result<>(false));
+        gameMap.put("monsterLabel", new Result<>(""));
+
     }
 }

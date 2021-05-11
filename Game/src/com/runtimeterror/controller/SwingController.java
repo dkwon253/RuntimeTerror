@@ -85,4 +85,7 @@ public class SwingController {
     public boolean hasItems() {return gi.hasItems();}
 
     public boolean isCloseToDying() { return gi.isPlayerClosedToDying(); }
+
+    public String getMonsterLabel() {return gi.getMonsterLabel();}
+
 }

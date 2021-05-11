@@ -59,4 +59,6 @@ public interface GameInterface {
 
     boolean isPlayerClosedToDying();
 
+    String getMonsterLabel();
+
 }

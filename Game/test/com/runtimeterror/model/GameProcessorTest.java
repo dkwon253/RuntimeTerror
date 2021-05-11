@@ -6,11 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -131,19 +127,19 @@ public class GameProcessorTest {
     }
 
     @Test
-    public void testProcessUse_shouldMonsterChangeRoomsIsTrue_whenVerbIsUSE() {
+    public void testProcessUse_shouldMonsterChangeRoomFlagIsTrue_whenVerbIsUSE() {
         gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
         gameProcessor.processUse(gameMap);
-        boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
-        assertTrue(shouldMonsterChangeRooms);
+        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
+        assertTrue(shouldMonsterChangeRoomFlag);
     }
 
     @Test
-    public void testProcessUse_shouldMonsterChangeRoomsIsFalse_whenVerbIsNotUSE() {
+    public void testProcessUse_shouldMonsterChangeRoomFlagIsFalse_whenVerbIsNotUSE() {
         gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
         gameProcessor.processUse(gameMap);
-        boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
-        assertFalse(shouldMonsterChangeRooms);
+        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
+        assertFalse(shouldMonsterChangeRoomFlag);
     }
 
     @Test
@@ -216,15 +212,15 @@ public class GameProcessorTest {
     }
 
     @Test
-    public void testProcessGet_shouldMonsterChangeRoomsIsTrue_whenVerbIsGETAndItemInRoom() {
+    public void testProcessGet_shouldMonsterChangeRoomFlagIsTrue_whenVerbIsGETAndItemInRoom() {
         gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
         Rooms newRoom = new Rooms();
         Item newItem = new Item("axe", "axe", "sharp axe", "");
         newRoom.setItem(newItem);
         gameMap.put("playerCurrentRoom", new Result<>(newRoom));
         gameProcessor.processGet(gameMap);
-        boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
-        assertTrue(shouldMonsterChangeRooms);
+        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
+        assertTrue(shouldMonsterChangeRoomFlag);
     }
 
     @Test
@@ -259,29 +255,25 @@ public class GameProcessorTest {
     }
 
     @Test
-    public void testProcessGo_shouldMonsterChangeRoomsIsTrue_whenVerbIsGOAndDirectionIsValid() {
-        Rooms playerCurrentRoomBeforeRun = new Rooms();
+    public void testProcessGo_shouldMonsterChangeRoomFlagIsTrue_whenVerbIsGOAndDirectionIsValid() {
         gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
         Rooms validRoom = new Rooms();
         Map<String, Rooms> availableRooms = new HashMap<>();
         availableRooms.put("east", validRoom);
         gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
         gameProcessor.processGo(gameMap);
-        boolean shouldMonsterChangeRooms = (boolean) gameMap.get("shouldMonsterChangeRooms").getResult();
+        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
 
-        assertTrue(shouldMonsterChangeRooms);
+        assertTrue(shouldMonsterChangeRoomFlag);
     }
 
     @Test
     public void testProcessGo_didChangeRoomIsTrue_whenVerbIsGOAndDirectionIsValid() {
-        Rooms playerCurrentRoomBeforeRun = new Rooms();
         gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
         Rooms validRoom = new Rooms();
         Map<String, Rooms> availableRooms = new HashMap<>();
         availableRooms.put("east", validRoom);
         gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
         gameProcessor.processGo(gameMap);
         boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
 
@@ -290,13 +282,11 @@ public class GameProcessorTest {
 
     @Test
     public void testProcessGo_hiddenIsFalse_whenVerbIsGOAndDirectionIsValid() {
-        Rooms playerCurrentRoomBeforeRun = new Rooms();
         gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
         Rooms validRoom = new Rooms();
         Map<String, Rooms> availableRooms = new HashMap<>();
         availableRooms.put("east", validRoom);
         gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
         gameProcessor.processGo(gameMap);
         boolean hidden = (boolean) gameMap.get("hidden").getResult();
 
@@ -305,13 +295,11 @@ public class GameProcessorTest {
 
     @Test
     public void testProcessGo_didChangeRoomIsFalse_whenVerbIsGOAndDirectionIsInvalid() {
-        Rooms playerCurrentRoomBeforeRun = new Rooms();
         gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
         Rooms validRoom = new Rooms();
         Map<String, Rooms> availableRooms = new HashMap<>();
         availableRooms.put("west", validRoom);
         gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
         gameProcessor.processGo(gameMap);
         boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
 
@@ -320,13 +308,11 @@ public class GameProcessorTest {
 
     @Test
     public void testProcessGo_didChangeRoomIsFalse_whenVerbIsNotGoAndDirectionIsValid() {
-        Rooms playerCurrentRoomBeforeRun = new Rooms();
         gameMap.put("inputData", new Result<>(new InputData("GET", "east")));
         Rooms validRoom = new Rooms();
         Map<String, Rooms> availableRooms = new HashMap<>();
         availableRooms.put("east", validRoom);
         gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
         gameProcessor.processGo(gameMap);
         boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
 
@@ -432,7 +418,7 @@ public class GameProcessorTest {
         gameMap.put("itemUsed", new Result<>(""));
         gameMap.put("usedItem", new Result<>(false));
         gameMap.put("askedForHelp", new Result<>(false));
-        gameMap.put("shouldMonsterChangeRooms", new Result<>(false));
+        gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(false));
         gameMap.put("didMonsterMove", new Result<>(false));
         gameMap.put("isGameOver", new Result<>(false));
         gameMap.put("isKilledByMonster", new Result<>(false));
@@ -452,6 +438,21 @@ public class GameProcessorTest {
         gameMap.put("itemUsedItem", new Result<>(new Item()));
         gameMap.put("didIncreaseHealth", new Result<>(false));
         gameMap.put("timeToEndGame", new Result<>(300));
+        gameMap.put("listOfWeapons", new Result<>(new ArrayList<String>()));
+        gameMap.put("isCloseToDying", new Result<>(false));
+        gameMap.put("isCombat", new Result<>(false));
+        gameMap.put("lowPlayerHealth", new Result<>(5));
+        gameMap.put("didFightMonster", new Result<>(false));
+        gameMap.put("shouldDecreaseHealth", new Result<>(false));
+        gameMap.put("shouldUseItemFlag", new Result<>(false));
+        gameMap.put("nonUseItems", new Result<>(new ArrayList<>(Arrays.asList("stairs", "elevator"))));
+        gameMap.put("weaponInventory", new Result<>(new ArrayList<Item>()));
+        gameMap.put("itemToGetItem", new Result<>(new Item()));
+        gameMap.put("itemToGet", new Result<>(""));
+        gameMap.put("roomToRemoveItemFrom", new Result<>(new Rooms()));
+        gameMap.put("roomToChangeTo", new Result<>(new Rooms()));
+        gameMap.put("shouldChangeRoomFlag", new Result<>(false));
+        gameMap.put("monsterLabel", new Result<>(""));
         return gameMap;
     }
 }

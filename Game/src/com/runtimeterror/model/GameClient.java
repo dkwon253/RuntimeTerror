@@ -154,6 +154,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public String getMonsterLabel() {
+        return (String) gameMap.get("monsterLabel").getResult();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }
