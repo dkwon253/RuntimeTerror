@@ -403,13 +403,13 @@ public class SwingUI extends JFrame {
             monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
-            soundManager.playHeartSFX("Game/Sounds/heartbeatFast.mp3", true);
+            soundManager.playHeartSFX("Game/Sounds/heartbeatFast.wav", true);
         } else if (controller.isMonsterNear()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);
             soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
-            soundManager.playHeartSFX("Game/Sounds/heartbeatMed.mp3", true);
+            soundManager.playHeartSFX("Game/Sounds/heartbeatMed.wav", true);
 
         } else {
             imageTitleContainer.setVisible(true);
