@@ -118,12 +118,12 @@ public class SwingUI extends JFrame {
         }
         playerInventory.updateUsableInventory();
         handleMonsterData();
-        System.out.println(controller.getPlayerItems());
+//        System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
-        System.out.println(controller.isMonsterNear());
+//        System.out.println(controller.isMonsterNear());
         if (controller.isGameOver()) {
-            System.out.println("Handle game over case here...");
+//            System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());
         }
         controller.resetRound();
@@ -300,7 +300,7 @@ public class SwingUI extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
                         processSubmitInput("get " + item.getName());
-                        System.out.println(item.getName());
+//                        System.out.println(item.getName());
                     }
                 });
                 Random random = new Random();
@@ -467,7 +467,7 @@ public class SwingUI extends JFrame {
     private class HandleVolumeControlsBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Vol button clicked.");
+//            System.out.println("Vol button clicked.");
             SoundControls sc = new SoundControls("Volume", soundManager, getLocation());
             sc.setVisible(true);
         }
@@ -535,7 +535,7 @@ public class SwingUI extends JFrame {
                         public void mouseClicked(MouseEvent e) {
                             super.mouseClicked(e);
                             processSubmitInput("use " + item.getName());
-                            System.out.println(item.getName());
+//                            System.out.println(item.getName());
                         }
                     });
                     add(playerUsableInventoryLbl);
