@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+
 public class SwingUI extends JFrame {
 
     private SoundManager soundManager = new SoundManager();
@@ -79,7 +80,8 @@ public class SwingUI extends JFrame {
         setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
-        //soundManager.playExtraSFX("Game/Sounds/heartbeat-norm",true);
+        //soundManager.playHeartSFX("Game/Sounds/heartbeatNorm.wav",true);
+
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
     }
@@ -361,6 +363,10 @@ public class SwingUI extends JFrame {
         playerMessageLbl.setText("Game restarted");
         mapCommandBtn.setVisible(false);
         roomMap.setVisible(false);
+        inventoryBtn.setVisible(false);
+        playerInventory.setVisible(false);
+        playerInventory.updateUsableInventory();
+        setupRoomItemPic(controller);
         String roomData = controller.getRoomDesc();
         roomInfoTA.setText(roomData);
         String invData = controller.getInventory();
@@ -398,6 +404,9 @@ public class SwingUI extends JFrame {
         }
         img = img.getScaledInstance(560, 350, Image.SCALE_SMOOTH);
         return new ImageIcon(img);
+        soundManager.stopHeartSFX();
+        roomImageContainer.setIcon(new ImageIcon(controller.getRoomImagePath()));
+
     }
 
     private void playRoomSounds(String roomText, String messageText) {
@@ -420,16 +429,20 @@ public class SwingUI extends JFrame {
             monsterInRoomLbl.setVisible(true);
             monsterNearByLbl.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
+            soundManager.playHeartSFX("Game/Sounds/heartbeatFast.wav", true);
         } else if (controller.isMonsterNear()) {
             imageTitleContainer.setVisible(false);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(true);
             soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
+            soundManager.playHeartSFX("Game/Sounds/heartbeatMed.wav", true);
+
         } else {
             imageTitleContainer.setVisible(true);
             monsterInRoomLbl.setVisible(false);
             monsterNearByLbl.setVisible(false);
             soundManager.stopExtraSFX();
+            soundManager.stopHeartSFX();
         }
     }
 
