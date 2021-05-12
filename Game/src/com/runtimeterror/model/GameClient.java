@@ -159,6 +159,16 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public Map<String, Rooms> getAvailableRooms() {
+        return (Map<String, Rooms>) gameMap.get("availableRooms").getResult();
+    }
+
+    @Override
+    public boolean hasStairs() {
+        return (boolean) gameMap.get("hasStairs").getResult();
+    }
+
+    @Override
     public int getMonsterLocation() {
         return 0;
     }
