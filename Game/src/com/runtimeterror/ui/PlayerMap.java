@@ -13,6 +13,7 @@ public class PlayerMap extends JFrame {
     public PlayerMap() {
         // setting the JFrame up
         setSize(560, 350);
+        setLocationRelativeTo(null);
         setResizable(false);
         setTitle("Player Map");
         setLocation(500, 500);

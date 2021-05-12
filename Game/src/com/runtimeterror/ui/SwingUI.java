@@ -20,28 +20,16 @@ import java.util.Random;
 
 public class SwingUI extends JFrame {
 
-    private SoundManager soundManager = new SoundManager();
-    private PlayerMap roomMap = new PlayerMap();
-    private SwingController controller;
+    private final SoundManager soundManager = new SoundManager();
+    private final PlayerMap roomMap = new PlayerMap();
+    private final SwingController controller;
+    private final PlayerInventory playerInventory;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA;
-    private JTextArea inventoryInfoTA;
+    private JTextArea roomInfoTA, inventoryInfoTA;
     private JTextField playerInputTF;
-    private JLabel playerStateLbl;
-    private JLabel gameTimerLbl;
-    private JLabel playerHealthLbl;
-    private JLabel saveGameMsgLbl;
-    private JLabel playerMessageLbl;
-    private JLabel monsterLabel;
-    private PlayerInventory playerInventory;
-    private JLabel imageTitleContainer;
-    private JLabel roomImageContainer;
-    private ImageIcon imageTitle;
-    private JButton mapCommandBtn;
-    private JButton inventoryBtn;
-    private JButton volumeControlsBtn;
-    private JButton submitCommandBtn;
+    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleLbl;
+    private JButton mapCommandBtn, inventoryBtn;
     private int gameTime;
     private Timer timer;
 
@@ -49,8 +37,8 @@ public class SwingUI extends JFrame {
     public SwingUI(String title, SwingController controller) {
         super(title);
         this.controller = controller;
-        setLocation(100, 100);
         setSize(FRAME_X_SIZE, FRAME_Y_SIZE);
+        setLocationRelativeTo(null);
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -132,7 +120,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupVolumeControlsBtn() {
-        volumeControlsBtn = new JButton();
+        JButton volumeControlsBtn = new JButton();
         volumeControlsBtn.setBounds(45, 810, 50, 50);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
@@ -147,7 +135,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupSubmitCommandBtn() {
-        submitCommandBtn = new JButton();
+        JButton submitCommandBtn = new JButton();
         submitCommandBtn.setBounds(455, 825, 75, 25);
         submitCommandBtn.setText("Do it");
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
@@ -180,7 +168,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupSaveGameMsgLbl() {
-        saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
+        JLabel saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
         saveGameMsgLbl.setBounds(30, 780, 500, 25);
         JLabel label = new JLabel("I'm bold");
         Font font = new Font("Courier", Font.BOLD, 12);
@@ -253,7 +241,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupImageTitle(Image imgTitle) {
-        imageTitle = new ImageIcon(imgTitle);
+        ImageIcon imageTitle = new ImageIcon(imgTitle);
         imageTitleContainer = new JLabel(imageTitle, SwingConstants.CENTER);
         imageTitleContainer.setBounds(30, 10, 500, 40);
         add(imageTitleContainer);
@@ -306,8 +294,8 @@ public class SwingUI extends JFrame {
                     }
                 });
                 Random random = new Random();
-                int x = random.nextInt(425)+10;
-                int y = random.nextInt(190)+10;
+                int x = random.nextInt(425) + 10;
+                int y = random.nextInt(190) + 10;
                 roomItemLbl.setBounds(x, y, 50, 50);
                 roomImageContainer.add(roomItemLbl);
             }
@@ -322,7 +310,7 @@ public class SwingUI extends JFrame {
             setDirectionLabel(entry, "west", 0, 105);
         }
 
-        if (controller.hasStairs()){
+        if (controller.hasStairs()) {
             JLabel stairsLbl = new JLabel();
             Image scaledImage = null;
             Image stairs = null;
@@ -349,11 +337,11 @@ public class SwingUI extends JFrame {
     }
 
     private void setDirectionLabel(Map.Entry<String, Rooms> entry, String direction, int x, int y) {
-        if (entry.getKey().equals(direction) && entry.getValue() != null){
+        if (entry.getKey().equals(direction) && entry.getValue() != null) {
             JLabel directionLbl = new JLabel();
             Image scaledImage = null;
             Image directionImg = null;
-            String filePath = "Game/Icons/" + direction +".jpg";
+            String filePath = "Game/Icons/" + direction + ".jpg";
             try {
                 directionImg = ImageIO.read(new File(filePath));
                 scaledImage = directionImg.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
@@ -429,14 +417,14 @@ public class SwingUI extends JFrame {
         setupTimer();
         handleMonsterData();
         playerHealthLbl.setForeground(Color.green);
-        playerHealthLbl.setText("Health: " +controller.getPlayerHealth());
+        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         imageTitleContainer.setVisible(true);
         monsterLabel.setVisible(false);
         soundManager.stopExtraSFX();
         roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
     }
 
-    private ImageIcon getResizedRoomImage(String imagePath){
+    private ImageIcon getResizedRoomImage(String imagePath) {
         Image img = null;
         try {
             img = ImageIO.read(new File(imagePath));
@@ -447,7 +435,7 @@ public class SwingUI extends JFrame {
         return new ImageIcon(img);
     }
 
-    private ImageIcon getResizedMap(String imagePath){
+    private ImageIcon getResizedMap(String imagePath) {
         Image img = null;
         try {
             img = ImageIO.read(new File(imagePath));
@@ -557,7 +545,7 @@ public class SwingUI extends JFrame {
         private void changeTimerColor() {
             if (gameTime <= 60) {
                 gameTimerLbl.setForeground(Color.red);
-            } else if(gameTime <= 120) {
+            } else if (gameTime <= 120) {
                 gameTimerLbl.setForeground(Color.orange);
             } else {
                 gameTimerLbl.setForeground(Color.black);

@@ -42,7 +42,7 @@ public class Parser {
             }
         }
         JSONParser jsonParser = new JSONParser();
-        try (FileReader reader = new FileReader("Game/jsonData/verb.json")) {
+        try (FileReader reader = new FileReader("Game/jsondata/verb.json")) {
             Object obj = jsonParser.parse(reader);
             //Object obj = new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
             JSONObject verbs = (JSONObject) obj;
