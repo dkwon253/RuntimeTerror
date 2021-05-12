@@ -7,11 +7,13 @@ import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -304,6 +306,16 @@ public class SwingUI extends JFrame {
                         processSubmitInput("get " + item.getName());
 //                        System.out.println(item.getName());
                     }
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        Border border = BorderFactory.createLineBorder(Color.YELLOW, 1);
+                        roomItemLbl.setBorder(border);
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        roomItemLbl.setBorder(null);
+                    }
                 });
                 Random random = new Random();
                 int x = random.nextInt(425)+10;
@@ -326,9 +338,9 @@ public class SwingUI extends JFrame {
             JLabel stairsLbl = new JLabel();
             Image scaledImage = null;
             Image stairs = null;
-            String filePath = "Game/Icons/stairs.jpg";
+            String filePath = "Game/Icons/stairs.png";
             try {
-                stairs = ImageIO.read(new File(filePath));
+                stairs = getTransparentImg(ImageIO.read(new File(filePath)), .5f);
                 scaledImage = stairs.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -339,6 +351,16 @@ public class SwingUI extends JFrame {
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
                     processSubmitInput("take stairs");
+                }
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    Border border = BorderFactory.createLineBorder(Color.gray, 1);
+                    stairsLbl.setBorder(border);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    stairsLbl.setBorder(null);
                 }
             });
             stairsLbl.setBounds(0, 210, 50, 50);
@@ -353,9 +375,9 @@ public class SwingUI extends JFrame {
             JLabel directionLbl = new JLabel();
             Image scaledImage = null;
             Image directionImg = null;
-            String filePath = "Game/Icons/" + direction +".jpg";
+            String filePath = "Game/Icons/" + direction +".png";
             try {
-                directionImg = ImageIO.read(new File(filePath));
+                directionImg = getTransparentImg(ImageIO.read(new File(filePath)), .5f);
                 scaledImage = directionImg.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -367,10 +389,30 @@ public class SwingUI extends JFrame {
                     super.mouseClicked(e);
                     processSubmitInput("go " + entry.getKey());
                 }
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    Border border = BorderFactory.createLineBorder(Color.gray, 1);
+                    directionLbl.setBorder(border);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    directionLbl.setBorder(null);
+                }
             });
             directionLbl.setBounds(x, y, 50, 50);
             roomImageContainer.add(directionLbl);
         }
+    }
+
+    private Image getTransparentImg(Image image, float opacity){
+        BufferedImage img = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        Composite c = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+        g.setComposite(c);
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return img;
     }
 
     private void endGame(boolean isKilled) {
