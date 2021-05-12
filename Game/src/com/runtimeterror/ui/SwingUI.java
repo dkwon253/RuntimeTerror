@@ -32,6 +32,8 @@ public class SwingUI extends JFrame {
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextButton;
     private int gameTime;
+    private Image scaledTransparentStairs;
+    private Image scaledImage;
     private static final Font titleFont = new Font("Times New Roman", Font.BOLD, 30);
     private static final Font normalFont = new Font("Times New Roman", Font.PLAIN, 15);
     private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
@@ -589,12 +591,12 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private class HandleScreenClick implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            setupGame(controller);
-        }
-    }
+//    private class HandleScreenClick implements ActionListener {
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+//            setupGame(controller);
+//        }
+//    }
 
 
     private class HandlePlayerMapBtnClick implements ActionListener {
