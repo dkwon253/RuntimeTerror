@@ -260,7 +260,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupMonster() {
-        monsterInRoomLbl = new JLabel("The monster is Here!!!", SwingConstants.CENTER);
+        monsterInRoomLbl = new JLabel("The monster is here!!!", SwingConstants.CENTER);
         monsterNearByLbl = new JLabel("The monster is close...", SwingConstants.CENTER);
         monsterInRoomLbl.setBounds(30, 20, 500, 25);
         monsterNearByLbl.setBounds(monsterInRoomLbl.getBounds());
