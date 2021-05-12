@@ -637,10 +637,13 @@ public class SwingUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource().equals(easyBtn)) {
+                controller.setupGameDifficulty("easy");
                 startGame(controller);
             } else if (e.getSource().equals(mediumBtn)) {
+                controller.setupGameDifficulty("medium");
                 startGame(controller);
             } else if (e.getSource().equals(hardBtn)) {
+                controller.setupGameDifficulty("hard");
                 startGame(controller);
             }
         }
