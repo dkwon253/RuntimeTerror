@@ -1,8 +1,10 @@
 package com.runtimeterror.controller;
 
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Rooms;
 
 import java.util.List;
+import java.util.Map;
 
 public interface GameInterface {
     // Used to get a formatted string object of the room information.
@@ -60,5 +62,9 @@ public interface GameInterface {
     boolean isPlayerClosedToDying();
 
     String getMonsterLabel();
+
+    Map<String, Rooms> getAvailableRooms();
+
+    boolean hasStairs();
 
 }

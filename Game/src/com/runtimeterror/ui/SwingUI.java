@@ -2,6 +2,7 @@ package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Rooms;
 import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
@@ -13,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -287,10 +289,10 @@ public class SwingUI extends JFrame {
             if (item.getItemImagePath() != null) {
                 JLabel roomItemLbl = new JLabel();
                 Image scaledImage = null;
-                Image usableInventory = null;
+                Image itemImg = null;
                 try {
-                    usableInventory = ImageIO.read(new File(item.getItemImagePath()));
-                    scaledImage = usableInventory.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    itemImg = ImageIO.read(new File(item.getItemImagePath()));
+                    scaledImage = itemImg.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -310,8 +312,65 @@ public class SwingUI extends JFrame {
                 roomImageContainer.add(roomItemLbl);
             }
         }
+
+        Map<String, Rooms> map = controller.getAvailableRooms();
+        for (Map.Entry<String, Rooms> entry : map.entrySet()) {
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            setDirectionLabel(entry, "north", 225, 0);
+            setDirectionLabel(entry, "south", 225, 210);
+            setDirectionLabel(entry, "east", 450, 105);
+            setDirectionLabel(entry, "west", 0, 105);
+        }
+
+        if (controller.hasStairs()){
+            JLabel stairsLbl = new JLabel();
+            Image scaledImage = null;
+            Image stairs = null;
+            String filePath = "Game/Icons/stairs.jpg";
+            try {
+                stairs = ImageIO.read(new File(filePath));
+                scaledImage = stairs.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stairsLbl.setIcon(new ImageIcon(scaledImage));
+            stairsLbl.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    processSubmitInput("take stairs");
+                }
+            });
+            stairsLbl.setBounds(0, 210, 50, 50);
+            roomImageContainer.add(stairsLbl);
+        }
         revalidate();
         repaint();
+    }
+
+    private void setDirectionLabel(Map.Entry<String, Rooms> entry, String direction, int x, int y) {
+        if (entry.getKey().equals(direction) && entry.getValue() != null){
+            JLabel directionLbl = new JLabel();
+            Image scaledImage = null;
+            Image directionImg = null;
+            String filePath = "Game/Icons/" + direction +".jpg";
+            try {
+                directionImg = ImageIO.read(new File(filePath));
+                scaledImage = directionImg.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            directionLbl.setIcon(new ImageIcon(scaledImage));
+            directionLbl.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    processSubmitInput("go " + entry.getKey());
+                }
+            });
+            directionLbl.setBounds(x, y, 50, 50);
+            roomImageContainer.add(directionLbl);
+        }
     }
 
     private void endGame(boolean isKilled) {
