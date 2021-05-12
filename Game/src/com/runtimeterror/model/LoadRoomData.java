@@ -95,6 +95,13 @@ public class LoadRoomData {
     }
 
     private static void setupGameMapDefaults(Map<String, Result<?>> gameMap, HashMap<String, Rooms> roomList, List<String> listOfItems, List<String> weaponList) {
+        List<Integer> easy = List.of(20, 4, 600);
+        List<Integer> medium = List.of(17, 3, 500);
+        List<Integer> hard = List.of(15, 2, 400);
+        HashMap<String, List<Integer>> gameLevels = new HashMap<>();
+        gameLevels.put("easy", easy);
+        gameLevels.put("medium", medium);
+        gameLevels.put("hard", hard);
         gameMap.put("monsterCurrentRoom", new Result<>(new Rooms()));
         gameMap.put("playerCurrentRoom", new Result<>(defaultRoom));
         gameMap.put("availableRooms", new Result<>(defaultRoom.getRoomNeighbors()));
@@ -114,6 +121,7 @@ public class LoadRoomData {
         gameMap.put("monsterDamage", new Result<>(5));
         gameMap.put("nonUseItems", new Result<>(new ArrayList<>(Arrays.asList("stairs", "elevator"))));
         gameMap.put("weaponInventory", new Result<>(new ArrayList<Item>()));
+        gameMap.put("difficultyMap", new Result<>(gameLevels));
         setGameMapRoundDefaults(gameMap);
     }
 

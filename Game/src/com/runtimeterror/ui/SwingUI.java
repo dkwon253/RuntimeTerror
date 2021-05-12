@@ -36,7 +36,6 @@ public class SwingUI extends JFrame {
     private static final Font normalFont = new Font("Times New Roman", Font.PLAIN, 15);
     private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
-
     public SwingUI(String title, SwingController controller) {
         super(title);
         this.controller = controller;
@@ -107,6 +106,7 @@ public class SwingUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         setupImageTitle(imgTitle);
         setupMonster();
@@ -588,6 +588,14 @@ public class SwingUI extends JFrame {
             processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
+
+    private class HandleScreenClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setupGame(controller);
+        }
+    }
+
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
