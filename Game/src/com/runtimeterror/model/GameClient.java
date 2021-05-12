@@ -159,6 +159,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, Rooms> getAvailableRooms() {
         return (Map<String, Rooms>) gameMap.get("availableRooms").getResult();
     }
@@ -167,6 +168,17 @@ public class GameClient implements GameInterface, java.io.Serializable {
     public boolean hasStairs() {
         return (boolean) gameMap.get("hasStairs").getResult();
     }
+
+    @Override
+    public void setupDifficulty(String level) {
+        @SuppressWarnings("unchecked")
+        HashMap<String, List<Integer>> difficultyMap = (HashMap<String, List<Integer>>) gameMap.get("difficultyMap").getResult();
+        List<Integer> levelList = difficultyMap.get(level);
+        gameMap.put("playerHealth", new Result<>(levelList.get(0)));
+        gameMap.put("monsterDamage", new Result<>(levelList.get(1)));
+        gameMap.put("timeToEndGame", new Result<>(levelList.get(2)));
+    }
+
 
     @Override
     public int getMonsterLocation() {

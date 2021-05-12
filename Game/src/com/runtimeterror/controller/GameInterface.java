@@ -67,4 +67,6 @@ public interface GameInterface {
 
     boolean hasStairs();
 
+    void setupDifficulty(String level);
+
 }
