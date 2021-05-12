@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,8 +41,10 @@ public class Parser {
                 verbList.add(temp.substring(0, j));
             }
         }
-        try (InputStream inputStream = Parser.class.getResourceAsStream("verb.json")) {
-            Object obj = new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
+        JSONParser jsonParser = new JSONParser();
+        try (FileReader reader = new FileReader("Game/jsonData/verb.json")) {
+            Object obj = jsonParser.parse(reader);
+            //Object obj = new JSONParser().parse(new InputStreamReader(inputStream, "UTF-8"));
             JSONObject verbs = (JSONObject) obj;
             for (int index = 0; index < verbList.size(); index++) {
                 Iterator<String> keys = verbs.keySet().iterator();
