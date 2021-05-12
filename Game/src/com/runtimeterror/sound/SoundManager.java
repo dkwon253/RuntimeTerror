@@ -30,7 +30,7 @@ public class SoundManager {
             lue.printStackTrace();
         }
     }
-        //Play background music
+
     public void playBGM(String BGMFile) {
 
         if (BGM.isOpen()) {
@@ -65,44 +65,6 @@ public class SoundManager {
         BGM.start();
         BGMOff = false;
     }
-
-    //background constant heartbeat
-    public void playHBG(String HBGFile) {
-
-        if (HBG.isOpen()) {
-            HBG.close();
-        }
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(HBGFile));
-            HBG.open(audioInputStream);
-        } catch (UnsupportedAudioFileException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        HBG.loop(Clip.LOOP_CONTINUOUSLY);
-        if (!HBGOff) {
-            HBG.start();
-            heartSFX.stop();
-            setBGMVolume(HBGVol);
-        }
-    }
-
-    public void stopHBG() {
-        HBG.stop();
-    }
-
-    public void turnOffHBG() {
-        stopBGM();
-        HBGOff = true;
-    }
-
-    public void turnOnHBG() {
-        HBG.setMicrosecondPosition(0L);
-        HBG.start();
-        HBGOff = false;
-    }
-
 
     //play sound for specific rooms
     public void playRoomSFX(String SFXFile, boolean loop) {
@@ -161,7 +123,6 @@ public class SoundManager {
         heartSFX.setMicrosecondPosition(0L);
         heartSFX.start();
 
-
         if (heartLoop) {
             heartSFX.loop(Clip.LOOP_CONTINUOUSLY);
         }
@@ -201,7 +162,6 @@ public class SoundManager {
     public void playHeartSFX(String SFXFile, boolean loop) {
         if (heartSFX.isOpen()) {
             heartSFX.close();
-            HBG.close();
         }
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(SFXFile));
@@ -230,7 +190,7 @@ public class SoundManager {
     }
 
     public boolean isActive() {
-        return (BGM.isActive() ||  HBG.isActive() || roomSFX.isActive() || extraSFX.isActive() || heartSFX.isActive());
+        return (BGM.isActive() || roomSFX.isActive() || extraSFX.isActive() || heartSFX.isActive());
     }
 
     public boolean isBGMActive() {

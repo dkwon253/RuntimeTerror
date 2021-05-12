@@ -1,8 +1,10 @@
 package com.runtimeterror.controller;
 
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Rooms;
 
 import java.util.List;
+import java.util.Map;
 
 public class SwingController {
     private GameInterface gi;
@@ -85,4 +87,11 @@ public class SwingController {
     public boolean hasItems() {return gi.hasItems();}
 
     public boolean isCloseToDying() { return gi.isPlayerClosedToDying(); }
+
+    public String getMonsterLabel() {return gi.getMonsterLabel();}
+
+    public Map<String, Rooms> getAvailableRooms() {return gi.getAvailableRooms();}
+
+    public boolean hasStairs() {return gi.hasStairs();}
+
 }

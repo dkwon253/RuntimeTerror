@@ -1,5 +1,7 @@
 package com.runtimeterror.model;
 
+import com.runtimeterror.textparser.InputData;
+
 import java.io.*;
 import java.util.*;
 
@@ -7,41 +9,26 @@ class PostGameProcessor {
 
     Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
         processRoomChange(gameMap);
-        processMonsterEncounter(gameMap);
+        processMonsterRoomChange(gameMap);
         processHealthIncrease(gameMap);
         processEscape(gameMap);
-        processGameOverCheck(gameMap);
+        processGetItem(gameMap);
         processSavingGameState(gameMap);
+        processHealthDecrease(gameMap);
+        processUseItem(gameMap);
+        processGameOverCheck(gameMap);
         processGetMessageLabel(gameMap);
         return processLoadingGameState(gameMap);
     }
 
     Map<String, Result<?>> processRoomChange(Map<String, Result<?>> gameMap) {
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-        if (didChangeRoom) {
-            Rooms newRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        boolean shouldChangeRoomFlag = (boolean) gameMap.get("shouldChangeRoomFlag").getResult();
+        if (shouldChangeRoomFlag) {
+            Rooms newRoom = (Rooms) gameMap.get("roomToChangeTo").getResult();
+            gameMap.put("playerCurrentRoom", new Result<>(newRoom));
             gameMap.put("hasStairs", new Result<>(newRoom.hasStairs()));
             gameMap.put("stairsRoom", new Result<>(newRoom.getStairsNeighborName()));
             gameMap.put(("availableRooms"), new Result<>(newRoom.getRoomNeighbors()));
-            processRoomChangeHelper(gameMap);
-        }
-        return gameMap;
-    }
-
-    Map<String, Result<?>> processMonsterEncounter(Map<String, Result<?>> gameMap) {
-        boolean didMonsterMove = (boolean) gameMap.get("didMonsterMove").getResult();
-        if (didMonsterMove) {
-            Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-            Rooms monsterCurrentRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
-            if (playerCurrentRoom == monsterCurrentRoom) {
-                int playerHealth = (int) gameMap.get("playerHealth").getResult();
-                int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
-                int lowPlayerHealth = (int) gameMap.get("lowPlayerHealth").getResult();
-                playerHealth -= monsterDamage;
-                gameMap.put("playerHealth", new Result<>(playerHealth));
-                gameMap.put("isCloseToDying", new Result<>(playerHealth == lowPlayerHealth));
-                gameMap.put("viewLabel", new Result<>("The monster hit you for 5 HP!"));
-            }
         }
         return gameMap;
     }
@@ -61,7 +48,6 @@ class PostGameProcessor {
     Map<String, Result<?>> processEscape(Map<String, Result<?>> gameMap) {
         boolean usedItem = (boolean) gameMap.get("usedItem").getResult();
         Item itemUsedItem = (Item) gameMap.get("itemUsedItem").getResult();
-        System.out.println(usedItem);
         Rooms playerCurrentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
         if (usedItem && "escape".equals(itemUsedItem.getType()) && "escape".equals(playerCurrentRoom.getRoomType())) {
             gameMap.put("viewLabel", new Result<>("You have used the " + itemUsedItem.getName() + " to escape!"));
@@ -103,15 +89,6 @@ class PostGameProcessor {
         return gameMap;
     }
 
-    Map<String, Result<?>> processGameOverCheck(Map<String, Result<?>> gameMap) {
-        int playerHealth = (int) gameMap.get("playerHealth").getResult();
-        if(playerHealth <= 0) {
-            gameMap.put("isGameOver", new Result<>(true));
-            gameMap.put("isKilledByMonster", new Result<>(true));
-        }
-        return gameMap;
-    }
-
     @SuppressWarnings("unchecked")
     Map<String, Result<?>> processLoadingGameState(Map<String, Result<?>> gameMap) {
         boolean shouldLoadGame = (boolean) gameMap.get("shouldLoadGame").getResult();
@@ -131,26 +108,75 @@ class PostGameProcessor {
         return gameMap;
     }
 
-    Map<String, Result<?>> processRoomChangeHelper(Map<String, Result<?>> gameMap) {
-        Rooms newRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        Queue<Rooms> roomsQueue = new LinkedList<>();
-        @SuppressWarnings("unchecked")
-        HashMap<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
-        Rooms rooms = allRooms.get("Master Bedroom");
-        List<Rooms> monsterAvailableRooms = new ArrayList<>();
-        roomsQueue.add(newRoom);
-        Rooms room;
-        while(roomsQueue.size() > 0) {
-            room = roomsQueue.remove();
-            if(!monsterAvailableRooms.contains(room)) {
-                monsterAvailableRooms.add(room);
-                Collection<Rooms> innerRooms = allRooms.get(room.getRoomName()).getRoomNeighbors().values();
-                innerRooms.stream().filter(Objects::nonNull).forEach(roomsQueue::add);
-            }
+    Map<String, Result<?>> processHealthDecrease(Map<String, Result<?>> gameMap) {
+        boolean shouldDecreaseHealthFlag = (boolean) gameMap.get("shouldDecreaseHealthFlag").getResult();
+        if (shouldDecreaseHealthFlag) {
+            int playerHealth = (int) gameMap.get("playerHealth").getResult();
+            int monsterDamage = (int) gameMap.get("monsterDamage").getResult();
+            int lowPlayerHealth = (int) gameMap.get("lowPlayerHealth").getResult();
+            playerHealth -= monsterDamage;
+            gameMap.put("playerHealth", new Result<>(playerHealth));
+            gameMap.put("isCloseToDying", new Result<>(playerHealth == lowPlayerHealth));
         }
-        int randomInt = new Random().nextInt(monsterAvailableRooms.size());
-        //gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
-        gameMap.put(("monsterCurrentRoom"), new Result<>(rooms));
         return gameMap;
     }
+
+    Map<String, Result<?>> processMonsterRoomChange(Map<String, Result<?>> gameMap) {
+        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
+        if(shouldMonsterChangeRoomFlag) {
+            Rooms newRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
+            Queue<Rooms> roomsQueue = new LinkedList<>();
+            @SuppressWarnings("unchecked")
+            HashMap<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
+            Rooms rooms = allRooms.get("Master Bedroom");
+            List<Rooms> monsterAvailableRooms = new ArrayList<>();
+            roomsQueue.add(newRoom);
+            Rooms room;
+            while (roomsQueue.size() > 0) {
+                room = roomsQueue.remove();
+                if (!monsterAvailableRooms.contains(room)) {
+                    monsterAvailableRooms.add(room);
+                    Collection<Rooms> innerRooms = allRooms.get(room.getRoomName()).getRoomNeighbors().values();
+                    innerRooms.stream().filter(Objects::nonNull).forEach(roomsQueue::add);
+                }
+            }
+            int randomInt = new Random().nextInt(monsterAvailableRooms.size());
+            //gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
+            gameMap.put(("monsterCurrentRoom"), new Result<>(rooms));
+        }
+        return gameMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    Map<String, Result<?>> processGetItem(Map<String, Result<?>> gameMap) {
+        boolean shouldGetItemFlag = (boolean) gameMap.get("shouldGetItemFlag").getResult();
+        if (shouldGetItemFlag) {
+            Rooms roomToRemoveItemFrom = (Rooms) gameMap.get("roomToRemoveItemFrom").getResult();
+            String itemString = (String) gameMap.get("itemToGet").getResult();
+            List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+            inventory.add(roomToRemoveItemFrom.getAndRemoveRoomItem(itemString));
+        }
+        return gameMap;
+    }
+
+    Map<String, Result<?>> processUseItem(Map<String, Result<?>> gameMap) {
+        boolean shouldUseItemFlag = (boolean) gameMap.get("shouldUseItemFlag").getResult();
+        if (shouldUseItemFlag) {
+            Item item = (Item) gameMap.get("itemUsedItem").getResult();
+            @SuppressWarnings("unchecked")
+            List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+            inventory.remove(item);
+        }
+        return gameMap;
+    }
+
+    Map<String, Result<?>> processGameOverCheck(Map<String, Result<?>> gameMap) {
+        int playerHealth = (int) gameMap.get("playerHealth").getResult();
+        if (playerHealth <= 0) {
+            gameMap.put("isGameOver", new Result<>(true));
+            gameMap.put("isKilledByMonster", new Result<>(true));
+        }
+        return gameMap;
+    }
+
 }

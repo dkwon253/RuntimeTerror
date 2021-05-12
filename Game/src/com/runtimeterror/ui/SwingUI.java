@@ -2,6 +2,7 @@ package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Rooms;
 import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
@@ -13,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -31,8 +33,7 @@ public class SwingUI extends JFrame {
     private JLabel playerHealthLbl;
     private JLabel saveGameMsgLbl;
     private JLabel playerMessageLbl;
-    private JLabel monsterInRoomLbl;
-    private JLabel monsterNearByLbl;
+    private JLabel monsterLabel;
     private PlayerInventory playerInventory;
     private JLabel imageTitleContainer;
     private JLabel roomImageContainer;
@@ -80,7 +81,6 @@ public class SwingUI extends JFrame {
         setupInventoryButton();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
-        //soundManager.playHBG("Game/Sounds/heartbeatNorm.wav");
 
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
@@ -120,12 +120,12 @@ public class SwingUI extends JFrame {
         }
         playerInventory.updateUsableInventory();
         handleMonsterData();
-        System.out.println(controller.getPlayerItems());
+//        System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
-        System.out.println(controller.isMonsterNear());
+//        System.out.println(controller.isMonsterNear());
         if (controller.isGameOver()) {
-            System.out.println("Handle game over case here...");
+//            System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());
         }
         controller.resetRound();
@@ -260,16 +260,11 @@ public class SwingUI extends JFrame {
     }
 
     private void setupMonster() {
-        monsterInRoomLbl = new JLabel("The monster is here!!!", SwingConstants.CENTER);
-        monsterNearByLbl = new JLabel("The monster is close...", SwingConstants.CENTER);
-        monsterInRoomLbl.setBounds(30, 20, 500, 25);
-        monsterNearByLbl.setBounds(monsterInRoomLbl.getBounds());
-        monsterInRoomLbl.setForeground(Color.RED);
-        monsterNearByLbl.setForeground(Color.BLACK);
-        monsterInRoomLbl.setVisible(false);
-        monsterNearByLbl.setVisible(false);
-        add(monsterInRoomLbl);
-        add(monsterNearByLbl);
+        monsterLabel = new JLabel("", SwingConstants.CENTER);
+        monsterLabel.setBounds(30, 20, 500, 25);
+        monsterLabel.setForeground(Color.RED);
+        monsterLabel.setVisible(false);
+        add(monsterLabel);
     }
 
     private void setupTimer() {
@@ -294,10 +289,10 @@ public class SwingUI extends JFrame {
             if (item.getItemImagePath() != null) {
                 JLabel roomItemLbl = new JLabel();
                 Image scaledImage = null;
-                Image usableInventory = null;
+                Image itemImg = null;
                 try {
-                    usableInventory = ImageIO.read(new File(item.getItemImagePath()));
-                    scaledImage = usableInventory.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                    itemImg = ImageIO.read(new File(item.getItemImagePath()));
+                    scaledImage = itemImg.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -307,7 +302,7 @@ public class SwingUI extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
                         processSubmitInput("get " + item.getName());
-                        System.out.println(item.getName());
+//                        System.out.println(item.getName());
                     }
                 });
                 Random random = new Random();
@@ -317,8 +312,65 @@ public class SwingUI extends JFrame {
                 roomImageContainer.add(roomItemLbl);
             }
         }
+
+        Map<String, Rooms> map = controller.getAvailableRooms();
+        for (Map.Entry<String, Rooms> entry : map.entrySet()) {
+            //System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+            setDirectionLabel(entry, "north", 225, 0);
+            setDirectionLabel(entry, "south", 225, 210);
+            setDirectionLabel(entry, "east", 450, 105);
+            setDirectionLabel(entry, "west", 0, 105);
+        }
+
+        if (controller.hasStairs()){
+            JLabel stairsLbl = new JLabel();
+            Image scaledImage = null;
+            Image stairs = null;
+            String filePath = "Game/Icons/stairs.jpg";
+            try {
+                stairs = ImageIO.read(new File(filePath));
+                scaledImage = stairs.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stairsLbl.setIcon(new ImageIcon(scaledImage));
+            stairsLbl.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    processSubmitInput("take stairs");
+                }
+            });
+            stairsLbl.setBounds(0, 210, 50, 50);
+            roomImageContainer.add(stairsLbl);
+        }
         revalidate();
         repaint();
+    }
+
+    private void setDirectionLabel(Map.Entry<String, Rooms> entry, String direction, int x, int y) {
+        if (entry.getKey().equals(direction) && entry.getValue() != null){
+            JLabel directionLbl = new JLabel();
+            Image scaledImage = null;
+            Image directionImg = null;
+            String filePath = "Game/Icons/" + direction +".jpg";
+            try {
+                directionImg = ImageIO.read(new File(filePath));
+                scaledImage = directionImg.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            directionLbl.setIcon(new ImageIcon(scaledImage));
+            directionLbl.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    processSubmitInput("go " + entry.getKey());
+                }
+            });
+            directionLbl.setBounds(x, y, 50, 50);
+            roomImageContainer.add(directionLbl);
+        }
     }
 
     private void endGame(boolean isKilled) {
@@ -375,11 +427,11 @@ public class SwingUI extends JFrame {
         playerInputTF.setText("");
         playRoomSounds(roomData, "");
         setupTimer();
+        handleMonsterData();
         playerHealthLbl.setForeground(Color.green);
         playerHealthLbl.setText("Health: " +controller.getPlayerHealth());
         imageTitleContainer.setVisible(true);
-        monsterInRoomLbl.setVisible(false);
-        monsterNearByLbl.setVisible(false);
+        monsterLabel.setVisible(false);
         soundManager.stopExtraSFX();
         roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
     }
@@ -421,23 +473,23 @@ public class SwingUI extends JFrame {
     }
 
     private void handleMonsterData() {
+        monsterLabel.setText(controller.getMonsterLabel());
         if (controller.isMonsterSameRoom()) {
+//            monsterLabel.setText("The Monster is here!");
             imageTitleContainer.setVisible(false);
-            monsterInRoomLbl.setVisible(true);
-            monsterNearByLbl.setVisible(false);
+            monsterLabel.setVisible(true);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
             soundManager.playHeartSFX("Game/Sounds/heartbeatFast.wav", true);
         } else if (controller.isMonsterNear()) {
+            monsterLabel.setText("The Monster is nearby!");
             imageTitleContainer.setVisible(false);
-            monsterInRoomLbl.setVisible(false);
-            monsterNearByLbl.setVisible(true);
+            monsterLabel.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
             soundManager.playHeartSFX("Game/Sounds/heartbeatMed.wav", true);
 
         } else {
             imageTitleContainer.setVisible(true);
-            monsterInRoomLbl.setVisible(false);
-            monsterNearByLbl.setVisible(false);
+            monsterLabel.setVisible(false);
             soundManager.stopExtraSFX();
             soundManager.stopHeartSFX();
         }
@@ -474,7 +526,7 @@ public class SwingUI extends JFrame {
     private class HandleVolumeControlsBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            System.out.println("Vol button clicked.");
+//            System.out.println("Vol button clicked.");
             SoundControls sc = new SoundControls("Volume", soundManager, getLocation());
             sc.setVisible(true);
         }
@@ -542,7 +594,7 @@ public class SwingUI extends JFrame {
                         public void mouseClicked(MouseEvent e) {
                             super.mouseClicked(e);
                             processSubmitInput("use " + item.getName());
-                            System.out.println(item.getName());
+//                            System.out.println(item.getName());
                         }
                     });
                     add(playerUsableInventoryLbl);
