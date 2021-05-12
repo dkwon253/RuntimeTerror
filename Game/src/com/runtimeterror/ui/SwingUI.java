@@ -23,7 +23,7 @@ public class SwingUI extends JFrame {
     private final SoundManager soundManager = new SoundManager();
     private final PlayerMap roomMap = new PlayerMap();
     private final SwingController controller;
-    private final PlayerInventory playerInventory;
+    private PlayerInventory playerInventory;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA;
@@ -32,6 +32,7 @@ public class SwingUI extends JFrame {
     private JButton mapCommandBtn, inventoryBtn;
     private int gameTime;
     private Timer timer;
+    private JButton testLabel;
 
     // CTOR
     public SwingUI(String title, SwingController controller) {
@@ -43,12 +44,25 @@ public class SwingUI extends JFrame {
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        testLabel = new JButton();
+        testLabel.setBounds(300, 825, 75, 25);
+        testLabel.setText("Start");
+        testLabel.addActionListener(new HandleScreenClick());
+        testLabel.setVisible(true);
+        add(testLabel);
+
+//        setupGame(controller);
+    }
+
+    private void setupGame(SwingController controller) {
+        getContentPane().removeAll();
         Image imgTitle = null;
         try {
             imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         setupImageTitle(imgTitle);
         setupMonster();
@@ -72,6 +86,8 @@ public class SwingUI extends JFrame {
 
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
+        revalidate();
+        repaint();
     }
 
     private void processSubmitInput(String inputText) {
@@ -489,6 +505,14 @@ public class SwingUI extends JFrame {
             processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
+
+    private class HandleScreenClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setupGame(controller);
+        }
+    }
+
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
