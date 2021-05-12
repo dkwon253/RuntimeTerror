@@ -16,47 +16,91 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 
-
 public class SwingUI extends JFrame {
 
     private final SoundManager soundManager = new SoundManager();
     private final PlayerMap roomMap = new PlayerMap();
+    private PlayerInventory playerInventory;
+    private Timer timer;
     private final SwingController controller;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA;
-    private JTextArea inventoryInfoTA;
+    private JTextArea roomInfoTA, inventoryInfoTA;
     private JTextField playerInputTF;
-    private JLabel playerStateLbl;
-    private JLabel gameTimerLbl;
-    private JLabel playerHealthLbl;
-    private JLabel saveGameMsgLbl;
-    private JLabel playerMessageLbl;
-    private JLabel monsterLabel;
-    private final PlayerInventory playerInventory;
-    private JLabel imageTitleContainer;
-    private JLabel roomImageContainer;
-    private ImageIcon imageTitle;
-    private JButton mapCommandBtn;
-    private JButton inventoryBtn;
-    private JButton volumeControlsBtn;
-    private JButton submitCommandBtn;
+
+    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLabel, subTitleLabel;
+    private JButton mapCommandBtn, inventoryBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextButton;
     private int gameTime;
-    private Timer timer;
-    private Image scaledImage;
-    private Image scaledTransparentStairs;
+    private static final Font titleFont = new Font("Times New Roman", Font.BOLD, 30);
+    private static final Font normalFont = new Font("Times New Roman", Font.PLAIN, 15);
+    private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
 
-    // CTOR
     public SwingUI(String title, SwingController controller) {
         super(title);
         this.controller = controller;
-        setLocation(100, 100);
         setSize(FRAME_X_SIZE, FRAME_Y_SIZE);
+        setLocationRelativeTo(null);
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // calls the welcome screen
+        welcomeScreen();
+    }
+
+    private void welcomeScreen() {
+        getContentPane().setBackground(Color.black);
+        setResizable(false);
+
+        titleNameLabel = new JLabel("Runtime Terror", SwingConstants.CENTER);
+        titleNameLabel.setBounds(150, 350, 250, 40);
+        titleNameLabel.setForeground(Color.red);
+        titleNameLabel.setFont(titleFont);
+        add(titleNameLabel);
+
+        subTitleLabel = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
+        subTitleLabel.setBounds(0, 500, 600, 40);
+        subTitleLabel.setForeground(Color.red);
+        subTitleLabel.setFont(normalFont);
+        add(subTitleLabel);
+
+        nextButton = new JButton("Start");
+        nextButton.setBounds(250, 600, 50, 40);
+        nextButton.setBackground(Color.black);
+        nextButton.setForeground(Color.black);
+        nextButton.addActionListener(new HandleWelcomeBtnClick());
+        add(nextButton);
+    }
+
+    public void difficultyPage() {
+        getContentPane().removeAll();
+        getContentPane().setBackground(null);
+        setLayout(flow);
+
+        JLabel titleLbl = new JLabel("Please choose your difficulty: ", SwingConstants.CENTER);
+        easyBtn = new JButton("Easy");
+        mediumBtn = new JButton("Medium");
+        hardBtn = new JButton("Hard");
+
+        add(titleLbl);
+        add(easyBtn);
+        add(mediumBtn);
+        add(hardBtn);
+
+        easyBtn.addActionListener(new HandleDifficultyBtnClick());
+        mediumBtn.addActionListener(new HandleDifficultyBtnClick());
+        hardBtn.addActionListener(new HandleDifficultyBtnClick());
+
+        revalidate();
+        repaint();
+    }
+
+    private void startGame(SwingController controller) {
+        getContentPane().removeAll();
+        getContentPane().setBackground(null);
+        setLayout(null);
         Image imgTitle = null;
         try {
             imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
@@ -86,6 +130,8 @@ public class SwingUI extends JFrame {
 
         playRoomSounds(roomInfoTA.getText(), playerMessageLbl.getText());
         playerInventory = new PlayerInventory();
+        revalidate();
+        repaint();
     }
 
     private void processSubmitInput(String inputText) {
@@ -122,19 +168,16 @@ public class SwingUI extends JFrame {
         }
         playerInventory.updateUsableInventory();
         handleMonsterData();
-//        System.out.println(controller.getPlayerItems());
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
-//        System.out.println(controller.isMonsterNear());
         if (controller.isGameOver()) {
-//            System.out.println("Handle game over case here...");
             endGame(controller.isKilledByMonster());
         }
         controller.resetRound();
     }
 
     private void setupVolumeControlsBtn() {
-        volumeControlsBtn = new JButton();
+        JButton volumeControlsBtn = new JButton();
         volumeControlsBtn.setBounds(45, 810, 50, 50);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
@@ -149,7 +192,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupSubmitCommandBtn() {
-        submitCommandBtn = new JButton();
+        JButton submitCommandBtn = new JButton();
         submitCommandBtn.setBounds(455, 825, 75, 25);
         submitCommandBtn.setText("Do it");
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
@@ -182,7 +225,7 @@ public class SwingUI extends JFrame {
     }
 
     private void setupSaveGameMsgLbl() {
-        saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
+        JLabel saveGameMsgLbl = new JLabel("use save/load commands to save/load game", SwingConstants.LEFT);
         saveGameMsgLbl.setBounds(30, 780, 500, 25);
         JLabel label = new JLabel("I'm bold");
         Font font = new Font("Courier", Font.BOLD, 12);
@@ -242,20 +285,13 @@ public class SwingUI extends JFrame {
     }
 
     private void setupImageContainer() {
-//        Image roomImage = null;
-//        try {
-//            roomImage = ImageIO.read(new File("Game/Icons/masterbathroom.jpg"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
         roomImageContainer = new JLabel(getResizedRoomImage("Game/Icons/masterbathroom.jpg"));
         roomImageContainer.setBounds(30, 50, 500, 260);
         add(roomImageContainer);
     }
 
     private void setupImageTitle(Image imgTitle) {
-        imageTitle = new ImageIcon(imgTitle);
+        ImageIcon imageTitle = new ImageIcon(imgTitle);
         imageTitleContainer = new JLabel(imageTitle, SwingConstants.CENTER);
         imageTitleContainer.setBounds(30, 10, 500, 40);
         add(imageTitleContainer);
@@ -577,9 +613,28 @@ public class SwingUI extends JFrame {
     private class HandleVolumeControlsBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            System.out.println("Vol button clicked.");
             SoundControls sc = new SoundControls("Volume", soundManager, getLocation());
             sc.setVisible(true);
+        }
+    }
+
+    private class HandleWelcomeBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            difficultyPage();
+        }
+    }
+
+    private class HandleDifficultyBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource().equals(easyBtn)) {
+                startGame(controller);
+            } else if (e.getSource().equals(mediumBtn)) {
+                startGame(controller);
+            } else if (e.getSource().equals(hardBtn)) {
+                startGame(controller);
+            }
         }
     }
 
