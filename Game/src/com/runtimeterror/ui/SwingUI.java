@@ -591,14 +591,6 @@ public class SwingUI extends JFrame {
         }
     }
 
-//    private class HandleScreenClick implements ActionListener {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            setupGame(controller);
-//        }
-//    }
-
-
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
