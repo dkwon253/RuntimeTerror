@@ -8,6 +8,7 @@ import com.runtimeterror.sound.SoundManager;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -27,10 +28,9 @@ public class SwingUI extends JFrame {
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA;
     private JTextField playerInputTF;
-
-    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLabel, subTitleLabel;
+    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextButton, hallBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private int gameTime;
     private Image scaledTransparentStairs;
     private Image scaledImage;
@@ -55,42 +55,66 @@ public class SwingUI extends JFrame {
         getContentPane().setBackground(Color.black);
         setResizable(false);
 
-        titleNameLabel = new JLabel("Runtime Terror", SwingConstants.CENTER);
-        titleNameLabel.setBounds(150, 350, 250, 40);
-        titleNameLabel.setForeground(Color.red);
-        titleNameLabel.setFont(titleFont);
-        add(titleNameLabel);
+        titleNameLbl = new JLabel("Runtime Terror", SwingConstants.CENTER);
+        titleNameLbl.setBounds(150, 350, 250, 40);
+        titleNameLbl.setForeground(Color.red);
+        titleNameLbl.setFont(titleFont);
+        add(titleNameLbl);
 
-        subTitleLabel = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-        subTitleLabel.setBounds(0, 500, 600, 40);
-        subTitleLabel.setForeground(Color.red);
-        subTitleLabel.setFont(normalFont);
-        add(subTitleLabel);
+        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
+        subTitleLbl.setBounds(0, 500, 600, 40);
+        subTitleLbl.setForeground(Color.red);
+        subTitleLbl.setFont(normalFont);
+        add(subTitleLbl);
 
-        nextButton = new JButton("Start");
-        nextButton.setBounds(150, 600, 100, 50);
-        nextButton.setBackground(Color.black);
-        nextButton.setForeground(Color.red);
-        nextButton.addActionListener(new HandleWelcomeBtnClick());
-        add(nextButton);
+        nextBtn = new JButton("Start");
+        nextBtn.setBounds(150, 600, 100, 50);
+        nextBtn.setBackground(Color.black);
+        nextBtn.setForeground(Color.red);
+        nextBtn.setOpaque(true);
+        nextBtn.setBorder(new LineBorder(Color.white));
+        nextBtn.addActionListener(new HandleWelcomeBtnClick());
+        add(nextBtn);
 
         hallBtn = new JButton("The Hall");
         hallBtn.setBounds(260, 600, 100, 50);
         hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
+        hallBtn.setOpaque(true);
+        hallBtn.setBorder(new LineBorder(Color.white));
         hallBtn.addActionListener(new HandleHallBtnClick());
         add(hallBtn);
     }
 
     public void difficultyPage() {
         getContentPane().removeAll();
-        getContentPane().setBackground(null);
+        getContentPane().setBackground(Color.black);
         setLayout(flow);
 
         JLabel titleLbl = new JLabel("Please choose your difficulty: ", SwingConstants.CENTER);
+        titleLbl.setOpaque(true);
+        titleLbl.setBackground(Color.black);
+        titleLbl.setForeground(Color.red);
+        titleLbl.setBorder(new LineBorder(Color.darkGray));
+
         easyBtn = new JButton("Easy");
         mediumBtn = new JButton("Medium");
         hardBtn = new JButton("Hard");
+
+        easyBtn.setBackground(Color.black);
+        easyBtn.setForeground(Color.red);
+        easyBtn.setOpaque(true);
+        easyBtn.setBorder(new LineBorder(Color.darkGray));
+
+        mediumBtn.setBackground(Color.black);
+        mediumBtn.setForeground(Color.red);
+        mediumBtn.setOpaque(true);
+        mediumBtn.setBorder(new LineBorder(Color.darkGray));
+
+        hardBtn.setBackground(Color.black);
+        hardBtn.setForeground(Color.red);
+        hardBtn.setOpaque(true);
+        hardBtn.setBorder(new LineBorder(Color.darkGray));
 
         add(titleLbl);
         add(easyBtn);
@@ -116,7 +140,6 @@ public class SwingUI extends JFrame {
             e.printStackTrace();
         }
 
-
         setupImageTitle(imgTitle);
         setupMonster();
         setupImageContainer();
@@ -134,6 +157,7 @@ public class SwingUI extends JFrame {
         setupGameTimer();
         setupTimer();
         setupInventoryButton();
+        setupDarkModeBtn();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
 
@@ -188,10 +212,13 @@ public class SwingUI extends JFrame {
     private void setupVolumeControlsBtn() {
         JButton volumeControlsBtn = new JButton();
         volumeControlsBtn.setBounds(45, 810, 50, 50);
+        volumeControlsBtn.setBackground(Color.black);
+        volumeControlsBtn.setOpaque(true);
+        volumeControlsBtn.setBorder(new LineBorder(Color.darkGray));
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
-            img = ImageIO.read(new File("Game/Icons/soundIcon.png"));
+            img = ImageIO.read(new File("Game/Icons/soundIcon2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -204,8 +231,23 @@ public class SwingUI extends JFrame {
         JButton submitCommandBtn = new JButton();
         submitCommandBtn.setBounds(455, 825, 75, 25);
         submitCommandBtn.setText("Do it");
+        submitCommandBtn.setBackground(Color.black);
+        submitCommandBtn.setForeground(Color.red);
+        submitCommandBtn.setOpaque(true);
+        submitCommandBtn.setBorder(new LineBorder(Color.darkGray));
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
         add(submitCommandBtn);
+    }
+
+    private void setupDarkModeBtn() {
+        JButton darkModeBtn = new JButton("Dark");
+        darkModeBtn.setBounds(350, 825, 75, 25);
+        darkModeBtn.setBackground(Color.black);
+        darkModeBtn.setForeground(Color.red);
+        darkModeBtn.setOpaque(true);
+        darkModeBtn.setBorder(new LineBorder(Color.darkGray));
+        darkModeBtn.addActionListener(new HandleColorThemeBtnClick());
+        add(darkModeBtn);
     }
 
     private void setupPlayerInputTF() {
@@ -318,16 +360,6 @@ public class SwingUI extends JFrame {
         gameTime = controller.getTimeToEndGame();
         timer = new Timer(1000, new GameTimer());
         timer.start();
-    }
-
-    private void changeHealthColors() {
-        if (controller.getPlayerHealth() <= 5) {
-            playerHealthLbl.setForeground(Color.red);
-        } else if (controller.getPlayerHealth() <= 10) {
-            playerHealthLbl.setForeground(Color.orange);
-        } else {
-            playerHealthLbl.setForeground(Color.green);
-        }
     }
 
     private void setupRoomItemPic(SwingController controller) {
@@ -469,6 +501,38 @@ public class SwingUI extends JFrame {
         return img;
     }
 
+    private void changeHealthColors() {
+        if (controller.getPlayerHealth() <= 5) {
+            playerHealthLbl.setForeground(Color.red);
+        } else if (controller.getPlayerHealth() <= 10) {
+            playerHealthLbl.setForeground(Color.orange);
+        } else {
+            playerHealthLbl.setForeground(Color.green);
+        }
+    }
+
+//    private JTextArea roomInfoTA, inventoryInfoTA;
+//    private JTextField playerInputTF;
+//    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
+//    private JButton mapCommandBtn, inventoryBtn;
+//    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
+
+    private void darkMode() {
+        setBackground(Color.black);
+        playerInputTF.setBackground(Color.black);
+        playerInputTF.setForeground(Color.white);
+        playerInputTF.setBorder(new LineBorder(Color.darkGray));
+        playerStateLbl.setForeground(Color.red);
+        playerMessageLbl.setForeground(Color.red);
+        roomInfoTA.setBackground(Color.black);
+        roomInfoTA.setForeground(Color.red);
+        roomInfoTA.setBorder(new LineBorder(Color.darkGray));
+        inventoryInfoTA.setBackground(Color.black);
+        inventoryInfoTA.setForeground(Color.red);
+        inventoryInfoTA.setBorder(new LineBorder(Color.darkGray));
+        playerMessageLbl.setForeground(Color.red);
+    }
+
     private void endGame(boolean isKilled) {
         timer.stop();
         Image img = null;
@@ -583,7 +647,6 @@ public class SwingUI extends JFrame {
             monsterLabel.setVisible(false);
             soundManager.playExtraSFX("Game/Sounds/footsteps.wav", true);
             soundManager.playHeartSFX("Game/Sounds/heartbeatMed.wav", true);
-
         } else {
             imageTitleContainer.setVisible(true);
             monsterLabel.setVisible(false);
@@ -634,6 +697,7 @@ public class SwingUI extends JFrame {
             difficultyPage();
         }
     }
+
     // send the user to leader board on click
     private class HandleHallBtnClick implements ActionListener {
         @Override
@@ -655,6 +719,13 @@ public class SwingUI extends JFrame {
                 controller.setupGameDifficulty("hard");
                 startGame(controller);
             }
+        }
+    }
+
+    private class HandleColorThemeBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            darkMode();
         }
     }
 
@@ -686,7 +757,7 @@ public class SwingUI extends JFrame {
             } else if (gameTime <= 120) {
                 gameTimerLbl.setForeground(Color.orange);
             } else {
-                gameTimerLbl.setForeground(Color.black);
+                gameTimerLbl.setForeground(Color.white);
             }
         }
     }

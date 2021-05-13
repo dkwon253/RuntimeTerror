@@ -121,7 +121,6 @@ public class SoundControls extends JFrame {
         }
     }
 
-
     private class HandleCancelBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {

@@ -20,7 +20,6 @@ import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.GetItemSpec;
 import com.runtimeterror.model.Leaderboard;
 
-
 public class LeaderboardDetailsRepository {
 
     AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()

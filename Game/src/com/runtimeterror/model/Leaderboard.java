@@ -15,6 +15,7 @@ public class Leaderboard {
     public Leaderboard() {
         // no-arg
     }
+
     public Leaderboard(String userName, String difficulty, int runtime){
         setUserName(userName);
         setDifficulty(difficulty);
