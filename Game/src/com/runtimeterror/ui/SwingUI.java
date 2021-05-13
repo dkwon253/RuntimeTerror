@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringJoiner;
+import java.util.List;
 
 public class SwingUI extends JFrame {
 
@@ -133,11 +134,9 @@ public class SwingUI extends JFrame {
     }
 
     // Takes user to leader board
-    public void  showLeaderBoard() {
-//        getContentPane().removeAll();
-//        getContentPane().setBackground(null);
-//        setLayout(flow);
-        java.util.List<Leaderboard> lb =  controller.getLeaderboard(10);
+    private void showLeaderBoard() {
+
+        List<Leaderboard> lb =  controller.getLeaderboard(10);
 
         StringJoiner stringJoiner = new StringJoiner(" \n");
         leaderBoard = new JTextArea(25, 40);
