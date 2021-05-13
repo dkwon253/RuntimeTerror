@@ -163,7 +163,7 @@ public class SwingUI extends JFrame {
         Image imgTitle = null;
         try {
             //imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
-            imgTitle = ImageIO.read(new File("Game/Icons/darkTitle.png"));
+            imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -241,7 +241,7 @@ public class SwingUI extends JFrame {
         volumeControlsBtn.setBounds(45, 810, 50, 50);
         volumeControlsBtn.setBackground(Color.black);
         volumeControlsBtn.setOpaque(true);
-        volumeControlsBtn.setBorder(new LineBorder(Color.darkGray));
+        volumeControlsBtn.setBorderPainted(false);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
