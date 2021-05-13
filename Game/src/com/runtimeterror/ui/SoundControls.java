@@ -26,59 +26,59 @@ public class SoundControls extends JFrame {
 
     private SoundManager sm;
 
-    public SoundControls(String title, SoundManager sm, Point location){
+    public SoundControls(String title, SoundManager sm, Point location) {
         super(title);
         this.sm = sm;
-        setLocation((int)location.getX()+25, (int)location.getY()+25);
-        setSize(FRAME_X_SIZE,FRAME_Y_SIZE);
+        setLocation((int) location.getX() + 25, (int) location.getY() + 25);
+        setSize(FRAME_X_SIZE, FRAME_Y_SIZE);
         setResizable(false);
         setLayout(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         BGMLbl = new JLabel("BGM");
-        BGMLbl.setBounds(25,25,50,25);
+        BGMLbl.setBounds(25, 25, 50, 25);
         add(BGMLbl);
 
         BGMChk = new JCheckBox("on");
-        BGMChk.setBounds(75,25,50,25);
+        BGMChk.setBounds(75, 25, 50, 25);
         BGMChk.setSelected(!sm.isBGMOff());
         BGMChk.addChangeListener(new HandleBGMChkChange());
         add(BGMChk);
 
         SFXLbl = new JLabel("SFX");
-        SFXLbl.setBounds(25,75,50,25);
+        SFXLbl.setBounds(25, 75, 50, 25);
         add(SFXLbl);
 
         SFXChk = new JCheckBox("on");
-        SFXChk.setBounds(75,75,50,25);
+        SFXChk.setBounds(75, 75, 50, 25);
         SFXChk.setSelected(!sm.isSFXOff());
         SFXChk.addChangeListener(new HandleSFXChkChange());
         add(SFXChk);
 
         BGMVolSlider = new JSlider();
-        BGMVolSlider.setBounds(10,50,130,25);
+        BGMVolSlider.setBounds(10, 50, 130, 25);
         BGMVolSlider.setPaintTicks(true);
         BGMVolSlider.setMajorTickSpacing(1);
         BGMVolSlider.setMaximum(10);
         BGMVolSlider.setMinimum(1);
         BGMVolSlider.setSnapToTicks(true);
-        BGMVolSlider.setValue((int)(sm.getBGMVolume() * 10));
+        BGMVolSlider.setValue((int) (sm.getBGMVolume() * 10));
         BGMVolSlider.addChangeListener(new HandleBGMVolSliderChange());
         add(BGMVolSlider);
 
         SFXVolSlider = new JSlider();
-        SFXVolSlider.setBounds(10,100,130,25);
+        SFXVolSlider.setBounds(10, 100, 130, 25);
         SFXVolSlider.setPaintTicks(true);
         SFXVolSlider.setMajorTickSpacing(1);
         SFXVolSlider.setMaximum(10);
         SFXVolSlider.setMinimum(1);
         SFXVolSlider.setSnapToTicks(true);
-        SFXVolSlider.setValue((int)(sm.getSFXVolume() * 10));
+        SFXVolSlider.setValue((int) (sm.getSFXVolume() * 10));
         SFXVolSlider.addChangeListener(new HandleSFXVolSliderChange());
         add(SFXVolSlider);
 
         cancelBtn = new JButton("Back");
-        cancelBtn.setBounds(25,150,100,25);
+        cancelBtn.setBounds(25, 150, 100, 25);
         cancelBtn.addActionListener(new HandleCancelBtnClick());
         add(cancelBtn);
     }
@@ -86,24 +86,23 @@ public class SoundControls extends JFrame {
     private class HandleBGMVolSliderChange implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            sm.setBGMVolume((float)BGMVolSlider.getValue()/10f);
+            sm.setBGMVolume((float) BGMVolSlider.getValue() / 10f);
         }
     }
 
     private class HandleSFXVolSliderChange implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            sm.setSFXVolume((float)SFXVolSlider.getValue()/10f);
+            sm.setSFXVolume((float) SFXVolSlider.getValue() / 10f);
         }
     }
 
     private class HandleSFXChkChange implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            if (SFXChk.isSelected()){
+            if (SFXChk.isSelected()) {
                 sm.turnOnSFX();
-            }
-            else{
+            } else {
                 sm.turnOffSFX();
             }
         }
@@ -112,10 +111,9 @@ public class SoundControls extends JFrame {
     private class HandleBGMChkChange implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
-            if (BGMChk.isSelected()){
+            if (BGMChk.isSelected()) {
                 sm.turnOnBGM();
-            }
-            else{
+            } else {
                 sm.turnOffBGM();
             }
         }

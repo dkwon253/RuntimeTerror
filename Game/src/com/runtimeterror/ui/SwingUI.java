@@ -1,8 +1,6 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
-import com.runtimeterror.dao.LeaderboardDetailsRepository;
-import com.runtimeterror.model.GameClient;
 import com.runtimeterror.model.Item;
 import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
@@ -31,17 +29,14 @@ public class SwingUI extends JFrame {
     private final SwingController controller;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
+    private JTextArea roomInfoTA, inventoryInfoTA, leaderBoard;
     private JTextField playerInputTF;
-    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
+    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private int gameTime;
     private Image scaledTransparentStairs;
     private Image scaledImage;
-    private static final Font titleFont = new Font("Chiller", Font.BOLD, 50);
-    private static final Font normalFont = new Font("Chiller", Font.PLAIN, 25);
-    private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
     public SwingUI(String title, SwingController controller) {
         super(title);
@@ -66,25 +61,17 @@ public class SwingUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        titleNameLbl = new JLabel();
+        JLabel titleNameLbl = new JLabel();
         titleNameLbl.setIcon(new ImageIcon(imgTitle));
         titleNameLbl.setBounds(68, 100, 424, 122);
-//        titleNameLbl.setForeground(Color.red);
-//        titleNameLbl.setFont(titleFont);
         add(titleNameLbl);
-
-//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-//        subTitleLbl.setBounds(0, 500, 600, 40);
-//        subTitleLbl.setForeground(Color.red);
-//        subTitleLbl.setFont(normalFont);
-//        add(subTitleLbl);
 
         nextBtn = new JButton("Start");
         nextBtn.setBounds(150, 600, 100, 50);
         nextBtn.setBackground(Color.black);
         nextBtn.setForeground(Color.red);
         nextBtn.setOpaque(true);
-        nextBtn.setBorder(new LineBorder(Color.white));
+        nextBtn.setBorder(new RoundedBorder(10));
         nextBtn.addActionListener(new HandleWelcomeBtnClick());
         add(nextBtn);
 
@@ -93,7 +80,7 @@ public class SwingUI extends JFrame {
         hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
         hallBtn.setOpaque(true);
-        hallBtn.setBorder(new LineBorder(Color.white));
+        hallBtn.setBorder(new RoundedBorder(10));
         hallBtn.addActionListener(new HandleHallBtnClick());
         add(hallBtn);
     }
@@ -101,32 +88,37 @@ public class SwingUI extends JFrame {
     private void difficultyPage() {
         getContentPane().removeAll();
         getContentPane().setBackground(Color.black);
-        setLayout(flow);
+        setLayout(null);
 
         JLabel titleLbl = new JLabel("Please choose your difficulty: ", SwingConstants.CENTER);
+        titleLbl.setBounds(68, 200, 424, 100);
         titleLbl.setOpaque(true);
+        titleLbl.setFont(new Font("Times New Roman", Font.BOLD, 20));
         titleLbl.setBackground(Color.black);
         titleLbl.setForeground(Color.red);
-        titleLbl.setBorder(new LineBorder(Color.darkGray));
+        //titleLbl.setBorder(new LineBorder(Color.darkGray));
 
         easyBtn = new JButton("Easy");
         mediumBtn = new JButton("Medium");
         hardBtn = new JButton("Hard");
 
+        easyBtn.setBounds(100, 450, 100, 50);
         easyBtn.setBackground(Color.black);
         easyBtn.setForeground(Color.red);
         easyBtn.setOpaque(true);
-        easyBtn.setBorder(new LineBorder(Color.darkGray));
+        easyBtn.setBorder(new RoundedBorder(10));
 
+        mediumBtn.setBounds(225, 450, 100, 50);
         mediumBtn.setBackground(Color.black);
         mediumBtn.setForeground(Color.red);
         mediumBtn.setOpaque(true);
-        mediumBtn.setBorder(new LineBorder(Color.darkGray));
+        mediumBtn.setBorder(new RoundedBorder(10));
 
+        hardBtn.setBounds(350, 450, 100, 50);
         hardBtn.setBackground(Color.black);
         hardBtn.setForeground(Color.red);
         hardBtn.setOpaque(true);
-        hardBtn.setBorder(new LineBorder(Color.darkGray));
+        hardBtn.setBorder(new RoundedBorder(10));
 
         add(titleLbl);
         add(easyBtn);
@@ -141,10 +133,8 @@ public class SwingUI extends JFrame {
         repaint();
     }
 
-    // Takes user to leader board
     private void showLeaderBoard() {
-
-        List<Leaderboard> lb =  controller.getLeaderboard(10);
+        List<Leaderboard> lb = controller.getLeaderboard(10);
 
         StringJoiner stringJoiner = new StringJoiner(" \n");
         leaderBoard = new JTextArea(25, 40);
@@ -154,8 +144,8 @@ public class SwingUI extends JFrame {
         leaderBoard.setEditable(false);
         leaderBoard.setLineWrap(true);
         leaderBoard.setWrapStyleWord(true);
-        for (Leaderboard user: lb ){
-           stringJoiner.add(user.getUserName()+" " + user.getRuntime());
+        for (Leaderboard user : lb) {
+            stringJoiner.add(user.getUserName() + " " + user.getRuntime());
 
             System.out.println(user.getRuntime());
         }
@@ -268,7 +258,7 @@ public class SwingUI extends JFrame {
         submitCommandBtn.setBackground(Color.black);
         submitCommandBtn.setForeground(Color.red);
         submitCommandBtn.setOpaque(true);
-        submitCommandBtn.setBorder(new LineBorder(Color.darkGray));
+        submitCommandBtn.setBorder(new RoundedBorder(10));
         submitCommandBtn.addActionListener(new HandleSubmitBtnClick());
         add(submitCommandBtn);
     }
@@ -290,7 +280,7 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setBackground(Color.black);
         mapCommandBtn.setForeground(Color.red);
         mapCommandBtn.setOpaque(true);
-        mapCommandBtn.setBorder(new LineBorder(Color.darkGray));
+        mapCommandBtn.setBorder(new RoundedBorder(10));
         mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
         mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
@@ -303,7 +293,7 @@ public class SwingUI extends JFrame {
         inventoryBtn.setBackground(Color.black);
         inventoryBtn.setForeground(Color.red);
         inventoryBtn.setOpaque(true);
-        inventoryBtn.setBorder(new LineBorder(Color.darkGray));
+        inventoryBtn.setBorder(new RoundedBorder(10));
         inventoryBtn.addActionListener(new HandlePlayerInventoryBtnClick());
         inventoryBtn.setVisible(false);
         add(inventoryBtn);
@@ -763,14 +753,11 @@ public class SwingUI extends JFrame {
         }
     }
 
-    // send the user to leader board on click
     private class HandleHallBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             showLeaderBoard();
             add(leaderBoard);
-
-            System.out.println("button press");
         }
     }
 
@@ -859,6 +846,26 @@ public class SwingUI extends JFrame {
             }
             revalidate();
             repaint();
+        }
+    }
+
+    private static class RoundedBorder implements Border {
+        private int radius;
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius + 1, this.radius + 1, this.radius + 2, this.radius);
+        }
+
+        public boolean isBorderOpaque() {
+            return true;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width - 1, height - 1, radius, radius);
         }
     }
 }
