@@ -1,8 +1,6 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
-import com.runtimeterror.dao.LeaderboardDetailsRepository;
-import com.runtimeterror.model.GameClient;
 import com.runtimeterror.model.Item;
 import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
@@ -19,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
+import java.util.List;
 import java.util.StringJoiner;
 
 public class SwingUI extends JFrame {
@@ -30,7 +29,7 @@ public class SwingUI extends JFrame {
     private final SwingController controller;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
+    private JTextArea roomInfoTA, inventoryInfoTA, leaderBoard;
     private JTextField playerInputTF;
     private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
     private JButton mapCommandBtn, inventoryBtn;
@@ -40,7 +39,6 @@ public class SwingUI extends JFrame {
     private Image scaledImage;
     private static final Font titleFont = new Font("Chiller", Font.BOLD, 50);
     private static final Font normalFont = new Font("Chiller", Font.PLAIN, 25);
-    private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
     public SwingUI(String title, SwingController controller) {
         super(title);
@@ -74,8 +72,7 @@ public class SwingUI extends JFrame {
         nextBtn.setBounds(150, 600, 100, 50);
         nextBtn.setBackground(Color.black);
         nextBtn.setForeground(Color.red);
-        nextBtn.setOpaque(true);
-        nextBtn.setBorder(new LineBorder(Color.white));
+        nextBtn.setBorder(new RoundedBorder(15));
         nextBtn.addActionListener(new HandleWelcomeBtnClick());
         add(nextBtn);
 
@@ -83,8 +80,7 @@ public class SwingUI extends JFrame {
         hallBtn.setBounds(260, 600, 100, 50);
         hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
-        hallBtn.setOpaque(true);
-        hallBtn.setBorder(new LineBorder(Color.white));
+        hallBtn.setBorder(new RoundedBorder(15));
         hallBtn.addActionListener(new HandleHallBtnClick());
         add(hallBtn);
     }
@@ -92,32 +88,34 @@ public class SwingUI extends JFrame {
     private void difficultyPage() {
         getContentPane().removeAll();
         getContentPane().setBackground(Color.black);
-        setLayout(flow);
+        setLayout(null);
 
         JLabel titleLbl = new JLabel("Please choose your difficulty: ", SwingConstants.CENTER);
         titleLbl.setOpaque(true);
         titleLbl.setBackground(Color.black);
         titleLbl.setForeground(Color.red);
-        titleLbl.setBorder(new LineBorder(Color.darkGray));
+        titleLbl.setBounds(0,350,200,200);
 
         easyBtn = new JButton("Easy");
         mediumBtn = new JButton("Medium");
         hardBtn = new JButton("Hard");
 
-        easyBtn.setBackground(Color.black);
+        easyBtn.setBounds(0, 350, 100, 100);
+        easyBtn.setBackground(Color.darkGray);
         easyBtn.setForeground(Color.red);
-        easyBtn.setOpaque(true);
-        easyBtn.setBorder(new LineBorder(Color.darkGray));
+        easyBtn.setBorder(new RoundedBorder(15));
 
+        mediumBtn.setBounds(100, 350, 30, 30);
         mediumBtn.setBackground(Color.black);
         mediumBtn.setForeground(Color.red);
         mediumBtn.setOpaque(true);
-        mediumBtn.setBorder(new LineBorder(Color.darkGray));
+        mediumBtn.setBorder(new RoundedBorder(15));
 
+        hardBtn.setBounds(200, 350, 100, 100);
         hardBtn.setBackground(Color.black);
         hardBtn.setForeground(Color.red);
         hardBtn.setOpaque(true);
-        hardBtn.setBorder(new LineBorder(Color.darkGray));
+        hardBtn.setBorder(new RoundedBorder(15));
 
         add(titleLbl);
         add(easyBtn);
@@ -133,11 +131,8 @@ public class SwingUI extends JFrame {
     }
 
     // Takes user to leader board
-    public void  showLeaderBoard() {
-//        getContentPane().removeAll();
-//        getContentPane().setBackground(null);
-//        setLayout(flow);
-        java.util.List<Leaderboard> lb =  controller.getLeaderboard(10);
+    private void showLeaderBoard() {
+        List<Leaderboard> lb = controller.getLeaderboard(10);
 
         StringJoiner stringJoiner = new StringJoiner(" \n");
         leaderBoard = new JTextArea(25, 40);
@@ -147,8 +142,8 @@ public class SwingUI extends JFrame {
         leaderBoard.setEditable(false);
         leaderBoard.setLineWrap(true);
         leaderBoard.setWrapStyleWord(true);
-        for (Leaderboard user: lb ){
-           stringJoiner.add(user.getUserName()+" " + user.getRuntime());
+        for (Leaderboard user : lb) {
+            stringJoiner.add(user.getUserName() + " " + user.getRuntime());
 
             System.out.println(user.getRuntime());
         }
@@ -241,11 +236,11 @@ public class SwingUI extends JFrame {
         volumeControlsBtn.setBounds(45, 810, 50, 50);
         volumeControlsBtn.setBackground(Color.black);
         volumeControlsBtn.setOpaque(true);
-        volumeControlsBtn.setBorder(new LineBorder(Color.darkGray));
+        volumeControlsBtn.setBorderPainted(false);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
-            img = ImageIO.read(new File("Game/Icons/soundIcon2.png"));
+            img = ImageIO.read(new File("Game/Icons/soundIcon3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -848,6 +843,26 @@ public class SwingUI extends JFrame {
             }
             revalidate();
             repaint();
+        }
+    }
+
+    private static class RoundedBorder implements Border {
+        private int radius;
+
+        RoundedBorder(int radius) {
+            this.radius = radius;
+        }
+
+        public Insets getBorderInsets(Component c) {
+            return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
+        }
+
+        public boolean isBorderOpaque() {
+            return true;
+        }
+
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            g.drawRoundRect(x, y, width-1, height-1, radius, radius);
         }
     }
 }
