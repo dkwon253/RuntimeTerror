@@ -30,7 +30,7 @@ public class LeaderboardDetailsRepository {
     public List<Leaderboard> getTopLeaderboard(int size) {
         DynamoDBMapperConfig mapperConfig = new DynamoDBMapperConfig.Builder()
                 .withTableNameOverride(DynamoDBMapperConfig.TableNameOverride
-                        .withTableNameReplacement("runtimeterror_leaderboard")).build();
+                        .withTableNameReplacement("fruntimeterror_leaderboard")).build();
         DynamoDBMapper mapper = new DynamoDBMapper(client, mapperConfig);
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         List<Leaderboard> scanResult = new ArrayList<>(mapper.scan(Leaderboard.class, scanExpression));
