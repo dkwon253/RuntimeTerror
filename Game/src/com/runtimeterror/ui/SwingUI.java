@@ -33,7 +33,8 @@ public class SwingUI extends JFrame {
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
     private JTextField playerInputTF;
-    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
+    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
+            , roomImageContainer, titleNameLbl, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private int gameTime;
@@ -59,17 +60,25 @@ public class SwingUI extends JFrame {
     private void welcomeScreen() {
         getContentPane().setBackground(Color.black);
         showLeaderBoard();
-        titleNameLbl = new JLabel("Runtime Terror", SwingConstants.CENTER);
-        titleNameLbl.setBounds(150, 350, 250, 40);
-        titleNameLbl.setForeground(Color.red);
-        titleNameLbl.setFont(titleFont);
+        Image imgTitle = null;
+        try {
+            //imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
+            imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        titleNameLbl = new JLabel();
+        titleNameLbl.setIcon(new ImageIcon(imgTitle));
+        titleNameLbl.setBounds(68, 100, 424, 122);
+//        titleNameLbl.setForeground(Color.red);
+//        titleNameLbl.setFont(titleFont);
         add(titleNameLbl);
 
-        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-        subTitleLbl.setBounds(0, 500, 600, 40);
-        subTitleLbl.setForeground(Color.red);
-        subTitleLbl.setFont(normalFont);
-        add(subTitleLbl);
+//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
+//        subTitleLbl.setBounds(0, 500, 600, 40);
+//        subTitleLbl.setForeground(Color.red);
+//        subTitleLbl.setFont(normalFont);
+//        add(subTitleLbl);
 
         nextBtn = new JButton("Start");
         nextBtn.setBounds(150, 600, 100, 50);
@@ -169,6 +178,7 @@ public class SwingUI extends JFrame {
 
         setupImageTitle(imgTitle);
         setupMonster();
+        setupBlood();
         setupImageContainer();
         setupRoomInfoTA(controller);
         setupRoomItemPic(controller);
@@ -227,6 +237,7 @@ public class SwingUI extends JFrame {
         }
         playerInventory.updateUsableInventory();
         handleMonsterData();
+        handleBloodLost();
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
         if (controller.isGameOver()) {
@@ -384,11 +395,22 @@ public class SwingUI extends JFrame {
     }
 
     private void setupMonster() {
-        monsterLabel = new JLabel("", SwingConstants.CENTER);
-        monsterLabel.setBounds(30, 20, 500, 25);
-        monsterLabel.setForeground(Color.RED);
+//        monsterLabel = new JLabel("", SwingConstants.CENTER);
+//        monsterLabel.setBounds(30, 20, 500, 25);
+//        monsterLabel.setForeground(Color.RED);
+//        monsterLabel.setVisible(false);
+//        add(monsterLabel);
+        monsterLabel = new JLabel(getResizedRoomImage("Game/Icons/monster.png"));
+        monsterLabel.setBounds(30, 50, 500, 260);
         monsterLabel.setVisible(false);
         add(monsterLabel);
+    }
+
+    private void setupBlood() {
+        bloodLbl = new JLabel(getResizedRoomImage("Game/Icons/bloodLost.png"));
+        bloodLbl.setBounds(30, 50, 500, 260);
+        bloodLbl.setVisible(false);
+        add(bloodLbl);
     }
 
     private void setupTimer() {
@@ -646,6 +668,7 @@ public class SwingUI extends JFrame {
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         imageTitleContainer.setVisible(true);
         monsterLabel.setVisible(false);
+        bloodLbl.setVisible(false);
         soundManager.stopExtraSFX();
         roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
     }
@@ -705,6 +728,14 @@ public class SwingUI extends JFrame {
             monsterLabel.setVisible(false);
             soundManager.stopExtraSFX();
             soundManager.stopHeartSFX();
+        }
+    }
+
+    private void handleBloodLost(){
+        if(controller.isBloodLost()){
+            bloodLbl.setVisible(true);
+        }else{
+            bloodLbl.setVisible(false);
         }
     }
 

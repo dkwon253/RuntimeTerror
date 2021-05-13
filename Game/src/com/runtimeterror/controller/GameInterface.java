@@ -75,4 +75,6 @@ public interface GameInterface {
     boolean addToLeaderboard(String userName, int runtime);
 
     boolean hasElevator();
+
+    boolean isBloodLost();
 }
