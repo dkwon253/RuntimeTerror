@@ -242,7 +242,7 @@ public class SwingUI extends JFrame {
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
-            img = ImageIO.read(new File("Game/Icons/soundIcon2.png"));
+            img = ImageIO.read(new File("Game/Icons/soundIcon3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
