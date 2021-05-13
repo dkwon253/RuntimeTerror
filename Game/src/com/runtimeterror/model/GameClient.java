@@ -199,6 +199,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
         return (boolean) gameMap.get("hasElevator").getResult();
     }
 
+    @Override
+    public boolean isBloodLost() {
+        return (boolean) gameMap.get("shouldDecreaseHealthFlag").getResult();
+    }
+
 
     @Override
     public int getMonsterLocation() {
