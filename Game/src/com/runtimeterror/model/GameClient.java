@@ -194,6 +194,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
         return database.addLeaderboard(leaderboard);
     }
 
+    @Override
+    public boolean hasElevator() {
+        return (boolean) gameMap.get("hasElevator").getResult();
+    }
+
 
     @Override
     public int getMonsterLocation() {

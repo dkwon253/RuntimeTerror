@@ -21,6 +21,7 @@ class GameProcessor {
         processCombat(gameMap);
         processHelp(gameMap);
         processStairs(gameMap);
+        processElevator(gameMap);
         processUse(gameMap);
         processGet(gameMap);
         processGo(gameMap);
@@ -98,6 +99,32 @@ class GameProcessor {
             gameMap.put("viewLabel", new Result<>("The stairs have taken you to the " + stairsRoomName + "."));
         } else if ("stairs".equals(noun)) {
             gameMap.put("viewLabel", new Result<>("There are no stairs in " + currentRoom.getRoomName() + "."));
+        }
+        return gameMap;
+    }
+
+    Map<String, Result<?>> processElevator(Map<String, Result<?>> gameMap) {
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        if (isProcessed) {
+            return gameMap;
+        }
+
+        InputData inputData = (InputData) gameMap.get("inputData").getResult();
+        String noun = inputData.getNoun();
+        boolean hasElevator = (boolean) gameMap.get("hasElevator").getResult();
+        String elevatorRoomName = (String) gameMap.get("elevatorRoom").getResult();
+        @SuppressWarnings("unchecked")
+        Map<String, Rooms> rooms = (Map<String, Rooms>) gameMap.get("rooms").getResult();
+        Rooms elevatorRoom = rooms.get(elevatorRoomName);
+        Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
+        if (hasElevator && "elevator".equals(noun)) {
+            gameMap.put("roomToChangeTo", new Result<>(elevatorRoom));
+            gameMap.put("shouldChangeRoomFlag", new Result<>(true));
+            gameMap.put("isProcessed", new Result<>(true));
+            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
+            gameMap.put("viewLabel", new Result<>("The elevator have taken you to the " + elevatorRoomName + "."));
+        } else if ("elevator".equals(noun)) {
+            gameMap.put("viewLabel", new Result<>("There is no elevator in " + currentRoom.getRoomName() + "."));
         }
         return gameMap;
     }

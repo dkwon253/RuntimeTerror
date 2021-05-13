@@ -414,6 +414,45 @@ public class SwingUI extends JFrame {
             stairsLbl.setBounds(0, 210, 50, 50);
             roomImageContainer.add(stairsLbl);
         }
+
+        if (controller.hasElevator()) {
+            JLabel elevatorLbl = new JLabel();
+            Image elevator = null;
+            Image transparentElevator = null;
+            Image scaledElevatorImage = null;
+            Image scaledTransparentElevator = null;
+            String filePath = "Game/Icons/elevator.png";
+            try {
+                elevator = ImageIO.read(new File(filePath));
+                transparentElevator = getTransparentImg(ImageIO.read(new File(filePath)), .5f);
+                scaledElevatorImage = elevator.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                scaledTransparentElevator = transparentElevator.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            elevatorLbl.setIcon(new ImageIcon(scaledTransparentElevator));
+            Image finalScaledElevatorImage = scaledElevatorImage;
+            Image finalScaledTransparentElevator = scaledTransparentElevator;
+            elevatorLbl.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    processSubmitInput("take elevator");
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    elevatorLbl.setIcon(new ImageIcon(finalScaledElevatorImage));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    elevatorLbl.setIcon(new ImageIcon(finalScaledTransparentElevator));
+                }
+            });
+            elevatorLbl.setBounds(450, 210, 50, 50);
+            roomImageContainer.add(elevatorLbl);
+        }
         revalidate();
         repaint();
     }
