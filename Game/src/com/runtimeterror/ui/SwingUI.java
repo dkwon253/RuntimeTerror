@@ -1,6 +1,8 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
+import com.runtimeterror.dao.LeaderboardDetailsRepository;
+import com.runtimeterror.model.GameClient;
 import com.runtimeterror.model.Item;
 import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
@@ -17,8 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
-import java.util.List;
 import java.util.StringJoiner;
+import java.util.List;
 
 public class SwingUI extends JFrame {
 
@@ -29,7 +31,7 @@ public class SwingUI extends JFrame {
     private final SwingController controller;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA, inventoryInfoTA, leaderBoard;
+    private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
     private JTextField playerInputTF;
     private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
     private JButton mapCommandBtn, inventoryBtn;
@@ -39,6 +41,7 @@ public class SwingUI extends JFrame {
     private Image scaledImage;
     private static final Font titleFont = new Font("Chiller", Font.BOLD, 50);
     private static final Font normalFont = new Font("Chiller", Font.PLAIN, 25);
+    private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
     public SwingUI(String title, SwingController controller) {
         super(title);
@@ -56,23 +59,32 @@ public class SwingUI extends JFrame {
     private void welcomeScreen() {
         getContentPane().setBackground(Color.black);
         showLeaderBoard();
-        titleNameLbl = new JLabel("Runtime Terror", SwingConstants.CENTER);
-        titleNameLbl.setBounds(150, 350, 250, 40);
-        titleNameLbl.setForeground(Color.red);
-        titleNameLbl.setFont(titleFont);
+        Image imgTitle = null;
+        try {
+            //imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
+            imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        titleNameLbl = new JLabel();
+        titleNameLbl.setIcon(new ImageIcon(imgTitle));
+        titleNameLbl.setBounds(68, 100, 424, 122);
+//        titleNameLbl.setForeground(Color.red);
+//        titleNameLbl.setFont(titleFont);
         add(titleNameLbl);
 
-        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-        subTitleLbl.setBounds(0, 500, 600, 40);
-        subTitleLbl.setForeground(Color.red);
-        subTitleLbl.setFont(normalFont);
-        add(subTitleLbl);
+//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
+//        subTitleLbl.setBounds(0, 500, 600, 40);
+//        subTitleLbl.setForeground(Color.red);
+//        subTitleLbl.setFont(normalFont);
+//        add(subTitleLbl);
 
         nextBtn = new JButton("Start");
         nextBtn.setBounds(150, 600, 100, 50);
         nextBtn.setBackground(Color.black);
         nextBtn.setForeground(Color.red);
-        nextBtn.setBorder(new RoundedBorder(15));
+        nextBtn.setOpaque(true);
+        nextBtn.setBorder(new LineBorder(Color.white));
         nextBtn.addActionListener(new HandleWelcomeBtnClick());
         add(nextBtn);
 
@@ -80,7 +92,8 @@ public class SwingUI extends JFrame {
         hallBtn.setBounds(260, 600, 100, 50);
         hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
-        hallBtn.setBorder(new RoundedBorder(15));
+        hallBtn.setOpaque(true);
+        hallBtn.setBorder(new LineBorder(Color.white));
         hallBtn.addActionListener(new HandleHallBtnClick());
         add(hallBtn);
     }
@@ -88,34 +101,32 @@ public class SwingUI extends JFrame {
     private void difficultyPage() {
         getContentPane().removeAll();
         getContentPane().setBackground(Color.black);
-        setLayout(null);
+        setLayout(flow);
 
         JLabel titleLbl = new JLabel("Please choose your difficulty: ", SwingConstants.CENTER);
         titleLbl.setOpaque(true);
         titleLbl.setBackground(Color.black);
         titleLbl.setForeground(Color.red);
-        titleLbl.setBounds(0,350,200,200);
+        titleLbl.setBorder(new LineBorder(Color.darkGray));
 
         easyBtn = new JButton("Easy");
         mediumBtn = new JButton("Medium");
         hardBtn = new JButton("Hard");
 
-        easyBtn.setBounds(0, 350, 100, 100);
-        easyBtn.setBackground(Color.darkGray);
+        easyBtn.setBackground(Color.black);
         easyBtn.setForeground(Color.red);
-        easyBtn.setBorder(new RoundedBorder(15));
+        easyBtn.setOpaque(true);
+        easyBtn.setBorder(new LineBorder(Color.darkGray));
 
-        mediumBtn.setBounds(100, 350, 30, 30);
         mediumBtn.setBackground(Color.black);
         mediumBtn.setForeground(Color.red);
         mediumBtn.setOpaque(true);
-        mediumBtn.setBorder(new RoundedBorder(15));
+        mediumBtn.setBorder(new LineBorder(Color.darkGray));
 
-        hardBtn.setBounds(200, 350, 100, 100);
         hardBtn.setBackground(Color.black);
         hardBtn.setForeground(Color.red);
         hardBtn.setOpaque(true);
-        hardBtn.setBorder(new RoundedBorder(15));
+        hardBtn.setBorder(new LineBorder(Color.darkGray));
 
         add(titleLbl);
         add(easyBtn);
@@ -132,7 +143,8 @@ public class SwingUI extends JFrame {
 
     // Takes user to leader board
     private void showLeaderBoard() {
-        List<Leaderboard> lb = controller.getLeaderboard(10);
+
+        List<Leaderboard> lb =  controller.getLeaderboard(10);
 
         StringJoiner stringJoiner = new StringJoiner(" \n");
         leaderBoard = new JTextArea(25, 40);
@@ -142,8 +154,8 @@ public class SwingUI extends JFrame {
         leaderBoard.setEditable(false);
         leaderBoard.setLineWrap(true);
         leaderBoard.setWrapStyleWord(true);
-        for (Leaderboard user : lb) {
-            stringJoiner.add(user.getUserName() + " " + user.getRuntime());
+        for (Leaderboard user: lb ){
+           stringJoiner.add(user.getUserName()+" " + user.getRuntime());
 
             System.out.println(user.getRuntime());
         }
@@ -158,7 +170,7 @@ public class SwingUI extends JFrame {
         Image imgTitle = null;
         try {
             //imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
-            imgTitle = ImageIO.read(new File("Game/Icons/darkTitle.png"));
+            imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -240,7 +252,7 @@ public class SwingUI extends JFrame {
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
-            img = ImageIO.read(new File("Game/Icons/soundIcon3.png"));
+            img = ImageIO.read(new File("Game/Icons/soundIcon2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -380,9 +392,13 @@ public class SwingUI extends JFrame {
     }
 
     private void setupMonster() {
-        monsterLabel = new JLabel("", SwingConstants.CENTER);
-        monsterLabel.setBounds(30, 20, 500, 25);
-        monsterLabel.setForeground(Color.RED);
+//        monsterLabel = new JLabel("", SwingConstants.CENTER);
+//        monsterLabel.setBounds(30, 20, 500, 25);
+//        monsterLabel.setForeground(Color.RED);
+//        monsterLabel.setVisible(false);
+//        add(monsterLabel);
+        monsterLabel = new JLabel(getResizedRoomImage("Game/Icons/monster.png"));
+        monsterLabel.setBounds(30, 50, 500, 260);
         monsterLabel.setVisible(false);
         add(monsterLabel);
     }
@@ -843,26 +859,6 @@ public class SwingUI extends JFrame {
             }
             revalidate();
             repaint();
-        }
-    }
-
-    private static class RoundedBorder implements Border {
-        private int radius;
-
-        RoundedBorder(int radius) {
-            this.radius = radius;
-        }
-
-        public Insets getBorderInsets(Component c) {
-            return new Insets(this.radius+1, this.radius+1, this.radius+2, this.radius);
-        }
-
-        public boolean isBorderOpaque() {
-            return true;
-        }
-
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-            g.drawRoundRect(x, y, width-1, height-1, radius, radius);
         }
     }
 }
