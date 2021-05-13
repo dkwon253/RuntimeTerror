@@ -122,6 +122,7 @@ public class LoadRoomData {
         gameMap.put("nonUseItems", new Result<>(new ArrayList<>(Arrays.asList("stairs", "elevator"))));
         gameMap.put("weaponInventory", new Result<>(new ArrayList<Item>()));
         gameMap.put("difficultyMap", new Result<>(gameLevels));
+        gameMap.put("level", new Result<>("easy"));
         setGameMapRoundDefaults(gameMap);
     }
 

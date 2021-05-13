@@ -1,6 +1,7 @@
 package com.runtimeterror.controller;
 
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
 
 import java.util.List;
@@ -95,5 +96,9 @@ public class SwingController {
     public boolean hasStairs() {return gi.hasStairs();}
 
     public void setupGameDifficulty(String level) {gi.setupDifficulty(level);}
+
+    public List<Leaderboard> getLeaderboard(int size) {return gi.getLeaderboard(size);}
+
+    public boolean addToLeaderboard(String userName, int runtime) {return gi.addToLeaderboard(userName, runtime);}
 
 }
