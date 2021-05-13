@@ -1,6 +1,7 @@
 package com.runtimeterror.controller;
 
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
 
 import java.util.List;
@@ -69,4 +70,7 @@ public interface GameInterface {
 
     void setupDifficulty(String level);
 
+    List<Leaderboard> getLeaderboard(int size);
+
+    boolean addToLeaderboard(String userName, int runtime);
 }

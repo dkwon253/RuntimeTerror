@@ -461,6 +461,7 @@
 //        gameLevels.put("medium", medium);
 //        gameLevels.put("hard", hard);
 //        gameMap.put("difficultyMap", new Result<>(gameLevels));
+//        gameMap.put("level", new Result<>("easy"));
 //        return gameMap;
 //    }
 //}

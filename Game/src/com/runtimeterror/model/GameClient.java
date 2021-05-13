@@ -1,5 +1,6 @@
 package com.runtimeterror.model;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.runtimeterror.controller.GameInterface;
 
 import java.util.*;
@@ -9,6 +10,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
     private GameProcessor gameProcessor;
     private PostGameProcessor postGameProcessor;
     private Map<String, Result<?>> gameMap;
+
 
     GameClient(boolean test) {
         // test constructor
@@ -174,9 +176,22 @@ public class GameClient implements GameInterface, java.io.Serializable {
         @SuppressWarnings("unchecked")
         HashMap<String, List<Integer>> difficultyMap = (HashMap<String, List<Integer>>) gameMap.get("difficultyMap").getResult();
         List<Integer> levelList = difficultyMap.get(level);
+        gameMap.put("level", new Result<>(level));
         gameMap.put("playerHealth", new Result<>(levelList.get(0)));
         gameMap.put("monsterDamage", new Result<>(levelList.get(1)));
         gameMap.put("timeToEndGame", new Result<>(levelList.get(2)));
+    }
+
+    @Override
+    public List<Leaderboard> getLeaderboard(int size) {
+        return database.getTopLeaderboard(size);
+    }
+
+    @Override
+    public boolean addToLeaderboard(String userName, int runtime) {
+        String level = (String) gameMap.get("level").getResult();
+        Leaderboard leaderboard = new Leaderboard(userName, level, runtime);
+        return database.addLeaderboard(leaderboard);
     }
 
 
