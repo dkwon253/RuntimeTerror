@@ -33,7 +33,8 @@ public class SwingUI extends JFrame {
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
     private JTextField playerInputTF;
-    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
+    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
+            , roomImageContainer, titleNameLbl, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private int gameTime;
@@ -177,6 +178,7 @@ public class SwingUI extends JFrame {
 
         setupImageTitle(imgTitle);
         setupMonster();
+        setupBlood();
         setupImageContainer();
         setupRoomInfoTA(controller);
         setupRoomItemPic(controller);
@@ -235,6 +237,7 @@ public class SwingUI extends JFrame {
         }
         playerInventory.updateUsableInventory();
         handleMonsterData();
+        handleBloodLost();
         playerInputTF.setText("");
         playRoomSounds(roomData, result);
         if (controller.isGameOver()) {
@@ -401,6 +404,13 @@ public class SwingUI extends JFrame {
         monsterLabel.setBounds(30, 50, 500, 260);
         monsterLabel.setVisible(false);
         add(monsterLabel);
+    }
+
+    private void setupBlood() {
+        bloodLbl = new JLabel(getResizedRoomImage("Game/Icons/bloodLost.png"));
+        bloodLbl.setBounds(30, 50, 500, 260);
+        bloodLbl.setVisible(false);
+        add(bloodLbl);
     }
 
     private void setupTimer() {
@@ -658,6 +668,7 @@ public class SwingUI extends JFrame {
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         imageTitleContainer.setVisible(true);
         monsterLabel.setVisible(false);
+        bloodLbl.setVisible(false);
         soundManager.stopExtraSFX();
         roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
     }
@@ -717,6 +728,14 @@ public class SwingUI extends JFrame {
             monsterLabel.setVisible(false);
             soundManager.stopExtraSFX();
             soundManager.stopHeartSFX();
+        }
+    }
+
+    private void handleBloodLost(){
+        if(controller.isBloodLost()){
+            bloodLbl.setVisible(true);
+        }else{
+            bloodLbl.setVisible(false);
         }
     }
 
