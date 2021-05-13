@@ -143,7 +143,7 @@ class PostGameProcessor {
                 }
             }
             int randomInt = new Random().nextInt(monsterAvailableRooms.size());
-            //gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
+//            gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
             gameMap.put(("monsterCurrentRoom"), new Result<>(rooms));
         }
         return gameMap;

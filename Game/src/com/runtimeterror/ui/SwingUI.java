@@ -59,17 +59,25 @@ public class SwingUI extends JFrame {
     private void welcomeScreen() {
         getContentPane().setBackground(Color.black);
         showLeaderBoard();
-        titleNameLbl = new JLabel("Runtime Terror", SwingConstants.CENTER);
-        titleNameLbl.setBounds(150, 350, 250, 40);
-        titleNameLbl.setForeground(Color.red);
-        titleNameLbl.setFont(titleFont);
+        Image imgTitle = null;
+        try {
+            //imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
+            imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        titleNameLbl = new JLabel();
+        titleNameLbl.setIcon(new ImageIcon(imgTitle));
+        titleNameLbl.setBounds(68, 100, 424, 122);
+//        titleNameLbl.setForeground(Color.red);
+//        titleNameLbl.setFont(titleFont);
         add(titleNameLbl);
 
-        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-        subTitleLbl.setBounds(0, 500, 600, 40);
-        subTitleLbl.setForeground(Color.red);
-        subTitleLbl.setFont(normalFont);
-        add(subTitleLbl);
+//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
+//        subTitleLbl.setBounds(0, 500, 600, 40);
+//        subTitleLbl.setForeground(Color.red);
+//        subTitleLbl.setFont(normalFont);
+//        add(subTitleLbl);
 
         nextBtn = new JButton("Start");
         nextBtn.setBounds(150, 600, 100, 50);
@@ -384,9 +392,13 @@ public class SwingUI extends JFrame {
     }
 
     private void setupMonster() {
-        monsterLabel = new JLabel("", SwingConstants.CENTER);
-        monsterLabel.setBounds(30, 20, 500, 25);
-        monsterLabel.setForeground(Color.RED);
+//        monsterLabel = new JLabel("", SwingConstants.CENTER);
+//        monsterLabel.setBounds(30, 20, 500, 25);
+//        monsterLabel.setForeground(Color.RED);
+//        monsterLabel.setVisible(false);
+//        add(monsterLabel);
+        monsterLabel = new JLabel(getResizedRoomImage("Game/Icons/monster.png"));
+        monsterLabel.setBounds(30, 50, 500, 260);
         monsterLabel.setVisible(false);
         add(monsterLabel);
     }
