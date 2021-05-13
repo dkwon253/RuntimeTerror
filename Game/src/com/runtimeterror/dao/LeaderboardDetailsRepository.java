@@ -23,6 +23,11 @@ import com.runtimeterror.model.Leaderboard;
 
 public class LeaderboardDetailsRepository {
 
+    public LeaderboardDetailsRepository() {
+        System.setProperty("aws.accessKeyId", "AKIA3RMLYMV3P4ZV7423");
+        System.setProperty("aws.secretKey", "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");
+    }
+
     AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
             .withRegion(Regions.US_WEST_1).build();
     DynamoDB dynamoDb = new DynamoDB(client);
