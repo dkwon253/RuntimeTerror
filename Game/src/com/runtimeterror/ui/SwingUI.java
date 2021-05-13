@@ -1,7 +1,10 @@
 package com.runtimeterror.ui;
 
 import com.runtimeterror.controller.SwingController;
+import com.runtimeterror.dao.LeaderboardDetailsRepository;
+import com.runtimeterror.model.GameClient;
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
 import com.runtimeterror.sound.SoundManager;
 
@@ -15,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
+import java.util.StringJoiner;
 
 public class SwingUI extends JFrame {
 
@@ -25,8 +29,9 @@ public class SwingUI extends JFrame {
     private final SwingController controller;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA, inventoryInfoTA;
+    private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
     private JTextField playerInputTF;
+
 
     private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLabel, subTitleLabel;
     private JButton mapCommandBtn, inventoryBtn;
@@ -54,15 +59,16 @@ public class SwingUI extends JFrame {
     private void welcomeScreen() {
         getContentPane().setBackground(Color.black);
         setResizable(false);
+        showLeaderBoard();
 
         titleNameLabel = new JLabel("Runtime Terror", SwingConstants.CENTER);
-        titleNameLabel.setBounds(150, 350, 250, 40);
+        titleNameLabel.setBounds(150, 20, 250, 40);
         titleNameLabel.setForeground(Color.red);
         titleNameLabel.setFont(titleFont);
         add(titleNameLabel);
 
         subTitleLabel = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-        subTitleLabel.setBounds(0, 500, 600, 40);
+        subTitleLabel.setBounds(0, 75, 600, 40);
         subTitleLabel.setForeground(Color.red);
         subTitleLabel.setFont(normalFont);
         add(subTitleLabel);
@@ -103,6 +109,30 @@ public class SwingUI extends JFrame {
 
         revalidate();
         repaint();
+    }
+
+    // Takes user to leader board
+    public void  showLeaderBoard() {
+//        getContentPane().removeAll();
+//        getContentPane().setBackground(null);
+//        setLayout(flow);
+        java.util.List<Leaderboard> lb =  controller.getLeaderboard(10);
+
+        StringJoiner stringJoiner = new StringJoiner(" \n");
+        leaderBoard = new JTextArea(25, 40);
+        leaderBoard.setBounds(30, 315, 500, 300);
+        leaderBoard.setBackground(Color.black);
+        leaderBoard.setForeground(Color.red);
+        leaderBoard.setEditable(false);
+        leaderBoard.setLineWrap(true);
+        leaderBoard.setWrapStyleWord(true);
+        for (Leaderboard user: lb ){
+           stringJoiner.add(user.getUserName()+" " + user.getRuntime());
+
+            System.out.println(user.getRuntime());
+        }
+        leaderBoard.setText(stringJoiner.toString());
+
     }
 
     private void startGame(SwingController controller) {
@@ -520,6 +550,7 @@ public class SwingUI extends JFrame {
         } else {
             iconImage += "freedom.png";
             message = "You have successfully escaped the mansion. Now go live to the fullest";
+            controller.addToLeaderboard("", 90);// need to add the input filed to get this info
         }
         try {
             img = ImageIO.read(new File(iconImage));
@@ -685,6 +716,9 @@ public class SwingUI extends JFrame {
     private class HandleHallBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            showLeaderBoard();
+            add(leaderBoard);
+
             System.out.println("button press");
         }
     }
