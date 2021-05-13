@@ -36,6 +36,7 @@ public class LoadRoomData {
             String dialogueSecond = "null".equals(tokens[15]) ? null : tokens[15];
             String roomType = "null".equals(tokens[16]) ? null : tokens[16];
             String itemImagePath = "null".equals(tokens[17]) ? null : tokens[17];
+            String elevatorNeighbor = "null".equals(tokens[18]) ? null : tokens[18];
             String description = tokens[9];
             String path = tokens[10];
             String mapPath = tokens[11];
@@ -43,14 +44,14 @@ public class LoadRoomData {
             Rooms newRoom;
             if (itemName == null) {
                 newRoom = new Rooms(roomName, description, hidingSpot, null, path, mapPath,
-                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
+                        stairsNeighbor, elevatorNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
 
 
             } else {
                 listOfItems.add(itemName);
                 Item item = new Item(itemName, itemType, itemDescription, itemImagePath);
                 newRoom = new Rooms(roomName, description, hidingSpot, item, path, mapPath,
-                        stairsNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
+                        stairsNeighbor, elevatorNeighbor, dialogueItem, dialogueFirst, dialogueSecond, roomType);
                 if ("weapon".equals(itemType)) {
                     weaponList.add(itemName);
                 }
@@ -81,7 +82,8 @@ public class LoadRoomData {
             String west = "null".equals(tokens[6]) ? null : tokens[6];
             String north = "null".equals(tokens[7]) ? null : tokens[7];
             String south = "null".equals(tokens[8]) ? null : tokens[8];
-            String stairs = "null".equals(tokens[10]) ? null : tokens[10];
+            String stairs = "null".equals(tokens[12]) ? null : tokens[12];
+            String elevator = "null".equals(tokens[18]) ? null : tokens[18];
 
             HashMap<String, Rooms> neighbor = new HashMap<>();
             neighbor.put("east", roomList.get(east));
@@ -91,6 +93,7 @@ public class LoadRoomData {
 
             roomList.get(roomName).setRoomNeighbors(neighbor);
             roomList.get(roomName).setStairsNeighbor(roomList.get(stairs));
+            roomList.get(roomName).setElevatorNeighbor(roomList.get(elevator));
         });
     }
 
@@ -110,6 +113,8 @@ public class LoadRoomData {
         gameMap.put("gameLoaded", new Result<>(false));
         gameMap.put("hasStairs", new Result<>(defaultRoom.hasStairs()));
         gameMap.put("stairsRoom", new Result<>(defaultRoom.getStairsNeighborName()));
+        gameMap.put("hasElevator", new Result<>(defaultRoom.hasElevator()));
+        gameMap.put("elevatorRoom", new Result<>(defaultRoom.getElevatorNeighborName()));
         gameMap.put("startingRoom", new Result<>(defaultRoom));
         gameMap.put("helpText", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,WAIT,HELP"));
         gameMap.put("escapeItem", new Result<>("bolt cutters"));
@@ -130,6 +135,7 @@ public class LoadRoomData {
         gameMap.put("input", new Result<>(""));
         gameMap.put("inputData", new Result<>(""));
         gameMap.put("usedStairs", new Result<>(false));
+        gameMap.put("usedElevator", new Result<>(false));
         gameMap.put("hidden", new Result<>(false));
         gameMap.put("isProcessed", new Result<>(false));
         gameMap.put("didChangeRoom", new Result<>(false));
@@ -144,6 +150,7 @@ public class LoadRoomData {
         gameMap.put("isGameOver", new Result<>(false));
         gameMap.put("isKilledByMonster", new Result<>(false));
         gameMap.put("didUseStairs", new Result<>(false));
+        gameMap.put("didUseElevator", new Result<>(false));
         gameMap.put("didGetItem", new Result<>(false));
         gameMap.put("triedToGoDirection", new Result<>(false));
         gameMap.put("triedToGetItem", new Result<>(false));

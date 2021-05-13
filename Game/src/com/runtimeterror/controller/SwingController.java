@@ -95,6 +95,8 @@ public class SwingController {
 
     public boolean hasStairs() {return gi.hasStairs();}
 
+    public boolean hasElevator() {return gi.hasElevator();}
+
     public void setupGameDifficulty(String level) {gi.setupDifficulty(level);}
 
     public List<Leaderboard> getLeaderboard(int size) {return gi.getLeaderboard(size);}
