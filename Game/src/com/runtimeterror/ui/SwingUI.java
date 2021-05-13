@@ -539,9 +539,14 @@ public class SwingUI extends JFrame {
             System.out.println("la");
 
             users = new JFrame();
+            users.setSize(600, 600);
+            users.setResizable(false);
+            users.setTitle("Save");
+            users.setLocation(500, 500);
+            users.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             JLabel userLbl = new JLabel("Enter Your name: ", SwingConstants.CENTER);
             userNameTF = new JTextField();
-            userNameTF.setBounds(30, 750, 500, 25);
+            userNameTF.setBounds(30, 50, 200, 25);
             userNameTF.addActionListener(new HandleEnterPressOnUserNameTF());;
             users.add(userLbl);
             users.add(userNameTF);
