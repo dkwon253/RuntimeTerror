@@ -53,7 +53,6 @@ public class SwingUI extends JFrame {
 
     private void welcomeScreen() {
         getContentPane().setBackground(Color.black);
-        setResizable(false);
 
         titleNameLbl = new JLabel("Runtime Terror", SwingConstants.CENTER);
         titleNameLbl.setBounds(150, 350, 250, 40);
@@ -86,7 +85,7 @@ public class SwingUI extends JFrame {
         add(hallBtn);
     }
 
-    public void difficultyPage() {
+    private void difficultyPage() {
         getContentPane().removeAll();
         getContentPane().setBackground(Color.black);
         setLayout(flow);
@@ -131,11 +130,12 @@ public class SwingUI extends JFrame {
 
     private void startGame(SwingController controller) {
         getContentPane().removeAll();
-        getContentPane().setBackground(null);
+        getContentPane().setBackground(Color.black);
         setLayout(null);
         Image imgTitle = null;
         try {
-            imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
+            //imgTitle = ImageIO.read(new File("Game/Icons/titleImage.png"));
+            imgTitle = ImageIO.read(new File("Game/Icons/darkTitle.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -157,7 +157,6 @@ public class SwingUI extends JFrame {
         setupGameTimer();
         setupTimer();
         setupInventoryButton();
-        setupDarkModeBtn();
 
         soundManager.playBGM("Game/Sounds/BGM.wav");
 
@@ -239,20 +238,12 @@ public class SwingUI extends JFrame {
         add(submitCommandBtn);
     }
 
-    private void setupDarkModeBtn() {
-        JButton darkModeBtn = new JButton("Dark");
-        darkModeBtn.setBounds(350, 825, 75, 25);
-        darkModeBtn.setBackground(Color.black);
-        darkModeBtn.setForeground(Color.red);
-        darkModeBtn.setOpaque(true);
-        darkModeBtn.setBorder(new LineBorder(Color.darkGray));
-        darkModeBtn.addActionListener(new HandleColorThemeBtnClick());
-        add(darkModeBtn);
-    }
-
     private void setupPlayerInputTF() {
         playerInputTF = new JTextField();
         playerInputTF.setBounds(30, 750, 500, 25);
+        playerInputTF.setBackground(Color.black);
+        playerInputTF.setForeground(Color.white);
+        playerInputTF.setBorder(new LineBorder(Color.darkGray));
         playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
         add(playerInputTF);
     }
@@ -261,6 +252,10 @@ public class SwingUI extends JFrame {
         mapCommandBtn = new JButton();
         mapCommandBtn.setBounds(300, 825, 75, 25);
         mapCommandBtn.setText("Map");
+        mapCommandBtn.setBackground(Color.black);
+        mapCommandBtn.setForeground(Color.red);
+        mapCommandBtn.setOpaque(true);
+        mapCommandBtn.setBorder(new LineBorder(Color.darkGray));
         mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
         mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
@@ -270,6 +265,10 @@ public class SwingUI extends JFrame {
         inventoryBtn = new JButton();
         inventoryBtn.setBounds(205, 825, 90, 25);
         inventoryBtn.setText("Inventory");
+        inventoryBtn.setBackground(Color.black);
+        inventoryBtn.setForeground(Color.red);
+        inventoryBtn.setOpaque(true);
+        inventoryBtn.setBorder(new LineBorder(Color.darkGray));
         inventoryBtn.addActionListener(new HandlePlayerInventoryBtnClick());
         inventoryBtn.setVisible(false);
         add(inventoryBtn);
@@ -289,11 +288,11 @@ public class SwingUI extends JFrame {
     private void setupPlayerStateLbl() {
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
         playerStateLbl.setBounds(30, 730, 500, 20);
+        playerStateLbl.setForeground(Color.red);
         add(playerStateLbl);
     }
 
     private void setupPlayerHealth() {
-        //playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.CENTER);
         playerHealthLbl = new JLabel();
         playerHealthLbl.setBounds(250, 730, 500, 20);
         playerHealthLbl.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -315,6 +314,10 @@ public class SwingUI extends JFrame {
         inventoryInfoTA.setEditable(false);
         inventoryInfoTA.setLineWrap(true);
         inventoryInfoTA.setWrapStyleWord(true);
+        inventoryInfoTA.setBackground(Color.black);
+        inventoryInfoTA.setForeground(Color.red);
+        inventoryInfoTA.setOpaque(true);
+        inventoryInfoTA.setBorder(new LineBorder(Color.darkGray));
         inventoryInfoTA.setText(controller.getInventory());
         add(inventoryInfoTA);
     }
@@ -322,6 +325,7 @@ public class SwingUI extends JFrame {
     private void setupPlayerMessageLbl() {
         playerMessageLbl = new JLabel("", SwingConstants.CENTER);
         playerMessageLbl.setBounds(30, 615, 500, 25);
+        playerMessageLbl.setForeground(Color.red);
         add(playerMessageLbl);
     }
 
@@ -331,6 +335,10 @@ public class SwingUI extends JFrame {
         roomInfoTA.setEditable(false);
         roomInfoTA.setLineWrap(true);
         roomInfoTA.setWrapStyleWord(true);
+        roomInfoTA.setBackground(Color.black);
+        roomInfoTA.setForeground(Color.red);
+        roomInfoTA.setOpaque(true);
+        roomInfoTA.setBorder(new LineBorder(Color.darkGray));
         roomInfoTA.setText(controller.getRoomDesc());
         add(roomInfoTA);
     }
@@ -550,28 +558,6 @@ public class SwingUI extends JFrame {
         }
     }
 
-//    private JTextArea roomInfoTA, inventoryInfoTA;
-//    private JTextField playerInputTF;
-//    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLbl, subTitleLbl;
-//    private JButton mapCommandBtn, inventoryBtn;
-//    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
-
-    private void darkMode() {
-        setBackground(Color.black);
-        playerInputTF.setBackground(Color.black);
-        playerInputTF.setForeground(Color.white);
-        playerInputTF.setBorder(new LineBorder(Color.darkGray));
-        playerStateLbl.setForeground(Color.red);
-        playerMessageLbl.setForeground(Color.red);
-        roomInfoTA.setBackground(Color.black);
-        roomInfoTA.setForeground(Color.red);
-        roomInfoTA.setBorder(new LineBorder(Color.darkGray));
-        inventoryInfoTA.setBackground(Color.black);
-        inventoryInfoTA.setForeground(Color.red);
-        inventoryInfoTA.setBorder(new LineBorder(Color.darkGray));
-        playerMessageLbl.setForeground(Color.red);
-    }
-
     private void endGame(boolean isKilled) {
         timer.stop();
         Image img = null;
@@ -758,13 +744,6 @@ public class SwingUI extends JFrame {
                 controller.setupGameDifficulty("hard");
                 startGame(controller);
             }
-        }
-    }
-
-    private class HandleColorThemeBtnClick implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            darkMode();
         }
     }
 
