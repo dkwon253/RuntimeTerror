@@ -30,12 +30,12 @@ public class SwingUI extends JFrame {
 
     private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLabel, subTitleLabel;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextButton;
+    private JButton easyBtn, mediumBtn, hardBtn, nextButton, hallBtn;
     private int gameTime;
     private Image scaledTransparentStairs;
     private Image scaledImage;
-    private static final Font titleFont = new Font("Times New Roman", Font.BOLD, 30);
-    private static final Font normalFont = new Font("Times New Roman", Font.PLAIN, 15);
+    private static final Font titleFont = new Font("Chiller", Font.BOLD, 50);
+    private static final Font normalFont = new Font("Chiller", Font.PLAIN, 25);
     private final FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
 
     public SwingUI(String title, SwingController controller) {
@@ -68,11 +68,18 @@ public class SwingUI extends JFrame {
         add(subTitleLabel);
 
         nextButton = new JButton("Start");
-        nextButton.setBounds(250, 600, 50, 40);
+        nextButton.setBounds(150, 600, 100, 50);
         nextButton.setBackground(Color.black);
-        nextButton.setForeground(Color.black);
+        nextButton.setForeground(Color.red);
         nextButton.addActionListener(new HandleWelcomeBtnClick());
         add(nextButton);
+
+        hallBtn = new JButton("The Hall");
+        hallBtn.setBounds(260, 600, 100, 50);
+        hallBtn.setBackground(Color.black);
+        hallBtn.setForeground(Color.red);
+        hallBtn.addActionListener(new HandleHallBtnClick());
+        add(hallBtn);
     }
 
     public void difficultyPage() {
@@ -473,6 +480,7 @@ public class SwingUI extends JFrame {
             playerMessageLbl.setText(message);
         } else {
             iconImage += "freedom.png";
+            message = "You have successfully escaped the mansion. Now go live to the fullest";
         }
         try {
             img = ImageIO.read(new File(iconImage));
@@ -632,6 +640,13 @@ public class SwingUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             difficultyPage();
+        }
+    }
+    // send the user to leader board on click
+    private class HandleHallBtnClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            System.out.println("button press");
         }
     }
 
