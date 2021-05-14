@@ -3,7 +3,6 @@
   "GO": ["go","travel","walk","move","migrate","trek","wander"],
   "USE": ["use","manipulate"],
   "LOOK": ["look at", "look","examine","check out","study","inspect","scan","appraise"],
-  "HIDE": ["hide","take cover"],
   "SAVE": ["save"],
   "LOAD": ["load"],
   "HELP":["help"],
