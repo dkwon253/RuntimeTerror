@@ -104,4 +104,6 @@ public class SwingController {
     public boolean addToLeaderboard(String userName, int runtime) {return gi.addToLeaderboard(userName, runtime);}
 
     public boolean isBloodLost() { return gi.isBloodLost();}
+
+    public String getDifficultyLevel() { return gi.getDifficultyLevel(); }
 }

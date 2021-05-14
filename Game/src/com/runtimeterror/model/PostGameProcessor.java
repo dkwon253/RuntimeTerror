@@ -137,8 +137,6 @@ class PostGameProcessor {
         return gameMap;
     }
 
-
-
     Map<String, Result<?>> processMonsterRoomChange(Map<String, Result<?>> gameMap) {
         boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
         if(shouldMonsterChangeRoomFlag) {

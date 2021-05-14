@@ -77,4 +77,6 @@ public interface GameInterface {
     boolean hasElevator();
 
     boolean isBloodLost();
+
+    String getDifficultyLevel();
 }
