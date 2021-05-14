@@ -449,14 +449,20 @@ public class SwingUI extends JFrame {
 //        monsterLabel.setForeground(Color.RED);
 //        monsterLabel.setVisible(false);
 //        add(monsterLabel);
-        monsterLabel = new JLabel(getResizedRoomImage("Game/Icons/monster.png"));
+        Icon imgGif = new ImageIcon("Game/Icons/monster.gif");
+//        monsterLabel = new JLabel(getResizedRoomImage("Game/Icons/monster.png"));
+        monsterLabel = new JLabel();
+        monsterLabel.setIcon(imgGif);
         monsterLabel.setBounds(30, 50, 500, 260);
         monsterLabel.setVisible(false);
         add(monsterLabel);
     }
 
     private void setupBlood() {
-        bloodLbl = new JLabel(getResizedRoomImage("Game/Icons/bloodLost.png"));
+        Icon imgGif = new ImageIcon("Game/Icons/blood.gif");
+        //bloodLbl = new JLabel(getResizedRoomImage("Game/Icons/bloodLost.png"));
+        bloodLbl = new JLabel();
+        bloodLbl.setIcon(imgGif);
         bloodLbl.setBounds(30, 50, 500, 260);
         bloodLbl.setVisible(false);
         add(bloodLbl);
