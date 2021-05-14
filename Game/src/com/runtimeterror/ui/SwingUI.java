@@ -9,6 +9,7 @@ import com.runtimeterror.sound.SoundManager;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringJoiner;
+import java.util.List;
 
 public class SwingUI extends JFrame {
 
@@ -33,7 +35,7 @@ public class SwingUI extends JFrame {
     private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
             , roomImageContainer, titleNameLbl, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextButton, hallBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private JFrame users = new JFrame();
 
     private int gameTime;
@@ -196,7 +198,7 @@ public class SwingUI extends JFrame {
         hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
         hallBtn.setOpaque(true);
-        hallBtn.setBorder(new LineBorder(Color.white));
+        hallBtn.setBorder(new RoundedBorder(10));
         hallBtn.addActionListener(new HandleMainScreenButtonClick());
         add(hallBtn);
     }
@@ -212,7 +214,7 @@ public class SwingUI extends JFrame {
 
     private void startGame(SwingController controller) {
         getContentPane().removeAll();
-        getContentPane().setBackground(null);
+        getContentPane().setBackground(Color.black);
         setLayout(null);
         Image imgTitle = null;
         try {
@@ -294,6 +296,9 @@ public class SwingUI extends JFrame {
     private void setupVolumeControlsBtn() {
         JButton volumeControlsBtn = new JButton();
         volumeControlsBtn.setBounds(45, 810, 50, 50);
+        volumeControlsBtn.setBackground(Color.black);
+        volumeControlsBtn.setOpaque(true);
+        volumeControlsBtn.setBorderPainted(false);
         volumeControlsBtn.addActionListener(new HandleVolumeControlsBtnClick());
         Image img = null;
         try {
@@ -322,6 +327,9 @@ public class SwingUI extends JFrame {
     private void setupPlayerInputTF() {
         playerInputTF = new JTextField();
         playerInputTF.setBounds(30, 750, 500, 25);
+        playerInputTF.setBackground(Color.black);
+        playerInputTF.setForeground(Color.white);
+        playerInputTF.setBorder(new LineBorder(Color.darkGray));
         playerInputTF.addActionListener(new HandleEnterPressOnPlayerInputTF());
         add(playerInputTF);
     }
@@ -334,7 +342,6 @@ public class SwingUI extends JFrame {
         mapCommandBtn.setForeground(Color.red);
         mapCommandBtn.setOpaque(true);
         mapCommandBtn.setBorder(new RoundedBorder(10));
-
         mapCommandBtn.addActionListener(new HandlePlayerMapBtnClick());
         mapCommandBtn.setVisible(false);
         add(mapCommandBtn);
@@ -344,7 +351,6 @@ public class SwingUI extends JFrame {
         inventoryBtn = new JButton();
         inventoryBtn.setBounds(205, 825, 90, 25);
         inventoryBtn.setText("Inventory");
-
         inventoryBtn.setBackground(Color.black);
         inventoryBtn.setForeground(Color.red);
         inventoryBtn.setOpaque(true);
@@ -368,6 +374,7 @@ public class SwingUI extends JFrame {
     private void setupPlayerStateLbl() {
         playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
         playerStateLbl.setBounds(30, 730, 500, 20);
+        playerStateLbl.setForeground(Color.red);
         add(playerStateLbl);
     }
 
@@ -394,6 +401,10 @@ public class SwingUI extends JFrame {
         inventoryInfoTA.setEditable(false);
         inventoryInfoTA.setLineWrap(true);
         inventoryInfoTA.setWrapStyleWord(true);
+        inventoryInfoTA.setBackground(Color.black);
+        inventoryInfoTA.setForeground(Color.red);
+        inventoryInfoTA.setOpaque(true);
+        inventoryInfoTA.setBorder(new LineBorder(Color.darkGray));
         inventoryInfoTA.setText(controller.getInventory());
         add(inventoryInfoTA);
     }
@@ -401,6 +412,7 @@ public class SwingUI extends JFrame {
     private void setupPlayerMessageLbl() {
         playerMessageLbl = new JLabel("", SwingConstants.CENTER);
         playerMessageLbl.setBounds(30, 615, 500, 25);
+        playerMessageLbl.setForeground(Color.red);
         add(playerMessageLbl);
     }
 
@@ -410,6 +422,10 @@ public class SwingUI extends JFrame {
         roomInfoTA.setEditable(false);
         roomInfoTA.setLineWrap(true);
         roomInfoTA.setWrapStyleWord(true);
+        roomInfoTA.setBackground(Color.black);
+        roomInfoTA.setForeground(Color.red);
+        roomInfoTA.setOpaque(true);
+        roomInfoTA.setBorder(new LineBorder(Color.darkGray));
         roomInfoTA.setText(controller.getRoomDesc());
         add(roomInfoTA);
     }
@@ -546,6 +562,46 @@ public class SwingUI extends JFrame {
             stairsLbl.setBounds(0, 210, 50, 50);
             roomImageContainer.add(stairsLbl);
         }
+
+        if (controller.hasElevator()) {
+            JLabel elevatorLbl = new JLabel();
+            Image elevator = null;
+            Image transparentElevator = null;
+            Image scaledElevatorImage = null;
+            Image scaledTransparentElevator = null;
+            String filePath = "Game/Icons/elevator.png";
+            try {
+                elevator = ImageIO.read(new File(filePath));
+                transparentElevator = getTransparentImg(ImageIO.read(new File(filePath)), .5f);
+                scaledElevatorImage = elevator.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+                scaledTransparentElevator = transparentElevator.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            elevatorLbl.setIcon(new ImageIcon(scaledTransparentElevator));
+            Image finalScaledElevatorImage = scaledElevatorImage;
+            Image finalScaledTransparentElevator = scaledTransparentElevator;
+            elevatorLbl.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    processSubmitInput("take elevator");
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    elevatorLbl.setIcon(new ImageIcon(finalScaledElevatorImage));
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    elevatorLbl.setIcon(new ImageIcon(finalScaledTransparentElevator));
+                }
+            });
+            elevatorLbl.setBounds(450, 210, 50, 50);
+            roomImageContainer.add(elevatorLbl);
+        }
+
         revalidate();
         repaint();
     }
@@ -599,16 +655,6 @@ public class SwingUI extends JFrame {
         g.drawImage(image, 0, 0, null);
         g.dispose();
         return img;
-    }
-
-    private void changeHealthColors() {
-        if (controller.getPlayerHealth() <= 5) {
-            playerHealthLbl.setForeground(Color.red);
-        } else if (controller.getPlayerHealth() <= 10) {
-            playerHealthLbl.setForeground(Color.orange);
-        } else {
-            playerHealthLbl.setForeground(Color.green);
-        }
     }
 
     private void endGame(boolean isKilled) {
@@ -762,28 +808,12 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private class HandleTestClickBtn implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            testUserPage();
-            frame.setVisible(true);
-        }
-    }
     private class HandleSubmitBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
-
-//    private class HandleScreenClick implements ActionListener {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            setupGame(controller);
-//        }
-//    }
-
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
@@ -887,7 +917,7 @@ public class SwingUI extends JFrame {
             } else if (gameTime <= 120) {
                 gameTimerLbl.setForeground(Color.orange);
             } else {
-                gameTimerLbl.setForeground(Color.black);
+                gameTimerLbl.setForeground(Color.white);
             }
         }
     }
