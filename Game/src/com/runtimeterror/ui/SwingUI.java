@@ -8,6 +8,7 @@ import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -15,9 +16,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-import java.util.Random;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.List;
 
 public class SwingUI extends JFrame {
@@ -35,7 +34,7 @@ public class SwingUI extends JFrame {
     private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
             , roomImageContainer, titleNameLbl, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn, saveBtn;
     private JFrame users = new JFrame();
 
     private int gameTime;
@@ -675,6 +674,7 @@ public class SwingUI extends JFrame {
         } else {
             iconImage += "freedom.png";
             message = "You have successfully escaped the mansion. Now go live to the fullest";
+            enterName();
 
         }
         try {
@@ -685,7 +685,7 @@ public class SwingUI extends JFrame {
         img = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 
 
-        Object[] options = {"Restart", "Exit Game", "Save"};
+        Object[] options = {"Restart", "Exit Game"};
         int n = JOptionPane.showOptionDialog(
                 this,
                 message,
@@ -698,13 +698,7 @@ public class SwingUI extends JFrame {
         );
         if (n == 1) {
             System.exit(0);
-        } else if (n == 2) {
-            System.out.println("la");
-            enterName();
-
-
-
-        } else {
+        }  else {
             resetGame();
         }
     }
@@ -716,6 +710,12 @@ public class SwingUI extends JFrame {
         label.setBounds(10, 20, 350, 25);
         users.add(label);
         userNameTF.setBounds(30, 45, 300, 25);
+        saveBtn = new JButton("Save");
+        saveBtn.setBounds(50, 60, 100, 50);
+        saveBtn.setBackground(Color.black);
+        saveBtn.setForeground(Color.red);
+        saveBtn.addActionListener(new HandleEnterPressOnUserNameTF());
+        users.add(saveBtn);
         users.add(userNameTF);
         users.setVisible(true);
     }
@@ -844,13 +844,12 @@ public class SwingUI extends JFrame {
     private class HandleEnterPressOnUserNameTF implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            //processSubmitInput(userNameTF.getText().toLowerCase(Locale.ROOT));
             boolean saveResult = controller.addToLeaderboard(userNameTF.getText(),gameTime);
             if (saveResult){
                 users.getContentPane().removeAll();
-                JLabel successSave = new JLabel("Your save was successful");
-                users.add(successSave);
-                users.revalidate();
-                users.repaint();
+                users.dispose();
+                //resetGame();
             }
         }
     }
