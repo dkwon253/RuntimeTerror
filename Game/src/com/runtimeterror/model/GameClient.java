@@ -188,13 +188,18 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public HashMap<String, List<Integer>> getDifficultyMap() {
+        return (HashMap<String, List<Integer>>) gameMap.get("difficultyMap").getResult();
+    }
+
+    @Override
     public List<Leaderboard> getLeaderboard(int size) {
         return database.getTopLeaderboard(size);
     }
 
     @Override
     public boolean addToLeaderboard(String userName, int runtime) {
-        if(userName == null) {
+        if(userName == null || "".equals(userName)) {
             userName = "Christina Aguilera";
         }
         String level = (String) gameMap.get("level").getResult();

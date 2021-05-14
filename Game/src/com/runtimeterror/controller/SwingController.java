@@ -4,6 +4,7 @@ import com.runtimeterror.model.Item;
 import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -106,4 +107,6 @@ public class SwingController {
     public boolean isBloodLost() { return gi.isBloodLost();}
 
     public String getDifficultyLevel() { return gi.getDifficultyLevel(); }
+
+    public HashMap<String, List<Integer>> getDifficultyMap() {return gi.getDifficultyMap();}
 }
