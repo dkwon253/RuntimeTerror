@@ -30,13 +30,15 @@ public class SwingUI extends JFrame {
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA, leaderBoard;
-    private JTextField playerInputTF, userNameTF;
+    private JTextField playerInputTF;
+    private JTextField userNameTF = new JTextField();
 
 
     private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, titleNameLabel, subTitleLabel;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextButton, hallBtn;
-    private JFrame users;
+    private JFrame users = new JFrame();
+
     private int gameTime;
     private Image scaledTransparentStairs;
     private Image scaledImage;
@@ -537,25 +539,24 @@ public class SwingUI extends JFrame {
             System.exit(0);
         } else if (n == 2) {
             System.out.println("la");
+            enterName();
 
-            users = new JFrame();
-            users.setSize(600, 600);
-            users.setResizable(false);
-            users.setTitle("Save");
-            users.setLocation(500, 500);
-            users.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            JLabel userLbl = new JLabel("Enter Your name: ", SwingConstants.CENTER);
-            userNameTF = new JTextField();
-            userNameTF.setBounds(30, 50, 200, 25);
-            userNameTF.addActionListener(new HandleEnterPressOnUserNameTF());;
-            users.add(userLbl);
-            users.add(userNameTF);
-            users.setVisible(true);
 
 
         } else {
             resetGame();
         }
+    }
+    private void enterName() {
+        users.setSize(350, 200);
+        users.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        users.setLayout(null);
+        JLabel label = new JLabel("Please enter your name below", SwingConstants.CENTER);
+        label.setBounds(10, 20, 350, 25);
+        users.add(label);
+        userNameTF.setBounds(30, 45, 300, 25);
+        users.add(userNameTF);
+        users.setVisible(true);
     }
 
     private void resetGame() {
