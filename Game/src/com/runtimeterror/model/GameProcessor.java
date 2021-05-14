@@ -26,9 +26,7 @@ class GameProcessor {
         processGet(gameMap);
         processGo(gameMap);
         processLook(gameMap);
-        processHide(gameMap);
         processDrop(gameMap);
-        processMoveMonster(gameMap);
         processSaveGame(gameMap);
         processLoadGame(gameMap);
         processSkipPlayerTurn(gameMap);
@@ -72,7 +70,7 @@ class GameProcessor {
         if ("HELP".equals(verb)) {
             gameMap.put("askedForHelp", new Result<>(true));
             gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("commands: HIDE,GET,GO,USE,LOOK,LOAD,SAVE,HELP"));
+            gameMap.put("viewLabel", new Result<>("commands: GET,GO,USE,LOOK,LOAD,SAVE,HELP"));
         }
         return gameMap;
     }
@@ -230,26 +228,6 @@ class GameProcessor {
         return gameMap;
     }
 
-    Map<String, Result<?>> processHide(Map<String, Result<?>> gameMap) {
-        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
-        if (isProcessed) {
-            return gameMap;
-        }
-        InputData inputData = (InputData) gameMap.get("inputData").getResult();
-        String verb = inputData.getVerb();
-        Rooms currentRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-        if ("HIDE".equals(verb) && currentRoom.getHidingLocation() != null) {
-            gameMap.put("hidden", new Result<>(true));
-            gameMap.put("isProcessed", new Result<>(true));
-            gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("You have hidden inside the " + currentRoom.getHidingLocation() + "."));
-        } else if ("HIDE".equals(verb)) {
-            gameMap.put("triedToHide", new Result<>(true));
-            gameMap.put("viewLabel", new Result<>("There are no hiding spots in the " + currentRoom.getRoomName() + "."));
-        }
-        return gameMap;
-    }
-
     Map<String, Result<?>> processDrop(Map<String, Result<?>> gameMap) {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         if (isProcessed) {
@@ -266,8 +244,9 @@ class GameProcessor {
                 .findFirst().orElse(null);
 
         if ("DROP".equals(verb) && itemToAdd != null) {
-            currentRoom.addItem(itemToAdd);
-            inventory.remove(itemToAdd);
+            gameMap.put("shouldDropItem", new Result<>(true));
+            gameMap.put("roomToPutItem", new Result<>(currentRoom));
+            gameMap.put("itemToAddToRoom", new Result<>(itemToAdd));
             gameMap.put("viewLabel", new Result<>("You dropped a(n) " + itemToAdd.getName() + " in the "
                     + currentRoom.getRoomName()));
             gameMap.put("isProcessed", new Result<>(true));
@@ -276,21 +255,6 @@ class GameProcessor {
             gameMap.put("isProcessed", new Result<>(true));
         }
 
-        return gameMap;
-    }
-
-    Map<String, Result<?>> processMoveMonster(Map<String, Result<?>> gameMap) {
-        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
-        if (shouldMonsterChangeRoomFlag) {
-            Random r = new Random();
-            @SuppressWarnings("unchecked")
-            Map<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
-            List<Rooms> allRoomsList = new ArrayList<>(allRooms.values());
-            int randomInt = r.nextInt(allRoomsList.size() - 1) + 1;
-            Rooms monsterNewRoom = allRoomsList.get(randomInt);
-            gameMap.put("monsterCurrentRoom", new Result<>(monsterNewRoom));
-            gameMap.put("didMonsterMove", new Result<>(true));
-        }
         return gameMap;
     }
 

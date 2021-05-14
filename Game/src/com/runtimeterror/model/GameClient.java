@@ -189,6 +189,9 @@ public class GameClient implements GameInterface, java.io.Serializable {
 
     @Override
     public boolean addToLeaderboard(String userName, int runtime) {
+        if(userName == null) {
+            userName = "Christina Aguilera";
+        }
         String level = (String) gameMap.get("level").getResult();
         Leaderboard leaderboard = new Leaderboard(userName, level, runtime);
         return database.addLeaderboard(leaderboard);
@@ -197,6 +200,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
     @Override
     public boolean hasElevator() {
         return (boolean) gameMap.get("hasElevator").getResult();
+    }
+
+    @Override
+    public boolean isBloodLost() {
+        return (boolean) gameMap.get("shouldDecreaseHealthFlag").getResult();
     }
 
 
