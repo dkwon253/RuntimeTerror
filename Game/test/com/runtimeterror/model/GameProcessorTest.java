@@ -48,10 +48,9 @@ public class GameProcessorTest {
     public void testProcessCombat_shouldDecreaseHealthIsTrue_whenPlayerDoesNotUseWeapon() {
         Rooms sameRoom = new Rooms();
         InputData inputData = new InputData("GO", "east");
+        gameMap.put("inputData", new Result<>(inputData));
         gameMap.put("monsterCurrentRoom", new Result<>(sameRoom));
         gameMap.put("playerCurrentRoom", new Result<>(sameRoom));
-
-
 
         gameProcessor.processCombat(gameMap);
 
@@ -72,6 +71,91 @@ public class GameProcessorTest {
         boolean shouldChangeRoom = (boolean) gameMap.get("shouldChangeRoomFlag").getResult();
         assertTrue(shouldChangeRoom);
 
+    }
+
+    @Test
+    public void testProcessGo_shouldChangeRoomFlagIsFalse_whenVerbIsGoAndNounIsNotValidDirection() {
+        InputData inputData = new InputData("GO", "west");
+        gameMap.put("inputData", new Result<>(inputData));
+        Rooms room = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("east", room));
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+
+        gameProcessor.processGo(gameMap);
+        boolean shouldChangeRoom = (boolean) gameMap.get("shouldChangeRoomFlag").getResult();
+        assertFalse(shouldChangeRoom);
+
+    }
+
+    @Test
+    public void testProcessGo_isProcessedIsTrue_whenVerbIsGo() {
+        InputData inputData = new InputData("GO", "west");
+        gameMap.put("inputData", new Result<>(inputData));
+        Rooms room = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("east", room));
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+
+        gameProcessor.processGo(gameMap);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertTrue(isProcessed);
+
+    }
+
+    @Test
+    public void testProcessLook_isProcessedIsTrue_whenVerbIsLook() {
+        InputData inputData = new InputData("LOOK", "west");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameProcessor.processLook(gameMap);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertTrue(isProcessed);
+
+    }
+
+    @Test
+    public void testProcessLook_isProcessedIsTrue_whenVerbIsLookAndItemInInventory() {
+        InputData inputData = new InputData("LOOK", "gun");
+        gameMap.put("inputData", new Result<>(inputData));
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+        gameProcessor.processLook(gameMap);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertTrue(isProcessed);
+    }
+
+    @Test
+    public void testProcessDrop_shouldDropItemIsTrue_whenVerbIsDropAndItemInInventory() {
+        InputData  inputData = new InputData("DROP", "gun");
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+
+        gameProcessor.processDrop(gameMap);
+        boolean shouldDropItem = (boolean) gameMap.get("shouldDropItem").getResult();
+        assertTrue(shouldDropItem);
+    }
+
+    @Test
+    public void testProcessDrop_shouldDropItemIsFalse_whenVerbIsDropAndItemNotInInventory() {
+        InputData  inputData = new InputData("DROP", "gun");
+        Item item = new Item("axe", "", "", "");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+
+        gameProcessor.processDrop(gameMap);
+        boolean shouldDropItem = (boolean) gameMap.get("shouldDropItem").getResult();
+        assertFalse(shouldDropItem);
+    }
+
+    @Test
+    public void testProcessDrop_isProcessedIsTrue_whenVerbIsDropAndItemInInventory() {
+        InputData  inputData = new InputData("DROP", "gun");
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+
+        gameProcessor.processDrop(gameMap);
+        boolean shouldDropItem = (boolean) gameMap.get("shouldDropItem").getResult();
+        assertTrue(shouldDropItem);
     }
 
     @Test

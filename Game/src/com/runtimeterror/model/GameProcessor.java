@@ -18,15 +18,15 @@ class GameProcessor {
 
     void start(Map<String, Result<?>> gameMap) {
         Parser.parseInput(gameMap);
-        processCombat(gameMap);//done
-        processHelp(gameMap);//done
-        processStairs(gameMap);//Junru
-        processElevator(gameMap);//Junru
-        processUse(gameMap);//Tamarris
-        processGet(gameMap);//Tamarris
-        processGo(gameMap);//nick
-        processLook(gameMap);//nick
-        processDrop(gameMap);//nick
+        processCombat(gameMap);
+        processHelp(gameMap);
+        processStairs(gameMap);
+        processElevator(gameMap);
+        processUse(gameMap);
+        processGet(gameMap);
+        processGo(gameMap);
+        processLook(gameMap);
+        processDrop(gameMap);
         processSaveGame(gameMap);
         processLoadGame(gameMap);
         processSkipPlayerTurn(gameMap);
@@ -220,12 +220,11 @@ class GameProcessor {
         Item foundItem = inventory.stream().filter(item -> item.getName().equals(noun)).findFirst().orElse(null);
         String verb = inputData.getVerb();
         if ("LOOK".equals(verb) && foundItem != null) {
-            gameMap.put("hidden", new Result<>(false));
             gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("shouldMonsterChangeRoomFlag", new Result<>(true));
             gameMap.put("viewLabel", new Result<>(foundItem.getDescription()));
         } else if ("LOOK".equals(verb)) {
-            gameMap.put("triedToLook", new Result<>(true));
+            gameMap.put("isProcessed", new Result<>(true));
             gameMap.put("viewLabel", new Result<>("You don't have that item in your inventory"));
         }
 
