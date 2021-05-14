@@ -8,6 +8,7 @@ import com.runtimeterror.sound.SoundManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -15,6 +16,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 import java.util.Map;
 import java.util.Random;
 import java.util.List;
@@ -32,7 +34,7 @@ public class SwingUI extends JFrame {
     private JTextField playerInputTF;
     private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn, saveBtn;
     private JFrame users = new JFrame();
     private JFrame frame = new JFrame();
     private JTextField userNameTF = new JTextField();
@@ -742,6 +744,7 @@ public class SwingUI extends JFrame {
         frame.add(saveBtn);
 
         frame.setVisible(true);
+
     }
 
     private void enterName() {
@@ -753,7 +756,6 @@ public class SwingUI extends JFrame {
         users.add(label);
         userNameTF.setBounds(30, 45, 300, 25);
         userNameTF.addKeyListener(new HandleEnterPressOnUserNameTF());
-
         JButton save = new JButton("Save");
         save.setBounds(75, 100, 100, 30);
         save.addActionListener(new HandleEnterPressOnUserNameTF());

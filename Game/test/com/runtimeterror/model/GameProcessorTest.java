@@ -95,6 +95,58 @@ public class GameProcessorTest {
         boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
         assertTrue(isProcessed);
     }
+    @Test
+    public void testProcessUse_isProcessedIsTrue_whenNounIsItem(){
+
+        InputData  inputData = new InputData("USE", "gun");
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+
+        gameProcessor.processUse(gameMap);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertTrue(isProcessed);
+    }
+
+    @Test
+    public void testProcessUse_shouldUseItemFlagIsTrue_whenNounIsItem(){
+
+        InputData  inputData = new InputData("USE", "gun");
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+
+        gameProcessor.processUse(gameMap);
+        boolean shouldUseItem = (boolean) gameMap.get("shouldUseItemFlag").getResult();
+        assertTrue(shouldUseItem);
+    }
+    @Test
+    public void testProcessUse_shouldBeFalse_whenNounNonUseItem(){
+        InputData  inputData = new InputData("USE", "stairs");
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+
+        gameProcessor.processUse(gameMap);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertFalse(isProcessed);
+
+    }
+
+    @Test
+    public void testProcessGet_isProcessedIsTrue_whenNounIsRoomItem(){
+        Rooms room = new Rooms();
+
+        gameMap.put("playerCurrentRoom", new Result<>(room));
+        gameMap.put("roomToRemoveItemFrom", new Result<>(room));
+        gameMap.put("itemToGet", new Result<>("map"));
+        InputData  inputData = new InputData("GET", "map");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameProcessor.processGet(gameMap);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertTrue(isProcessed);
+
+    }
 
 
     @Test
