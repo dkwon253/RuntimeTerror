@@ -9,6 +9,7 @@ import com.runtimeterror.sound.SoundManager;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Random;
 import java.util.StringJoiner;
+import java.util.List;
 
 public class SwingUI extends JFrame {
 
@@ -33,7 +35,7 @@ public class SwingUI extends JFrame {
     private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
             , roomImageContainer, titleNameLbl, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextButton, hallBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private JFrame users = new JFrame();
 
     private int gameTime;
@@ -601,16 +603,6 @@ public class SwingUI extends JFrame {
         return img;
     }
 
-    private void changeHealthColors() {
-        if (controller.getPlayerHealth() <= 5) {
-            playerHealthLbl.setForeground(Color.red);
-        } else if (controller.getPlayerHealth() <= 10) {
-            playerHealthLbl.setForeground(Color.orange);
-        } else {
-            playerHealthLbl.setForeground(Color.green);
-        }
-    }
-
     private void endGame(boolean isKilled) {
         timer.stop();
         Image img = null;
@@ -762,28 +754,12 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private class HandleTestClickBtn implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            testUserPage();
-            frame.setVisible(true);
-        }
-    }
     private class HandleSubmitBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
-
-//    private class HandleScreenClick implements ActionListener {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            setupGame(controller);
-//        }
-//    }
-
 
     private class HandlePlayerMapBtnClick implements ActionListener {
         @Override
