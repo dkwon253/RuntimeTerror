@@ -4,6 +4,7 @@ import com.runtimeterror.model.Item;
 import com.runtimeterror.model.Leaderboard;
 import com.runtimeterror.model.Rooms;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,4 +80,6 @@ public interface GameInterface {
     boolean isBloodLost();
 
     String getDifficultyLevel();
+
+    HashMap<String, List<Integer>> getDifficultyMap();
 }

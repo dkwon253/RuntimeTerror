@@ -20,6 +20,8 @@ import java.util.*;
 import java.util.Map;
 import java.util.Random;
 import java.util.List;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 public class SwingUI extends JFrame {
 
@@ -34,7 +36,7 @@ public class SwingUI extends JFrame {
     private JTextField playerInputTF;
     private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
-    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn, saveBtn;
+    private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private JFrame users = new JFrame();
     private JFrame frame = new JFrame();
     private JTextField userNameTF = new JTextField();
@@ -177,23 +179,52 @@ public class SwingUI extends JFrame {
                 "    <td>Difficulty</td>" +
                 "  </tr>";
         int i = 1;
+        HashMap<String, List<Integer>> diffMap = controller.getDifficultyMap();
+        String diffLevel = controller.getDifficultyLevel();
+        List<Integer> diffTime = diffMap.get(diffLevel);
         for (Leaderboard user : lb) {
             html += "<tr>" +
                     "<td style='white-space:nowrap'>" + i + "</td>" +
                     "<td style='white-space:nowrap'>" + user.getUserName() + "</td>" +
-                    "<td style='white-space:nowrap'>" + formatTime(user.getRuntime()) + "</td>" +
+                    "<td style='white-space:nowrap'>" + formatTime(diffTime.get(2)-user.getRuntime()) + "</td>" +
                     "<td style='white-space:nowrap'>" + user.getDifficulty() + "</td>" +
                     "</tr>";
             i++;
         }
         html += "</table></html>";
+
+        JEditorPane leaderBoardLink = new JEditorPane();
+        leaderBoardLink.setContentType("text/html");
+        leaderBoardLink.setText("<a href='http://runtimeterrorleaderboard.s3-website-us-west-1.amazonaws.com/'>Visit Full LeaderBoard</a>");
+        leaderBoardLink.setEditable(false);
+        leaderBoardLink.setOpaque(false);
+        leaderBoardLink.addHyperlinkListener(new HandleHyperlinkClick());
+
         leaderBoard.setText(html);
+        leaderBoardLink.setBounds(200, 500, 100, 50);
+        this.add(leaderBoardLink);
         this.add(leaderBoard);
         setupLogo();
         setupStartButton();
         setupMainScreenButton();
         revalidate();
         repaint();
+    }
+
+    private class HandleHyperlinkClick implements HyperlinkListener{
+
+        @Override
+        public void hyperlinkUpdate(HyperlinkEvent hle) {
+            if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType())) {
+                System.out.println(hle.getURL());
+                Desktop desktop = Desktop.getDesktop();
+                try {
+                    desktop.browse(hle.getURL().toURI());
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     private void setupMainScreenButton() {

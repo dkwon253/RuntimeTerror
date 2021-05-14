@@ -39,9 +39,11 @@ public class LeaderboardDetailsRepository {
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         List<Leaderboard> scanResult = new ArrayList<>(mapper.scan(Leaderboard.class, scanExpression));
         scanResult.sort(Comparator.comparingLong(Leaderboard::getRuntime).reversed());
-        List<Leaderboard> result = scanResult;
-        if(scanResult.size() > size) {
-            result = scanResult.stream().limit(size).collect(Collectors.toList());
+        List<Leaderboard> result = scanResult.stream()
+                .filter(user -> user.getDifficulty().equals("hard"))
+                .collect(Collectors.toList());
+        if(result.size() > size) {
+            result = result.stream().limit(size).collect(Collectors.toList());
         }
         return result;
     }
