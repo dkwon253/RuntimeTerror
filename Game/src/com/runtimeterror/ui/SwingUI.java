@@ -166,6 +166,7 @@ public class SwingUI extends JFrame {
             e.printStackTrace();
         }
 
+        testButton();
         setupImageTitle(imgTitle);
         setupMonster();
         setupBlood();
@@ -597,6 +598,32 @@ public class SwingUI extends JFrame {
         }
     }
 
+    private JFrame frame = new JFrame();
+    private JPanel panel = new JPanel();
+    private JTextField userNameTF = new JTextField();
+
+    private void testButton() {
+        JButton testButton = new JButton("Test");
+        testButton.setBounds(350, 825, 72, 25);
+        testButton.setOpaque(true);
+        testButton.setBackground(Color.black);
+        testButton.setForeground(Color.red);
+        testButton.setBorder(new RoundedBorder(15));
+        testButton.addActionListener(new HandleTestClickBtn());
+        add(testButton);
+    }
+    private void testUserPage() {
+        frame.setSize(350, 200);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setLayout(null);
+
+        JLabel label = new JLabel("Please enter your name below", SwingConstants.CENTER);
+        label.setBounds(10, 20, 350, 25);
+        frame.add(label);
+        userNameTF.setBounds(30, 45, 300, 25);
+        frame.add(userNameTF);
+    }
+
     private void endGame(boolean isKilled) {
         timer.stop();
         Image img = null;
@@ -729,6 +756,14 @@ public class SwingUI extends JFrame {
         }
     }
 
+    private class HandleTestClickBtn implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            testUserPage();
+            frame.setVisible(true);
+        }
+    }
     private class HandleSubmitBtnClick implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
