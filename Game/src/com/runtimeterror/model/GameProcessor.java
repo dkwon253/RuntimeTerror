@@ -18,21 +18,25 @@ class GameProcessor {
 
     void start(Map<String, Result<?>> gameMap) {
         Parser.parseInput(gameMap);
-        processCombat(gameMap);
-        processHelp(gameMap);
-        processStairs(gameMap);
-        processElevator(gameMap);
-        processUse(gameMap);
-        processGet(gameMap);
-        processGo(gameMap);
-        processLook(gameMap);
-        processDrop(gameMap);
+        processCombat(gameMap);//done
+        processHelp(gameMap);//done
+        processStairs(gameMap);//Junru
+        processElevator(gameMap);//Junru
+        processUse(gameMap);//Tamarris
+        processGet(gameMap);//Tamarris
+        processGo(gameMap);//nick
+        processLook(gameMap);//nick
+        processDrop(gameMap);//nick
         processSaveGame(gameMap);
         processLoadGame(gameMap);
         processSkipPlayerTurn(gameMap);
     }
 
     @SuppressWarnings("unchecked")
+    /*
+     * playercurrent and montercurrent are same
+     * use is the verb, and noun is a weapon and item is in their inventory
+     */
     Map<String, Result<?>> processCombat(Map<String, Result<?>> gameMap) {
         InputData inputData = (InputData) gameMap.get("inputData").getResult();
         String verb = inputData.getVerb();
