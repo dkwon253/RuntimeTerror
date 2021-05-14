@@ -16,6 +16,7 @@ class PostGameProcessor {
         processSavingGameState(gameMap);
         processHealthDecrease(gameMap);
         processUseItem(gameMap);
+        processDropItem(gameMap);
         processGameOverCheck(gameMap);
         processGetMessageLabel(gameMap);
         return processLoadingGameState(gameMap);
@@ -123,10 +124,25 @@ class PostGameProcessor {
         return gameMap;
     }
 
+    Map<String, Result<?>> processDropItem(Map<String, Result<?>> gameMap) {
+        boolean shouldDropItem = (boolean) gameMap.get("shouldDropItem").getResult();
+        if (shouldDropItem) {
+            @SuppressWarnings("unchecked")
+            List<Item> inventory = (List<Item>) gameMap.get("inventory").getResult();
+            Rooms roomToGiveItem = (Rooms) gameMap.get("roomToPutItem").getResult();
+            Item itemToAddToRoom = (Item) gameMap.get("itemToAddToRoom").getResult();
+            roomToGiveItem.addItem(itemToAddToRoom);
+            inventory.remove(itemToAddToRoom);
+        }
+        return gameMap;
+    }
+
+
+
     Map<String, Result<?>> processMonsterRoomChange(Map<String, Result<?>> gameMap) {
         boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
         if(shouldMonsterChangeRoomFlag) {
-            Rooms newRoom = (Rooms) gameMap.get("monsterCurrentRoom").getResult();
+            Rooms newRoom = (Rooms) gameMap.get("playerCurrentRoom").getResult();
             Queue<Rooms> roomsQueue = new LinkedList<>();
             @SuppressWarnings("unchecked")
             HashMap<String, Rooms> allRooms = (HashMap<String, Rooms>) gameMap.get("rooms").getResult();
@@ -136,15 +152,15 @@ class PostGameProcessor {
             Rooms room;
             while (roomsQueue.size() > 0) {
                 room = roomsQueue.remove();
-                if (!monsterAvailableRooms.contains(room)) {
+                if (!monsterAvailableRooms.contains(room) && room.getRoomName() != null) {
                     monsterAvailableRooms.add(room);
                     Collection<Rooms> innerRooms = allRooms.get(room.getRoomName()).getRoomNeighbors().values();
                     innerRooms.stream().filter(Objects::nonNull).forEach(roomsQueue::add);
                 }
             }
             int randomInt = new Random().nextInt(monsterAvailableRooms.size());
-//            gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
-            gameMap.put(("monsterCurrentRoom"), new Result<>(rooms));
+            gameMap.put(("monsterCurrentRoom"), new Result<>(monsterAvailableRooms.get(randomInt)));
+//            gameMap.put(("monsterCurrentRoom"), new Result<>(rooms));
         }
         return gameMap;
     }

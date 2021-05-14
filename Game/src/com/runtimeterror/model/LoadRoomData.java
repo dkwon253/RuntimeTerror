@@ -174,6 +174,9 @@ public class LoadRoomData {
         gameMap.put("roomToChangeTo", new Result<>(new Rooms()));
         gameMap.put("shouldChangeRoomFlag", new Result<>(false));
         gameMap.put("monsterLabel", new Result<>(""));
+        gameMap.put("shouldDropItem", new Result<>(false));
+        gameMap.put("roomToPutItem", new Result<>(new Rooms()));
+        gameMap.put("itemToAddToRoom", new Result<>(new Item()));
 
     }
 }
