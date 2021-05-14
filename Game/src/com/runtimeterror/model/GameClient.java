@@ -183,6 +183,11 @@ public class GameClient implements GameInterface, java.io.Serializable {
     }
 
     @Override
+    public String getDifficultyLevel() {
+        return (String) gameMap.get("level").getResult();
+    }
+
+    @Override
     public List<Leaderboard> getLeaderboard(int size) {
         return database.getTopLeaderboard(size);
     }

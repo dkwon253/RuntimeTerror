@@ -31,7 +31,7 @@ class PostGameProcessor {
             gameMap.put("hasElevator", new Result<>(newRoom.hasElevator()));
             gameMap.put("stairsRoom", new Result<>(newRoom.getStairsNeighborName()));
             gameMap.put("elevatorRoom", new Result<>(newRoom.getElevatorNeighborName()));
-            gameMap.put(("availableRooms"), new Result<>(newRoom.getRoomNeighbors()));
+            gameMap.put("availableRooms", new Result<>(newRoom.getRoomNeighbors()));
         }
         return gameMap;
     }
@@ -136,8 +136,6 @@ class PostGameProcessor {
         }
         return gameMap;
     }
-
-
 
     Map<String, Result<?>> processMonsterRoomChange(Map<String, Result<?>> gameMap) {
         boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();

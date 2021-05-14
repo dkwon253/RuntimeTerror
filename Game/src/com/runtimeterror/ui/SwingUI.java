@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.Map;
+import java.util.Random;
 import java.util.List;
 
 public class SwingUI extends JFrame {
@@ -30,13 +32,17 @@ public class SwingUI extends JFrame {
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA;
     private JTextField playerInputTF;
-    private JTextField userNameTF = new JTextField();
-    private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
-            , roomImageContainer, titleNameLbl, bloodLbl;
+    private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn, saveBtn;
     private JFrame users = new JFrame();
-
+    private JFrame frame = new JFrame();
+    private JTextField userNameTF = new JTextField();
+    private JLabel endGameImageLbl = new JLabel();
+    private JLabel endGameMessageLbl = new JLabel();
+    private JButton exitBtn = new JButton("Exit");
+    private JButton restartBtn = new JButton("Restart");
+    private JButton saveBtn = new JButton("Save");
     private int gameTime;
     private Image scaledTransparentStairs;
     private Image scaledImage;
@@ -155,10 +161,9 @@ public class SwingUI extends JFrame {
         repaint();
     }
 
-
     private void showLeaderBoard() {
         getContentPane().removeAll();
-        List<Leaderboard> lb =  controller.getLeaderboard(10);
+        List<Leaderboard> lb = controller.getLeaderboard(10);
         leaderBoard = new JLabel("", SwingConstants.CENTER);
         leaderBoard.setBounds(0, 200, 500, 300);
         leaderBoard.setBackground(Color.black);
@@ -171,8 +176,8 @@ public class SwingUI extends JFrame {
                 "    <td>Runtime</td>" +
                 "    <td>Difficulty</td>" +
                 "  </tr>";
-        int i =1;
-        for (Leaderboard user: lb ){
+        int i = 1;
+        for (Leaderboard user : lb) {
             html += "<tr>" +
                     "<td style='white-space:nowrap'>" + i + "</td>" +
                     "<td style='white-space:nowrap'>" + user.getUserName() + "</td>" +
@@ -662,89 +667,132 @@ public class SwingUI extends JFrame {
         return img;
     }
 
-    private void endGame(boolean isKilled) {
-        timer.stop();
+    private Image getImage(String path) {
         Image img = null;
-        String message = "";
-        String iconImage = "Game/Icons/";
-        if (isKilled) {
-            iconImage += "skull.png";
-            message = "You are now dead";
-            playerMessageLbl.setText(message);
-        } else {
-            iconImage += "freedom.png";
-            message = "You have successfully escaped the mansion. Now go live to the fullest";
-            enterName();
-
-        }
         try {
-            img = ImageIO.read(new File(iconImage));
+            img = ImageIO.read(new File(path));
         } catch (IOException e) {
             e.printStackTrace();
         }
         img = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-
-
-        Object[] options = {"Restart", "Exit Game"};
-        int n = JOptionPane.showOptionDialog(
-                this,
-                message,
-                "Game Over",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                new ImageIcon(img),
-                options,
-                options[0]
-        );
-        if (n == 1) {
-            System.exit(0);
-        }  else {
-            resetGame();
-        }
+        return img;
     }
+
+    private void endGame(boolean isKilled) {
+        timer.stop();
+        String message = "";
+        if (isKilled) {
+            String path = "Game/Icons/skull.png";
+            Image img = getImage(path);
+            message = "You are now dead";
+            playerMessageLbl.setText(message);
+            endGameImageLbl.setIcon(new ImageIcon(img));
+            endGameMessageLbl.setText(message);
+            endGameDialog();
+        } else {
+            String path = "Game/Icons/freedom.png";
+            Image img = getImage(path);
+            message = "You have successfully escaped the mansion. Now go live to the fullest.";
+            endGameImageLbl.setIcon(new ImageIcon(img));
+            endGameMessageLbl.setText(message);
+            endGameDialog();
+        }
+
+//        Object[] options = {"Restart", "Exit Game"};
+//        int n = JOptionPane.showOptionDialog(
+//                this,
+//                message,
+//                "Game Over",
+//                JOptionPane.YES_NO_OPTION,
+//                JOptionPane.QUESTION_MESSAGE,
+//                new ImageIcon(img),
+//                options,
+//                options[0]
+//        );
+//        if (n == 1) {
+//            System.exit(0);
+//        } else {
+//            resetGame();
+//        }
+    }
+
+    private void endGameDialog() {
+        frame.setTitle("Game Over");
+        frame.setSize(500, 300);
+        frame.setLayout(null);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        endGameImageLbl.setBounds(220, 0, 100, 100);
+        endGameMessageLbl.setBounds(19, 150, 500, 50);
+        endGameImageLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        endGameMessageLbl.setHorizontalTextPosition(SwingConstants.CENTER);
+
+        exitBtn.setBounds(80, 200, 55, 40);
+        restartBtn.setBounds(240, 200, 58, 40);
+        saveBtn.setBounds(400, 200, 55, 40);
+
+        saveBtn.addActionListener(new HandleEndDialogBtn());
+        exitBtn.addActionListener(new HandleEndDialogBtn());
+        restartBtn.addActionListener(new HandleEndDialogBtn());
+
+        frame.add(endGameImageLbl);
+        frame.add(endGameMessageLbl);
+
+        frame.add(exitBtn);
+        frame.add(restartBtn);
+        frame.add(saveBtn);
+
+        frame.setVisible(true);
+
+    }
+
     private void enterName() {
         users.setSize(350, 200);
-        users.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        users.setLocationRelativeTo(null);
         users.setLayout(null);
         JLabel label = new JLabel("Please enter your name below", SwingConstants.CENTER);
         label.setBounds(10, 20, 350, 25);
         users.add(label);
         userNameTF.setBounds(30, 45, 300, 25);
-        saveBtn = new JButton("Save");
-        saveBtn.setBounds(50, 60, 100, 50);
-        saveBtn.setBackground(Color.black);
-        saveBtn.setForeground(Color.red);
-        saveBtn.addActionListener(new HandleEnterPressOnUserNameTF());
-        users.add(saveBtn);
+        userNameTF.addKeyListener(new HandleEnterPressOnUserNameTF());
+        JButton save = new JButton("Save");
+        save.setBounds(75, 100, 100, 30);
+        save.addActionListener(new HandleEnterPressOnUserNameTF());
         users.add(userNameTF);
+        users.add(save);
         users.setVisible(true);
     }
 
     private void resetGame() {
         controller.startNewGame();
-        playerMessageLbl.setText("Game restarted");
-        mapCommandBtn.setVisible(false);
-        roomMap.setVisible(false);
-        inventoryBtn.setVisible(false);
-        playerInventory.setVisible(false);
-        playerInventory.updateUsableInventory();
-        setupRoomItemPic(controller);
-        String roomData = controller.getRoomDesc();
-        roomInfoTA.setText(roomData);
-        String invData = controller.getInventory();
-        inventoryInfoTA.setText(invData);
-        playerStateLbl.setText("Status: Visible");
-        playerInputTF.setText("");
-        playRoomSounds(roomData, "");
-        setupTimer();
-        handleMonsterData();
-        playerHealthLbl.setForeground(Color.green);
-        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
-        imageTitleContainer.setVisible(true);
-        monsterLabel.setVisible(false);
-        bloodLbl.setVisible(false);
+//        playerMessageLbl.setText("Game restarted");
+//        mapCommandBtn.setVisible(false);
+//        roomMap.setVisible(false);
+//        inventoryBtn.setVisible(false);
+//        playerInventory.setVisible(false);
+//        playerInventory.updateUsableInventory();
+//        setupRoomItemPic(controller);
+//        String roomData = controller.getRoomDesc();
+//        roomInfoTA.setText(roomData);
+//        String invData = controller.getInventory();
+//        inventoryInfoTA.setText(invData);
+//        playerStateLbl.setText("Status: Visible");
+//        playerInputTF.setText("");
+//        playRoomSounds(roomData, "");
+//        setupTimer();
+//        handleMonsterData();
+//        playerHealthLbl.setForeground(Color.green);
+//        playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
+//        imageTitleContainer.setVisible(true);
+//        monsterLabel.setVisible(false);
+//        bloodLbl.setVisible(false);
         soundManager.stopExtraSFX();
-        roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
+        soundManager.stopBGM();
+        soundManager.stopRoomSFX();
+        soundManager.stopHeartSFX();
+        difficultyPage();
+//        roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
     }
 
     private ImageIcon getResizedRoomImage(String imagePath) {
@@ -806,10 +854,10 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private void handleBloodLost(){
-        if(controller.isBloodLost()){
+    private void handleBloodLost() {
+        if (controller.isBloodLost()) {
             bloodLbl.setVisible(true);
-        }else{
+        } else {
             bloodLbl.setVisible(false);
         }
     }
@@ -841,16 +889,58 @@ public class SwingUI extends JFrame {
             processSubmitInput(playerInputTF.getText().toLowerCase());
         }
     }
-    private class HandleEnterPressOnUserNameTF implements ActionListener {
+
+    private class HandleEndDialogBtn implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            //processSubmitInput(userNameTF.getText().toLowerCase(Locale.ROOT));
-            boolean saveResult = controller.addToLeaderboard(userNameTF.getText(),gameTime);
-            if (saveResult){
-                users.getContentPane().removeAll();
-                users.dispose();
-                //resetGame();
+            if (e.getSource().equals(saveBtn)) {
+                enterName();
+            } else if (e.getSource().equals(restartBtn)) {
+                resetGame();
+                frame.dispose();
+            } else if (e.getSource().equals(exitBtn)) {
+                System.exit(0);
+                frame.dispose();
             }
+        }
+    }
+
+    private class HandleEnterPressOnUserNameTF implements ActionListener, KeyListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean saveResult = controller.addToLeaderboard(userNameTF.getText(), gameTime);
+            if (saveResult) {
+                users.getContentPane().removeAll();
+                JLabel successSave = new JLabel("Your save was successful");
+                users.add(successSave);
+                users.dispose();
+                users.revalidate();
+                users.repaint();
+            }
+        }
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            int code = e.getKeyCode();
+            if (code == KeyEvent.VK_ENTER) {
+                boolean saveResult = controller.addToLeaderboard(userNameTF.getText(), gameTime);
+                if (saveResult) {
+                    users.getContentPane().removeAll();
+                    JLabel successSave = new JLabel("Your save was successful");
+                    users.add(successSave);
+                    users.dispose();
+                    users.revalidate();
+                    users.repaint();
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
         }
     }
 
@@ -908,6 +998,7 @@ public class SwingUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (gameTime <= 0) {
                 endGame(true);
+                endGameDialog();
             } else {
                 changeTimerColor();
                 gameTimerLbl.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -932,6 +1023,7 @@ public class SwingUI extends JFrame {
             setLayout(new GridLayout(controller.getPlayerItems().size(), 3));
             setSize(600, 600);
             setResizable(false);
+            setLocationRelativeTo(null);
             setTitle("Usable Inventory");
             setLocation(500, 500);
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
