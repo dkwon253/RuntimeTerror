@@ -26,370 +26,86 @@ public class GameProcessorTest {
     }
 
     @Test
-    public void submitPlayerString() {
+    public void testProcessCombat_shouldDecreaseHealthIsFalse_whenPlayerUseWeapon() {
+        Rooms sameRoom = new Rooms();
+
+        InputData  inputData = new InputData("USE", "gun");
+        Item item = new Item("gun", "", "", "");
+        gameMap.put("monsterCurrentRoom", new Result<>(sameRoom));
+        gameMap.put("playerCurrentRoom", new Result<>(sameRoom));
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("inventory", new Result<>(new ArrayList<>(List.of(item))));
+        gameMap.put("listOfWeapons", new Result<>(new ArrayList<>(List.of("gun"))));
+
+        gameProcessor.processCombat(gameMap);
+
+        boolean shouldDecreaseHealthFlag = (boolean) gameMap.get("shouldDecreaseHealthFlag").getResult();
+        assertFalse(shouldDecreaseHealthFlag);
+
     }
 
     @Test
-    public void gameProcessor() {
+    public void testProcessCombat_shouldDecreaseHealthIsTrue_whenPlayerDoesNotUseWeapon() {
+        Rooms sameRoom = new Rooms();
+        InputData inputData = new InputData("GO", "east");
+        gameMap.put("monsterCurrentRoom", new Result<>(sameRoom));
+        gameMap.put("playerCurrentRoom", new Result<>(sameRoom));
+
+
+
+        gameProcessor.processCombat(gameMap);
+
+        boolean shouldDecreaseHealthFlag = (boolean) gameMap.get("shouldDecreaseHealthFlag").getResult();
+        assertTrue(shouldDecreaseHealthFlag);
+
     }
 
     @Test
-    public void testProcessHelp_askedForHelpIsTrue_whenInputDataVerbIsHELP() {
-        gameMap.put("inputData", new Result<>(new InputData("HELP", "help")));
+    public void testProcessGo_shouldChangeRoomFlagIsTrue_whenVerbIsGoAndNounIsValidDirection() {
+        InputData inputData = new InputData("GO", "east");
+        gameMap.put("inputData", new Result<>(inputData));
+        Rooms room = new Rooms();
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("east", room));
+        gameMap.put("availableRooms", new Result<>(availableRooms));
+
+        gameProcessor.processGo(gameMap);
+        boolean shouldChangeRoom = (boolean) gameMap.get("shouldChangeRoomFlag").getResult();
+        assertTrue(shouldChangeRoom);
+
+    }
+
+    @Test
+
+    public void testProcessHelp_askedForHelpShouldBeTrue_whenVerbIsHelp() {
+        InputData inputData = new InputData("HELP", null);
+        gameMap.put("inputData", new Result<>(inputData));
+
         gameProcessor.processHelp(gameMap);
         boolean askedForHelp = (boolean) gameMap.get("askedForHelp").getResult();
         assertTrue(askedForHelp);
     }
 
     @Test
-    public void testProcessHelp_askedForHelpIsFalse_whenInputDataVerbIsNotHELP() {
-        gameMap.put("inputData", new Result<>(new InputData("NOTHELP", "nothelp")));
+
+    public void testProcessHelp_isProcessedIsTrue_whenVerbIsHelp() {
+        InputData inputData = new InputData("HELP", null);
+        gameMap.put("inputData", new Result<>(inputData));
+
         gameProcessor.processHelp(gameMap);
-        boolean askedForHelp = (boolean) gameMap.get("askedForHelp").getResult();
-        assertFalse(askedForHelp);
-    }
-
-    @Test
-    public void testProcessHelp_wontProcess_whenIsProcessedIsTrue() {
-        gameMap.put("isProcessed", new Result<>(true));
-        gameProcessor.processHelp(gameMap);
-        boolean askedForHelp = (boolean) gameMap.get("askedForHelp").getResult();
-        assertFalse(askedForHelp);
-    }
-
-    @Test
-    public void testProcessStairs_wontProcess_whenIsProcessedIsTrue() {
-        gameMap.put("isProcessed", new Result<>(true));
-        gameProcessor.processStairs(gameMap);
-        boolean didUseStairs = (boolean) gameMap.get("didUseStairs").getResult();
-        assertFalse(didUseStairs);
-    }
-
-    @Test
-    public void testProcessStairs_didUseStairsIsTrue_whenNounIsStairsAndRoomHasStairs() {
-        gameMap.put("hasStairs", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "stairs")));
-        gameProcessor.processStairs(gameMap);
-        boolean didUseStairs = (boolean) gameMap.get("didUseStairs").getResult();
-        assertTrue(didUseStairs);
-    }
-
-    @Test
-    public void testProcessStairs_didUseStairsIsFalse_whenNounIsStairsAndRoomDoesNotHaveStairs() {
-        gameMap.put("hasStairs", new Result<>(false));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "stairs")));
-        gameProcessor.processStairs(gameMap);
-        boolean didUseStairs = (boolean) gameMap.get("didUseStairs").getResult();
-        assertFalse(didUseStairs);
-    }
-
-    @Test
-    public void testProcessStairs_didUseStairsIsFalse_whenNounIsNotStairsAndRoomHasStairs() {
-        gameMap.put("hasStairs", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processStairs(gameMap);
-        boolean didUseStairs = (boolean) gameMap.get("didUseStairs").getResult();
-        assertFalse(didUseStairs);
-    }
-
-    @Test
-    public void testProcessStairs_didUseStairsIsFalse_whenNounIsNotStairsAndRoomDoesNotHaveStairs() {
-        gameMap.put("hasStairs", new Result<>(false));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processStairs(gameMap);
-        boolean didUseStairs = (boolean) gameMap.get("didUseStairs").getResult();
-        assertFalse(didUseStairs);
-    }
-
-    @Test
-    public void testProcessUse_WontProcess_whenIsProcessedIsTrue() {
-        gameMap.put("isProcessed", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean triedToUseItem = (boolean) gameMap.get("triedToUseItem").getResult();
-        assertFalse(triedToUseItem);
-    }
-
-    @Test
-    public void testProcessUse_triedToUseItemIsTrue_whenVerbIsUSE() {
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean triedToUseItem = (boolean) gameMap.get("triedToUseItem").getResult();
-        assertTrue(triedToUseItem);
-    }
-
-    @Test
-    public void testProcessUse_triedToUseItemIsFalse_whenVerbIsNotUSE() {
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean triedToUseItem = (boolean) gameMap.get("triedToUseItem").getResult();
-        assertFalse(triedToUseItem);
-    }
-
-    @Test
-    public void testProcessUse_shouldMonsterChangeRoomFlagIsTrue_whenVerbIsUSE() {
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
-        assertTrue(shouldMonsterChangeRoomFlag);
-    }
-
-    @Test
-    public void testProcessUse_shouldMonsterChangeRoomFlagIsFalse_whenVerbIsNotUSE() {
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
-        assertFalse(shouldMonsterChangeRoomFlag);
-    }
-
-    @Test
-    public void testProcessUse_hiddenIsFalse_whenVerbIsUSE() {
-        gameMap.put("hidden", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean hidden = (boolean) gameMap.get("hidden").getResult();
-        assertFalse(hidden);
-    }
-
-    @Test
-    public void testProcessUse_hiddenRemainsTrue_whenVerbIsNotUSE() {
-        gameMap.put("hidden", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        gameProcessor.processUse(gameMap);
-        boolean hidden = (boolean) gameMap.get("hidden").getResult();
-        assertTrue(hidden);
-    }
-
-    @Test
-    public void testProcessGet_hiddenRemainsTrue_whenVerbIsNotGET() {
-        gameMap.put("hidden", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("USE", "axe")));
-        gameProcessor.processGet(gameMap);
-        boolean hidden = (boolean) gameMap.get("hidden").getResult();
-        assertTrue(hidden);
-    }
-
-    @Test
-    public void testProcessGet_hiddenRemainsTrue_whenVerbIsGETAndItemNotInRoom() {
-        gameMap.put("hidden", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        gameProcessor.processGet(gameMap);
-        boolean hidden = (boolean) gameMap.get("hidden").getResult();
-        assertTrue(hidden);
-    }
-
-    @Test
-    public void testProcessGet_hiddenIsFalse_whenVerbIsGETAndItemInRoom() {
-        gameMap.put("hidden", new Result<>(true));
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        Rooms newRoom = new Rooms();
-        Item newItem = new Item("axe", "axe", "sharp axe", "");
-        newRoom.setItem(newItem);
-        gameMap.put("playerCurrentRoom", new Result<>(newRoom));
-        gameProcessor.processGet(gameMap);
-        boolean hidden = (boolean) gameMap.get("hidden").getResult();
-        assertFalse(hidden);
-    }
-
-    @Test
-    public void testProcessGet_didGetItemIsTrue_whenVerbIsGETAndItemInRoom() {
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        Rooms newRoom = new Rooms();
-        Item newItem = new Item("axe", "axe", "sharp axe", "");
-        newRoom.setItem(newItem);
-        gameMap.put("playerCurrentRoom", new Result<>(newRoom));
-        gameProcessor.processGet(gameMap);
-        boolean didGetItem = (boolean) gameMap.get("didGetItem").getResult();
-        assertTrue(didGetItem);
-    }
-
-    @Test
-    public void testProcessGet_didGetItemIsFalse_whenVerbIsGETAndItemNotInRoom() {
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        gameProcessor.processGet(gameMap);
-        boolean didGetItem = (boolean) gameMap.get("didGetItem").getResult();
-        assertFalse(didGetItem);
-    }
-
-    @Test
-    public void testProcessGet_shouldMonsterChangeRoomFlagIsTrue_whenVerbIsGETAndItemInRoom() {
-        gameMap.put("inputData", new Result<>(new InputData("GET", "axe")));
-        Rooms newRoom = new Rooms();
-        Item newItem = new Item("axe", "axe", "sharp axe", "");
-        newRoom.setItem(newItem);
-        gameMap.put("playerCurrentRoom", new Result<>(newRoom));
-        gameProcessor.processGet(gameMap);
-        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
-        assertTrue(shouldMonsterChangeRoomFlag);
-    }
-
-    @Test
-    public void testProcessGet_wontProcess_whenIsProcessedIsTrue() {
-        gameMap.put("isProcessed", new Result<>(true));
-        gameProcessor.processGet(gameMap);
-        boolean didGetItem = (boolean) gameMap.get("didGetItem").getResult();
-        assertFalse(didGetItem);
-    }
-
-    @Test
-    public void testProcessGo_wontProcess_whenIsProcessedIsTrue() {
-        gameMap.put("isProcessed", new Result<>(true));
-        gameProcessor.processGo(gameMap);
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-        assertFalse(didChangeRoom);
-    }
-
-    @Test
-    public void testProcessGo_playerCurrentRoomShouldChange_whenVerbIsGOAndDirectionIsValid() {
-        Rooms playerCurrentRoomBeforeRun = new Rooms();
-        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
-        Rooms validRoom = new Rooms();
-        Map<String, Rooms> availableRooms = new HashMap<>();
-        availableRooms.put("east", validRoom);
-        gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameMap.put("playerCurrentRoom", new Result<>(playerCurrentRoomBeforeRun));
-        gameProcessor.processGo(gameMap);
-        Rooms playerCurrentRoomAfterRun = (Rooms) gameMap.get("playerCurrentRoom").getResult();
-
-        assertNotSame(playerCurrentRoomBeforeRun, playerCurrentRoomAfterRun);
-    }
-
-    @Test
-    public void testProcessGo_shouldMonsterChangeRoomFlagIsTrue_whenVerbIsGOAndDirectionIsValid() {
-        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
-        Rooms validRoom = new Rooms();
-        Map<String, Rooms> availableRooms = new HashMap<>();
-        availableRooms.put("east", validRoom);
-        gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameProcessor.processGo(gameMap);
-        boolean shouldMonsterChangeRoomFlag = (boolean) gameMap.get("shouldMonsterChangeRoomFlag").getResult();
-
-        assertTrue(shouldMonsterChangeRoomFlag);
-    }
-
-    @Test
-    public void testProcessGo_didChangeRoomIsTrue_whenVerbIsGOAndDirectionIsValid() {
-        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
-        Rooms validRoom = new Rooms();
-        Map<String, Rooms> availableRooms = new HashMap<>();
-        availableRooms.put("east", validRoom);
-        gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameProcessor.processGo(gameMap);
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-
-        assertTrue(didChangeRoom);
-    }
-
-    @Test
-    public void testProcessGo_hiddenIsFalse_whenVerbIsGOAndDirectionIsValid() {
-        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
-        Rooms validRoom = new Rooms();
-        Map<String, Rooms> availableRooms = new HashMap<>();
-        availableRooms.put("east", validRoom);
-        gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameProcessor.processGo(gameMap);
-        boolean hidden = (boolean) gameMap.get("hidden").getResult();
-
-        assertFalse(hidden);
-    }
-
-    @Test
-    public void testProcessGo_didChangeRoomIsFalse_whenVerbIsGOAndDirectionIsInvalid() {
-        gameMap.put("inputData", new Result<>(new InputData("GO", "east")));
-        Rooms validRoom = new Rooms();
-        Map<String, Rooms> availableRooms = new HashMap<>();
-        availableRooms.put("west", validRoom);
-        gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameProcessor.processGo(gameMap);
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-
-        assertFalse(didChangeRoom);
-    }
-
-    @Test
-    public void testProcessGo_didChangeRoomIsFalse_whenVerbIsNotGoAndDirectionIsValid() {
-        gameMap.put("inputData", new Result<>(new InputData("GET", "east")));
-        Rooms validRoom = new Rooms();
-        Map<String, Rooms> availableRooms = new HashMap<>();
-        availableRooms.put("east", validRoom);
-        gameMap.put("availableRooms", new Result<>(availableRooms));
-        gameProcessor.processGo(gameMap);
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-
-        assertFalse(didChangeRoom);
+        boolean isProcessed = (boolean) gameMap.get("isProcessed").getResult();
+        assertTrue(isProcessed);
     }
 
 
     @Test
-    public void processHide_wontProcess_w() {
-        gameMap.put("isProcessed", new Result<>(true));
-        gameProcessor.processGo(gameMap);
-        boolean didChangeRoom = (boolean) gameMap.get("didChangeRoom").getResult();
-        assertFalse(didChangeRoom);
-    }
+    public void testProcessStairs(){
+        InputData inputData = new InputData("TAKE", "stairs");
+        gameMap.put("inputData", new Result<>(inputData));
+        Rooms stairsRoom = new Rooms("storage", "", "", null, "String path", "String mPath",
+                "Second Floor Hall", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String dialogueSecond",
+                "String roomType");
 
-    @Test
-    public void processMoveMonster() {
-    }
 
-    @Test
-    public void processSaveGame() {
-    }
-
-    @Test
-    public void processLoadGame() {
-    }
-
-    @Test
-    public void processSkipPlayerTurn() {
-    }
-
-    @Test
-    public void processMonsterEncounter() {
-    }
-
-    @Test
-    public void processRoomChange() {
-    }
-
-    @Test
-    public void getGameMap() {
-    }
-
-    @Test
-    public void getRoomText() {
-    }
-
-    @Test
-    public void getPLayerInventory() {
-    }
-
-    @Test
-    public void getMonsterLocation() {
-    }
-
-    @Test
-    public void reset() {
-    }
-
-    @Test
-    public void getRoomImagePath() {
-    }
-
-    @Test
-    public void getPLayerStatus() {
-    }
-
-    @Test
-    public void getMapImagePath() {
-    }
-
-    @Test
-    public void isGameOver() {
-    }
-
-    @Test
-    public void isKilledByMonster() {
     }
 
     private Map<String, Result<?>> dataSetup() {
@@ -443,7 +159,7 @@ public class GameProcessorTest {
         gameMap.put("isCombat", new Result<>(false));
         gameMap.put("lowPlayerHealth", new Result<>(5));
         gameMap.put("didFightMonster", new Result<>(false));
-        gameMap.put("shouldDecreaseHealth", new Result<>(false));
+        gameMap.put("shouldDecreaseHealthFlag", new Result<>(false));
         gameMap.put("shouldUseItemFlag", new Result<>(false));
         gameMap.put("nonUseItems", new Result<>(new ArrayList<>(Arrays.asList("stairs", "elevator"))));
         gameMap.put("weaponInventory", new Result<>(new ArrayList<Item>()));
