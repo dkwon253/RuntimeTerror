@@ -158,6 +158,7 @@ public class SwingUI extends JFrame {
         easyBtn.addActionListener(new HandleDifficultyBtnClick());
         mediumBtn.addActionListener(new HandleDifficultyBtnClick());
         hardBtn.addActionListener(new HandleDifficultyBtnClick());
+        setupMainScreenButton();
 
         revalidate();
         repaint();
@@ -866,6 +867,7 @@ public class SwingUI extends JFrame {
         monsterLabel.setText(controller.getMonsterLabel());
         if (controller.isMonsterSameRoom()) {
 //            monsterLabel.setText("The Monster is here!");
+            playerMessageLbl.setText("The monster is here. If you have a weapon, it's time to use it!");
             imageTitleContainer.setVisible(false);
             monsterLabel.setVisible(true);
             soundManager.playExtraSFX("Game/Sounds/breathing.wav", true);
