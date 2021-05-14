@@ -189,6 +189,9 @@ public class GameClient implements GameInterface, java.io.Serializable {
 
     @Override
     public boolean addToLeaderboard(String userName, int runtime) {
+        if(userName == null) {
+            userName = "Christina Aguilera";
+        }
         String level = (String) gameMap.get("level").getResult();
         Leaderboard leaderboard = new Leaderboard(userName, level, runtime);
         return database.addLeaderboard(leaderboard);

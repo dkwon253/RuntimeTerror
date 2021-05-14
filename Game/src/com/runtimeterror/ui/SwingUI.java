@@ -31,9 +31,9 @@ public class SwingUI extends JFrame {
     private final SwingController controller;
     private final int FRAME_X_SIZE = 560;
     private final int FRAME_Y_SIZE = 900;
-    private JTextArea roomInfoTA, inventoryInfoTA,leaderBoard;
+    private JTextArea roomInfoTA, inventoryInfoTA;
     private JTextField playerInputTF;
-    private JLabel playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
+    private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer
             , roomImageContainer, titleNameLbl, bloodLbl;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
@@ -59,7 +59,19 @@ public class SwingUI extends JFrame {
 
     private void welcomeScreen() {
         getContentPane().setBackground(Color.black);
-        showLeaderBoard();
+        setupLogo();
+
+//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
+//        subTitleLbl.setBounds(0, 500, 600, 40);
+//        subTitleLbl.setForeground(Color.red);
+//        subTitleLbl.setFont(normalFont);
+//        add(subTitleLbl);
+
+        setupStartButton();
+        setupHallButton();
+    }
+
+    private void setupLogo() {
         Image imgTitle = null;
         try {
             //imgTitle = ImageIO.read(new File("Game/Icons/runtimeTerror.png"));
@@ -73,13 +85,9 @@ public class SwingUI extends JFrame {
 //        titleNameLbl.setForeground(Color.red);
 //        titleNameLbl.setFont(titleFont);
         add(titleNameLbl);
+    }
 
-//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-//        subTitleLbl.setBounds(0, 500, 600, 40);
-//        subTitleLbl.setForeground(Color.red);
-//        subTitleLbl.setFont(normalFont);
-//        add(subTitleLbl);
-
+    private void setupStartButton() {
         nextBtn = new JButton("Start");
         nextBtn.setBounds(150, 600, 100, 50);
         nextBtn.setBackground(Color.black);
@@ -88,6 +96,9 @@ public class SwingUI extends JFrame {
         nextBtn.setBorder(new LineBorder(Color.white));
         nextBtn.addActionListener(new HandleWelcomeBtnClick());
         add(nextBtn);
+    }
+
+    private void setupHallButton() {
 
         hallBtn = new JButton("The Hall");
         hallBtn.setBounds(260, 600, 100, 50);
@@ -144,24 +155,59 @@ public class SwingUI extends JFrame {
 
     // Takes user to leader board
     private void showLeaderBoard() {
-
+        getContentPane().removeAll();
         List<Leaderboard> lb =  controller.getLeaderboard(10);
 
-        StringJoiner stringJoiner = new StringJoiner(" \n");
-        leaderBoard = new JTextArea(25, 40);
-        leaderBoard.setBounds(30, 315, 500, 300);
+        leaderBoard = new JLabel("", SwingConstants.CENTER);
+        leaderBoard.setBounds(0, 200, 500, 300);
         leaderBoard.setBackground(Color.black);
         leaderBoard.setForeground(Color.red);
-        leaderBoard.setEditable(false);
-        leaderBoard.setLineWrap(true);
-        leaderBoard.setWrapStyleWord(true);
+        String html = "<html> <h1 style='font-family:Cursive;color:red;'> &nbsp; &nbsp;Leaderboard</h1>" +
+                "<table style='width:100%'>" +
+                "  <tr>" +
+                "    <td>Rank</td>" +
+                "    <td>Name</td>" +
+                "    <td>Runtime</td>" +
+                "    <td>Difficulty</td>" +
+                "  </tr>";
+        int i =1;
         for (Leaderboard user: lb ){
-           stringJoiner.add(user.getUserName()+" " + user.getRuntime());
-
-            System.out.println(user.getRuntime());
+            html += "<tr>" +
+                    "<td style='white-space:nowrap'>" + i + "</td>" +
+                    "<td style='white-space:nowrap'>" + user.getUserName() + "</td>" +
+                    "<td style='white-space:nowrap'>" + formatTime(user.getRuntime()) + "</td>" +
+                    "<td style='white-space:nowrap'>" + user.getDifficulty() + "</td>" +
+                    "</tr>";
+            i++;
         }
-        leaderBoard.setText(stringJoiner.toString());
+        html += "</table></html>";
+        leaderBoard.setText(html);
+        this.add(leaderBoard);
+        setupLogo();
+        setupStartButton();
+        setupMainScreenButton();
+        revalidate();
+        repaint();
+    }
 
+    private void setupMainScreenButton() {
+        hallBtn = new JButton("Main Screen");
+        hallBtn.setBounds(260, 600, 100, 50);
+        hallBtn.setBackground(Color.black);
+        hallBtn.setForeground(Color.red);
+        hallBtn.setOpaque(true);
+        hallBtn.setBorder(new LineBorder(Color.white));
+        hallBtn.addActionListener(new HandleMainScreenButtonClick());
+        add(hallBtn);
+    }
+
+    private String formatTime(int mins) {
+        int gameModulo = mins % 3600;
+        int minutes = gameModulo / 60;
+        int seconds = gameModulo % 60;
+        String minuteString = (minutes < 10 ? "0" : "") + minutes;
+        String secondsString = (seconds < 10 ? "0" : "") + seconds;
+        return minuteString + ":" + secondsString;
     }
 
     private void startGame(SwingController controller) {
@@ -787,9 +833,17 @@ public class SwingUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             showLeaderBoard();
-            add(leaderBoard);
-
             System.out.println("button press");
+        }
+    }
+
+    private class HandleMainScreenButtonClick implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getContentPane().removeAll();
+            welcomeScreen();
+            revalidate();
+            repaint();
         }
     }
 
@@ -817,18 +871,9 @@ public class SwingUI extends JFrame {
             } else {
                 changeTimerColor();
                 gameTimerLbl.setHorizontalTextPosition(SwingConstants.RIGHT);
-                gameTimerLbl.setText("Timer: " + computeTime());
+                gameTime -= 1;
+                gameTimerLbl.setText("Timer: " + formatTime(gameTime));
             }
-        }
-
-        private String computeTime() {
-            gameTime -= 1;
-            int gameModulo = gameTime % 3600;
-            int minutes = gameModulo / 60;
-            int seconds = gameModulo % 60;
-            String minuteString = (minutes < 10 ? "0" : "") + minutes;
-            String secondsString = (seconds < 10 ? "0" : "") + seconds;
-            return minuteString + ":" + secondsString;
         }
 
         private void changeTimerColor() {
