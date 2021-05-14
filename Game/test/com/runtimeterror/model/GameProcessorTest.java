@@ -98,15 +98,137 @@ public class GameProcessorTest {
 
 
     @Test
-    public void testProcessStairs(){
+    public void testProcessStairs_shouldChangeRoomFlagIsTure_whenNounIsStairsAndHasStairs(){
         InputData inputData = new InputData("TAKE", "stairs");
         gameMap.put("inputData", new Result<>(inputData));
-        Rooms stairsRoom = new Rooms("storage", "", "", null, "String path", "String mPath",
-                "Second Floor Hall", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String dialogueSecond",
+        gameMap.put("hasStairs", new Result<>(true));
+        gameMap.put("stairsRoom", new Result<>("Storage"));
+        Rooms stairsRoom = new Rooms("Storage", "", "", null, "String path", "String mPath",
+                "Floor Two Hall", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
                 "String roomType");
-
-
+        Rooms currentRoom = new Rooms("Floor Two Hall", "", "", null, "String path", "String mPath",
+                "Storage", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        gameMap.put("playerCurrentRoom", new Result<>(currentRoom));
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("Storage", stairsRoom));
+        gameMap.put("rooms", new Result<>(availableRooms));
+        gameProcessor.processStairs(gameMap);
+        boolean result = (boolean) gameMap.get("shouldChangeRoomFlag").getResult();
+        assertTrue(result);
     }
+
+    @Test
+    public void testProcessStairs_viewLabelShowNoStairs_whenNounIsStairsButNoStairs(){
+        InputData inputData = new InputData("TAKE", "stairs");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("hasStairs", new Result<>(false));
+        gameMap.put("stairsRoom", new Result<>("Storage"));
+        Rooms stairsRoom = new Rooms("Storage", "", "", null, "String path", "String mPath",
+                "Floor Two Hall", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        Rooms currentRoom = new Rooms("Floor Two Hall", "", "", null, "String path", "String mPath",
+                "Storage", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        gameMap.put("playerCurrentRoom", new Result<>(currentRoom));
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("Storage", stairsRoom));
+        gameMap.put("rooms", new Result<>(availableRooms));
+        gameProcessor.processStairs(gameMap);
+        String result = (String) gameMap.get("viewLabel").getResult();
+        assertTrue(result.equals("There are no stairs in Floor Two Hall."));
+    }
+
+    @Test
+    public void testProcessStairs_isProcessedIsFalse_whenNounIsNotStairs(){
+        InputData inputData = new InputData("TAKE", "elevator");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("hasStairs", new Result<>(false));
+        gameMap.put("stairsRoom", new Result<>("Storage"));
+        Rooms stairsRoom = new Rooms("Storage", "", "", null, "String path", "String mPath",
+                "Floor Two Hall", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        Rooms currentRoom = new Rooms("Floor Two Hall", "", "", null, "String path", "String mPath",
+                "Storage", "String elevatorNeighbor","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        gameMap.put("playerCurrentRoom", new Result<>(currentRoom));
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("Storage", stairsRoom));
+        gameMap.put("rooms", new Result<>(availableRooms));
+        gameProcessor.processStairs(gameMap);
+        boolean result = (boolean) gameMap.get("isProcessed").getResult();
+        assertFalse(result);
+    }
+
+    @Test
+    public void testProcessElevator_shouldChangeRoomFlagTrue_whenNounIsElevatorAndHasElevator(){
+        InputData inputData = new InputData("TAKE", "elevator");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("hasElevator", new Result<>(true));
+        gameMap.put("elevatorRoom", new Result<>("Storage"));
+        Rooms elevatorRoom = new Rooms("Storage", "", "", null, "String path", "String mPath",
+                "Floor Two Hall", "Floor Two Hall","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        Rooms currentRoom = new Rooms("Floor Two Hall", "", "", null, "String path", "String mPath",
+                "Storage", "Storage","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        gameMap.put("playerCurrentRoom", new Result<>(currentRoom));
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("Storage", elevatorRoom));
+        gameMap.put("rooms", new Result<>(availableRooms));
+        gameProcessor.processElevator(gameMap);
+        boolean result = (boolean) gameMap.get("shouldChangeRoomFlag").getResult();
+        assertTrue(result);
+    }
+
+    @Test
+    public void testProcessElevator_viewLabelShowNoElevator_whenNounIsElevatorAndNoElevator(){
+        InputData inputData = new InputData("TAKE", "elevator");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("hasElevator", new Result<>(false));
+        gameMap.put("elevatorRoom", new Result<>("Storage"));
+        Rooms elevatorRoom = new Rooms("Storage", "", "", null, "String path", "String mPath",
+                "Floor Two Hall", "Floor Two Hall","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        Rooms currentRoom = new Rooms("Floor Two Hall", "", "", null, "String path", "String mPath",
+                "Storage", "Storage","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        gameMap.put("playerCurrentRoom", new Result<>(currentRoom));
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("Storage", elevatorRoom));
+        gameMap.put("rooms", new Result<>(availableRooms));
+        gameProcessor.processElevator(gameMap);
+        String result = (String) gameMap.get("viewLabel").getResult();
+        assertTrue(result.equals("There is no elevator in Floor Two Hall."));
+    }
+
+    @Test
+    public void testProcessElevator_isProcessedIsFalse_whenNounIsNotElevator(){
+        InputData inputData = new InputData("TAKE", "stairs");
+        gameMap.put("inputData", new Result<>(inputData));
+        gameMap.put("hasElevator", new Result<>(false));
+        gameMap.put("elevatorRoom", new Result<>("Storage"));
+        Rooms elevatorRoom = new Rooms("Storage", "", "", null, "String path", "String mPath",
+                "Floor Two Hall", "Floor Two Hall","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        Rooms currentRoom = new Rooms("Floor Two Hall", "", "", null, "String path", "String mPath",
+                "Storage", "Storage","String dialogueItem", "String dialogueFirst", "String " +
+                "dialogueSecond",
+                "String roomType");
+        gameMap.put("playerCurrentRoom", new Result<>(currentRoom));
+        Map<String, Rooms> availableRooms = new HashMap<>(Map.of("Storage", elevatorRoom));
+        gameMap.put("rooms", new Result<>(availableRooms));
+        gameProcessor.processElevator(gameMap);
+        boolean result = (boolean) gameMap.get("isProcessed").getResult();
+        assertFalse(result);
+    }
+
 
     private Map<String, Result<?>> dataSetup() {
         Map<String, Result<?>> gameMap = new HashMap<>();
