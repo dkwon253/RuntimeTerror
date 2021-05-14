@@ -5,10 +5,12 @@ import com.runtimeterror.textparser.InputData;
 import java.io.*;
 import java.util.*;
 
+//process methods are package private for tests. All methods except for start can be switched to private if tests
+//get commented out.
 class PostGameProcessor {
 
     Map<String, Result<?>> start(Map<String, Result<?>> gameMap) {
-        processRoomChange(gameMap);
+        processRoomChange(gameMap); //done
         processMonsterRoomChange(gameMap);
         processHealthIncrease(gameMap);
         processEscape(gameMap);
