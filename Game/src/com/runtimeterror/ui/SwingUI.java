@@ -182,7 +182,7 @@ public class SwingUI extends JFrame {
         int i = 1;
 
         for (Leaderboard user : lb) {
-            int maxLength = Math.min(user.getUserName().length(), 25);
+            int maxLength = Math.min(user.getUserName().length(), 26);
             html += "<tr>" +
                     "<td style='white-space:nowrap'>" + i + "</td>" +
                     "<td style='white-space:nowrap'>" + user.getUserName().substring(0, maxLength) + "</td>" +
