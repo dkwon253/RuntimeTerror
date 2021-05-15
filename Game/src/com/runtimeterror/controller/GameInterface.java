@@ -73,7 +73,7 @@ public interface GameInterface {
 
     List<Leaderboard> getLeaderboard(int size);
 
-    boolean addToLeaderboard(String userName, int runtime);
+    boolean addToLeaderboard(String userName, int gameTime, int runtime);
 
     boolean hasElevator();
 

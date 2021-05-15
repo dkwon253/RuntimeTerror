@@ -11,15 +11,17 @@ public class Leaderboard {
     private int runtime;
     private String escapeId;
     private String difficulty;
+    private int gameTime;
 
     public Leaderboard() {
         // no-arg
     }
 
-    public Leaderboard(String userName, String difficulty, int runtime){
+    public Leaderboard(String userName, String difficulty, int gameTime, int runtime){
         setUserName(userName);
         setDifficulty(difficulty);
         setRuntime(runtime);
+        setGameTime(gameTime);
     }
 
     @DynamoDBAttribute(attributeName="userName")
@@ -56,5 +58,14 @@ public class Leaderboard {
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
+    }
+
+    @DynamoDBAttribute(attributeName="gameTime")
+    public int getGameTime() {
+        return gameTime;
+    }
+
+    public void setGameTime(int gameTime) {
+        this.gameTime = gameTime;
     }
 }

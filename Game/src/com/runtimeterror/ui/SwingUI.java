@@ -180,14 +180,13 @@ public class SwingUI extends JFrame {
                 "    <td>Difficulty</td>" +
                 "  </tr>";
         int i = 1;
-        HashMap<String, List<Integer>> diffMap = controller.getDifficultyMap();
-        String diffLevel = controller.getDifficultyLevel();
-        List<Integer> diffTime = diffMap.get(diffLevel);
+
         for (Leaderboard user : lb) {
+            int maxLength = Math.min(user.getUserName().length(), 25);
             html += "<tr>" +
                     "<td style='white-space:nowrap'>" + i + "</td>" +
-                    "<td style='white-space:nowrap'>" + user.getUserName() + "</td>" +
-                    "<td style='white-space:nowrap'>" + formatTime(diffTime.get(2)-user.getRuntime()) + "</td>" +
+                    "<td style='white-space:nowrap'>" + user.getUserName().substring(0, maxLength) + "</td>" +
+                    "<td style='white-space:nowrap'>" + formatTime(user.getRuntime()-user.getGameTime()) + "</td>" +
                     "<td style='white-space:nowrap'>" + user.getDifficulty() + "</td>" +
                     "</tr>";
             i++;
@@ -941,7 +940,8 @@ public class SwingUI extends JFrame {
     private class HandleEnterPressOnUserNameTF implements ActionListener, KeyListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            boolean saveResult = controller.addToLeaderboard(userNameTF.getText(), gameTime);
+            int runtime = controller.getTimeToEndGame();
+            boolean saveResult = controller.addToLeaderboard(userNameTF.getText(), gameTime, runtime);
             if (saveResult) {
                 users.getContentPane().removeAll();
                 JLabel successSave = new JLabel("Your save was successful");
@@ -960,7 +960,8 @@ public class SwingUI extends JFrame {
         public void keyPressed(KeyEvent e) {
             int code = e.getKeyCode();
             if (code == KeyEvent.VK_ENTER) {
-                boolean saveResult = controller.addToLeaderboard(userNameTF.getText(), gameTime);
+                int runtime = controller.getTimeToEndGame();
+                boolean saveResult = controller.addToLeaderboard(userNameTF.getText(), gameTime, runtime);
                 if (saveResult) {
                     users.getContentPane().removeAll();
                     JLabel successSave = new JLabel("Your save was successful");

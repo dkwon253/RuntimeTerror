@@ -38,7 +38,7 @@ public class LeaderboardDetailsRepository {
         DynamoDBMapper mapper = new DynamoDBMapper(client, mapperConfig);
         DynamoDBScanExpression scanExpression = new DynamoDBScanExpression();
         List<Leaderboard> scanResult = new ArrayList<>(mapper.scan(Leaderboard.class, scanExpression));
-        scanResult.sort(Comparator.comparingLong(Leaderboard::getRuntime).reversed());
+        scanResult.sort(Comparator.comparingLong(Leaderboard::getGameTime).reversed());
         List<Leaderboard> result = scanResult.stream()
                 .filter(user -> user.getDifficulty().equals("hard"))
                 .collect(Collectors.toList());
@@ -59,6 +59,7 @@ public class LeaderboardDetailsRepository {
                 leaderboard.setUserName(outcome.get("userName").toString());
                 leaderboard.setEscapeId(outcome.get("escapeId").toString());
                 leaderboard.setDifficulty(outcome.get("difficulty").toString());
+                leaderboard.setGameTime(Integer.parseInt(outcome.get("gameTime").toString()));
                 leaderboard.setRuntime(Integer.parseInt(outcome.get("runtime").toString()));
                 return leaderboard;
             }
