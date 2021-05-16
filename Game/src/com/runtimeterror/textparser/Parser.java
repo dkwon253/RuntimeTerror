@@ -59,7 +59,6 @@ public class Parser {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-        ;
         return null;
     }
 

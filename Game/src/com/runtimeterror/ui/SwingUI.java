@@ -34,7 +34,8 @@ public class SwingUI extends JFrame {
     private final int FRAME_Y_SIZE = 900;
     private JTextArea roomInfoTA, inventoryInfoTA;
     private JTextField playerInputTF;
-    private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel, imageTitleContainer, roomImageContainer, bloodLbl;
+    private JLabel leaderBoard, playerStateLbl, gameTimerLbl, playerHealthLbl, playerMessageLbl, monsterLabel,
+    imageTitleContainer, roomImageContainer, bloodLbl, backgroundLbl;
     private JButton mapCommandBtn, inventoryBtn;
     private JButton easyBtn, mediumBtn, hardBtn, nextBtn, hallBtn;
     private JFrame users = new JFrame();
@@ -63,17 +64,25 @@ public class SwingUI extends JFrame {
     }
 
     private void welcomeScreen() {
-        getContentPane().setBackground(Color.black);
+        //getContentPane().setBackground(Color.black);
+        setupBackground();
         setupLogo();
-
-//        subTitleLbl = new JLabel("Will your name be among the hall of survivors...", SwingConstants.CENTER);
-//        subTitleLbl.setBounds(0, 500, 600, 40);
-//        subTitleLbl.setForeground(Color.red);
-//        subTitleLbl.setFont(normalFont);
-//        add(subTitleLbl);
-
         setupStartButton();
         setupHallButton();
+    }
+
+    private void setupBackground() {
+        Image imgBackground = null;
+        try {
+            imgBackground = ImageIO.read(new File("Game/Icons/background.jpeg"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        imgBackground = imgBackground.getScaledInstance(560, 900, Image.SCALE_SMOOTH);
+        backgroundLbl = new JLabel();
+        backgroundLbl.setIcon(new ImageIcon(imgBackground));
+        backgroundLbl.setBounds(0, 0, 560, 900);
+        add(backgroundLbl);
     }
 
     private void setupLogo() {
@@ -87,44 +96,42 @@ public class SwingUI extends JFrame {
         JLabel titleNameLbl = new JLabel();
         titleNameLbl.setIcon(new ImageIcon(imgTitle));
         titleNameLbl.setBounds(68, 100, 424, 122);
-        add(titleNameLbl);
+        backgroundLbl.add(titleNameLbl);
     }
 
     private void setupStartButton() {
-
         nextBtn = new JButton("Start");
-        nextBtn.setBounds(150, 600, 100, 50);
-        nextBtn.setBackground(Color.black);
+        nextBtn.setBounds(130, 600, 100, 50);
+//        nextBtn.setBackground(Color.black);
         nextBtn.setForeground(Color.red);
-        nextBtn.setOpaque(true);
+        nextBtn.setOpaque(false);
         nextBtn.setBorder(new RoundedBorder(10));
         nextBtn.addActionListener(new HandleWelcomeBtnClick());
-        add(nextBtn);
+        backgroundLbl.add(nextBtn);
     }
 
     private void setupHallButton() {
-
         hallBtn = new JButton("The Hall");
-        hallBtn.setBounds(260, 600, 100, 50);
-        hallBtn.setBackground(Color.black);
+        hallBtn.setBounds(330, 600, 100, 50);
+        //hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
-        hallBtn.setOpaque(true);
+        hallBtn.setOpaque(false);
         hallBtn.setBorder(new RoundedBorder(10));
-
         hallBtn.addActionListener(new HandleHallBtnClick());
-        add(hallBtn);
+        backgroundLbl.add(hallBtn);
     }
 
     public void difficultyPage() {
         getContentPane().removeAll();
         getContentPane().setBackground(Color.black);
+        setupBackground();
         setLayout(null);
 
         JLabel titleLbl = new JLabel("Please choose your difficulty: ", SwingConstants.CENTER);
         titleLbl.setBounds(68, 200, 424, 100);
-        titleLbl.setOpaque(true);
+        titleLbl.setOpaque(false);
         titleLbl.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        titleLbl.setBackground(Color.black);
+        //titleLbl.setBackground(Color.black);
         titleLbl.setForeground(Color.red);
         //titleLbl.setBorder(new LineBorder(Color.darkGray));
 
@@ -132,34 +139,35 @@ public class SwingUI extends JFrame {
         mediumBtn = new JButton("Medium");
         hardBtn = new JButton("Hard");
 
-        easyBtn.setBounds(100, 450, 100, 50);
-        easyBtn.setBackground(Color.black);
+        easyBtn.setBounds(80, 600, 100, 50);
+        //easyBtn.setBackground(Color.black);
         easyBtn.setForeground(Color.red);
-        easyBtn.setOpaque(true);
+        easyBtn.setOpaque(false);
         easyBtn.setBorder(new RoundedBorder(10));
 
-        mediumBtn.setBounds(225, 450, 100, 50);
-        mediumBtn.setBackground(Color.black);
+        mediumBtn.setBounds(230, 600, 100, 50);
+        //mediumBtn.setBackground(Color.black);
         mediumBtn.setForeground(Color.red);
-        mediumBtn.setOpaque(true);
+        mediumBtn.setOpaque(false);
         mediumBtn.setBorder(new RoundedBorder(10));
 
-        hardBtn.setBounds(350, 450, 100, 50);
-        hardBtn.setBackground(Color.black);
+        hardBtn.setBounds(380, 600, 100, 50);
+        //hardBtn.setBackground(Color.black);
         hardBtn.setForeground(Color.red);
-        hardBtn.setOpaque(true);
+        hardBtn.setOpaque(false);
         hardBtn.setBorder(new RoundedBorder(10));
 
-        add(titleLbl);
-        add(easyBtn);
-        add(mediumBtn);
-        add(hardBtn);
+        backgroundLbl.add(titleLbl);
+        backgroundLbl.add(easyBtn);
+        backgroundLbl.add(mediumBtn);
+        backgroundLbl.add(hardBtn);
 
         easyBtn.addActionListener(new HandleDifficultyBtnClick());
         mediumBtn.addActionListener(new HandleDifficultyBtnClick());
         hardBtn.addActionListener(new HandleDifficultyBtnClick());
         setupMainScreenButton();
 
+        setupMainScreenButton(230, 700);
         revalidate();
         repaint();
     }
@@ -169,7 +177,8 @@ public class SwingUI extends JFrame {
         List<Leaderboard> lb = controller.getLeaderboard(10);
         leaderBoard = new JLabel("", SwingConstants.CENTER);
         leaderBoard.setBounds(0, 200, 500, 300);
-        leaderBoard.setBackground(Color.black);
+        //leaderBoard.setBackground(Color.black);
+        leaderBoard.setOpaque(false);
         leaderBoard.setForeground(Color.red);
         String html = "<html> <h1 style='font-family:Cursive;color:red;'> &nbsp; &nbsp;Leaderboard</h1>" +
                 "<table style='width:100%'>" +
@@ -202,12 +211,14 @@ public class SwingUI extends JFrame {
         leaderBoardLink.addHyperlinkListener(new HandleHyperlinkClick());
 
         leaderBoard.setText(html);
-        leaderBoardLink.setBounds(200, 500, 100, 50);
+        leaderBoardLink.setForeground(Color.red);
+        leaderBoardLink.setBounds(180, 500, 200, 50);
         this.add(leaderBoardLink);
         this.add(leaderBoard);
+        setupBackground();
         setupLogo();
         setupStartButton();
-        setupMainScreenButton();
+        setupMainScreenButton(330, 600);
         revalidate();
         repaint();
     }
@@ -228,15 +239,15 @@ public class SwingUI extends JFrame {
         }
     }
 
-    private void setupMainScreenButton() {
+    private void setupMainScreenButton(int x, int y) {
         hallBtn = new JButton("Main Screen");
-        hallBtn.setBounds(260, 600, 100, 50);
-        hallBtn.setBackground(Color.black);
+        hallBtn.setBounds(x, y, 100, 50);
+        //hallBtn.setBackground(Color.black);
         hallBtn.setForeground(Color.red);
-        hallBtn.setOpaque(true);
+        hallBtn.setOpaque(false);
         hallBtn.setBorder(new RoundedBorder(10));
         hallBtn.addActionListener(new HandleMainScreenButtonClick());
-        add(hallBtn);
+        backgroundLbl.add(hallBtn);
     }
 
     private String formatTime(int mins) {
