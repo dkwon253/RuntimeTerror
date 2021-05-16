@@ -165,8 +165,6 @@ public class SwingUI extends JFrame {
         easyBtn.addActionListener(new HandleDifficultyBtnClick());
         mediumBtn.addActionListener(new HandleDifficultyBtnClick());
         hardBtn.addActionListener(new HandleDifficultyBtnClick());
-        setupMainScreenButton();
-
         setupMainScreenButton(230, 700);
         revalidate();
         repaint();
