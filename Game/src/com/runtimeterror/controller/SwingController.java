@@ -102,7 +102,9 @@ public class SwingController {
 
     public List<Leaderboard> getLeaderboard(int size) {return gi.getLeaderboard(size);}
 
-    public boolean addToLeaderboard(String userName, int runtime) {return gi.addToLeaderboard(userName, runtime);}
+    public boolean addToLeaderboard(String userName, int gameTime, int runtime) {
+        return gi.addToLeaderboard(userName, gameTime, runtime);
+    }
 
     public boolean isBloodLost() { return gi.isBloodLost();}
 
