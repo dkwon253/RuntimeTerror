@@ -121,7 +121,7 @@ public class SwingUI extends JFrame {
         backgroundLbl.add(hallBtn);
     }
 
-    public void difficultyPage() {
+    private void difficultyPage() {
         getContentPane().removeAll();
         getContentPane().setBackground(Color.black);
         setupBackground();
@@ -299,7 +299,7 @@ public class SwingUI extends JFrame {
         controller.processInput(inputText);
         String result = controller.getMessageLabel();
         if (controller.isCloseToDying()) {
-            playerMessageLbl.setText("You are dangerously closed to dying!");
+            playerMessageLbl.setText("You are dangerously close to dying!");
         } else {
             playerMessageLbl.setText(result);
         }
