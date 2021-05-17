@@ -191,9 +191,10 @@ public class SwingUI extends JFrame {
         String diffLevel = controller.getDifficultyLevel();
         List<Integer> diffTime = diffMap.get(diffLevel);
         for (Leaderboard user : lb) {
+            int maxLength = Math.min(user.getUserName().length(), 26);
             html += "<tr>" +
                     "<td style='white-space:nowrap'>" + i + "</td>" +
-                    "<td style='white-space:nowrap'>" + user.getUserName() + "</td>" +
+                    "<td style='white-space:nowrap'>" + user.getUserName().substring(0, maxLength) + "</td>" +
                     "<td style='white-space:nowrap'>" + formatTime(diffTime.get(2)-user.getRuntime()) + "</td>" +
                     "<td style='white-space:nowrap'>" + user.getDifficulty() + "</td>" +
                     "</tr>";
@@ -276,7 +277,7 @@ public class SwingUI extends JFrame {
         setupRoomItemPic(controller);
         setupPlayerMessageLbl();
         setupInventoryInfoTA(controller);
-        setupPlayerStateLbl();
+//        setupPlayerStateLbl();
         setupSaveGameMsgLbl();
         setupPlayerInputTF();
         setupSubmitCommandBtn();
@@ -312,11 +313,11 @@ public class SwingUI extends JFrame {
         roomImageContainer.setIcon(getResizedRoomImage(controller.getRoomImagePath()));
         setupRoomItemPic(controller);
         roomMap.getMapLocationLbl().setIcon(getResizedMap(controller.getRoomMapPath()));
-        if (controller.getStatus()) {
-            playerStateLbl.setText("Status: Hidden");
-        } else {
-            playerStateLbl.setText("Status: Visible");
-        }
+//        if (controller.getStatus()) {
+//            playerStateLbl.setText("Status: Hidden");
+//        } else {
+//            playerStateLbl.setText("Status: Visible");
+//        }
         boolean hasMap = controller.hasMap();
         mapCommandBtn.setVisible(hasMap);
         boolean hasItems = controller.hasItems();
@@ -416,17 +417,17 @@ public class SwingUI extends JFrame {
         add(saveGameMsgLbl);
     }
 
-    private void setupPlayerStateLbl() {
-        playerStateLbl = new JLabel("Status: Visible", SwingConstants.LEFT);
-        playerStateLbl.setBounds(30, 730, 500, 20);
-        playerStateLbl.setForeground(Color.red);
-        add(playerStateLbl);
-    }
+//    private void setupPlayerStateLbl() {
+//        playerStateLbl = new JLabel("", SwingConstants.LEFT);
+//        playerStateLbl.setBounds(30, 730, 500, 20);
+//        playerStateLbl.setForeground(Color.red);
+//        add(playerStateLbl);
+//    }
 
     private void setupPlayerHealth() {
         //playerHealthLbl = new JLabel("Health: " + controller.getPlayerHealth(), SwingConstants.CENTER);
         playerHealthLbl = new JLabel();
-        playerHealthLbl.setBounds(250, 730, 500, 20);
+        playerHealthLbl.setBounds(30, 730, 200, 20);
         playerHealthLbl.setHorizontalTextPosition(SwingConstants.CENTER);
         playerHealthLbl.setText("Health: " + controller.getPlayerHealth());
         playerHealthLbl.setForeground(Color.green);
