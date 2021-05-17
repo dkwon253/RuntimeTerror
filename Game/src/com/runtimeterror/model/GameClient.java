@@ -1,5 +1,6 @@
 package com.runtimeterror.model;
 
+import com.amazonaws.services.dynamodbv2.xspec.L;
 import com.runtimeterror.controller.GameInterface;
 
 import java.util.*;
@@ -9,6 +10,7 @@ public class GameClient implements GameInterface, java.io.Serializable {
     private GameProcessor gameProcessor;
     private PostGameProcessor postGameProcessor;
     private Map<String, Result<?>> gameMap;
+
 
     GameClient(boolean test) {
         // test constructor
@@ -157,6 +159,64 @@ public class GameClient implements GameInterface, java.io.Serializable {
     public String getMonsterLabel() {
         return (String) gameMap.get("monsterLabel").getResult();
     }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Map<String, Rooms> getAvailableRooms() {
+        return (Map<String, Rooms>) gameMap.get("availableRooms").getResult();
+    }
+
+    @Override
+    public boolean hasStairs() {
+        return (boolean) gameMap.get("hasStairs").getResult();
+    }
+
+    @Override
+    public void setupDifficulty(String level) {
+        @SuppressWarnings("unchecked")
+        HashMap<String, List<Integer>> difficultyMap = (HashMap<String, List<Integer>>) gameMap.get("difficultyMap").getResult();
+        List<Integer> levelList = difficultyMap.get(level);
+        gameMap.put("level", new Result<>(level));
+        gameMap.put("playerHealth", new Result<>(levelList.get(0)));
+        gameMap.put("monsterDamage", new Result<>(levelList.get(1)));
+        gameMap.put("timeToEndGame", new Result<>(levelList.get(2)));
+    }
+
+    @Override
+    public String getDifficultyLevel() {
+        return (String) gameMap.get("level").getResult();
+    }
+
+    @Override
+    public HashMap<String, List<Integer>> getDifficultyMap() {
+        return (HashMap<String, List<Integer>>) gameMap.get("difficultyMap").getResult();
+    }
+
+    @Override
+    public List<Leaderboard> getLeaderboard(int size) {
+        return database.getTopLeaderboard(size);
+    }
+
+    @Override
+    public boolean addToLeaderboard(String userName, int gameTime, int runtime) {
+        if(userName == null || "".equals(userName)) {
+            userName = "Christina Aguilera";
+        }
+        String level = (String) gameMap.get("level").getResult();
+        Leaderboard leaderboard = new Leaderboard(userName, level, gameTime, runtime);
+        return database.addLeaderboard(leaderboard);
+    }
+
+    @Override
+    public boolean hasElevator() {
+        return (boolean) gameMap.get("hasElevator").getResult();
+    }
+
+    @Override
+    public boolean isBloodLost() {
+        return (boolean) gameMap.get("shouldDecreaseHealthFlag").getResult();
+    }
+
 
     @Override
     public int getMonsterLocation() {

@@ -1,8 +1,12 @@
 package com.runtimeterror.controller;
 
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Leaderboard;
+import com.runtimeterror.model.Rooms;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface GameInterface {
     // Used to get a formatted string object of the room information.
@@ -61,4 +65,21 @@ public interface GameInterface {
 
     String getMonsterLabel();
 
+    Map<String, Rooms> getAvailableRooms();
+
+    boolean hasStairs();
+
+    void setupDifficulty(String level);
+
+    List<Leaderboard> getLeaderboard(int size);
+
+    boolean addToLeaderboard(String userName,int gameTime, int runtime);
+
+    boolean hasElevator();
+
+    boolean isBloodLost();
+
+    String getDifficultyLevel();
+
+    HashMap<String, List<Integer>> getDifficultyMap();
 }

@@ -16,8 +16,11 @@ public class Rooms implements java.io.Serializable {
     private String RoomImagePath;
     private boolean hasStairs;
     private Rooms stairsNeighbor;
+    private boolean hasElevator;
+    private Rooms elevatorNeighbor;
     private String RoomMapPath;
     private String stairsNeighborName;
+    private String elevatorNeighborName;
     private final Map<String, String> dialogueMap = new HashMap<>();
     private String dialogueItem;
     private String roomType;
@@ -29,7 +32,8 @@ public class Rooms implements java.io.Serializable {
     }
 
     public Rooms(String roomName, String roomDescription, String hidingLocation, Item item, String path, String mPath,
-                 String stairsNeighbor, String dialogueItem, String dialogueFirst, String dialogueSecond, String roomType) {
+                 String stairsNeighbor, String elevatorNeighbor,String dialogueItem, String dialogueFirst, String dialogueSecond,
+                 String roomType) {
         this.roomName = roomName;
         this.roomDescription = roomDescription;
         this.hidingLocation = hidingLocation;
@@ -38,6 +42,7 @@ public class Rooms implements java.io.Serializable {
         this.RoomImagePath = path;
         setMapImagePath(mPath);
         setStairsNeighborName(stairsNeighbor);
+        setElevatorNeighborName(elevatorNeighbor);
         setDialogue(dialogueItem, dialogueFirst, dialogueSecond);
     }
 
@@ -59,9 +64,17 @@ public class Rooms implements java.io.Serializable {
     }
 
     public void setStairsNeighbor(Rooms stairsNeighbor) {
+
         if (stairsNeighbor != null) {
             this.stairsNeighbor = stairsNeighbor;
             setHasStairs();
+        }
+    }
+
+    public void setElevatorNeighbor(Rooms elevatorNeighbor) {
+        if (elevatorNeighbor != null) {
+            this.elevatorNeighbor = elevatorNeighbor;
+            setHasElevator();
         }
     }
 
@@ -78,6 +91,9 @@ public class Rooms implements java.io.Serializable {
         return hasStairs;
     }
 
+    public boolean hasElevator() {
+        return hasElevator;
+    }
 
     public String getHidingLocation() {
         return hidingLocation;
@@ -85,6 +101,10 @@ public class Rooms implements java.io.Serializable {
 
     private void setHasStairs() {
         this.hasStairs = true;
+    }
+
+    private void setHasElevator() {
+        this.hasElevator = true;
     }
 
     public void setMapImagePath(String location) {
@@ -99,10 +119,21 @@ public class Rooms implements java.io.Serializable {
         return this.stairsNeighborName;
     }
 
+    public String getElevatorNeighborName() {
+        return this.elevatorNeighborName;
+    }
+
     public void setStairsNeighborName(String neighborName) {
         if (neighborName != null) {
             this.stairsNeighborName = neighborName;
             setHasStairs();
+        }
+    }
+
+    public void setElevatorNeighborName(String neighborName) {
+        if (neighborName != null) {
+            this.elevatorNeighborName = neighborName;
+            setHasElevator();
         }
     }
 

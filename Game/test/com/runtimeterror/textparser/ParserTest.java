@@ -69,12 +69,6 @@ public class ParserTest {
     }
 
     @Test
-    public void findVerbHide() {
-        assertEquals("HIDE", Parser.findVerb("hide"));
-        assertEquals("HIDE", Parser.findVerb("take cover"));
-    }
-
-    @Test
     public void findVerbSave() {
         assertEquals("SAVE", Parser.findVerb("save"));
     }

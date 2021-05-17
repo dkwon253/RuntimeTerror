@@ -1,8 +1,12 @@
 package com.runtimeterror.controller;
 
 import com.runtimeterror.model.Item;
+import com.runtimeterror.model.Leaderboard;
+import com.runtimeterror.model.Rooms;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SwingController {
     private GameInterface gi;
@@ -88,4 +92,23 @@ public class SwingController {
 
     public String getMonsterLabel() {return gi.getMonsterLabel();}
 
+    public Map<String, Rooms> getAvailableRooms() {return gi.getAvailableRooms();}
+
+    public boolean hasStairs() {return gi.hasStairs();}
+
+    public boolean hasElevator() {return gi.hasElevator();}
+
+    public void setupGameDifficulty(String level) {gi.setupDifficulty(level);}
+
+    public List<Leaderboard> getLeaderboard(int size) {return gi.getLeaderboard(size);}
+
+    public boolean addToLeaderboard(String userName, int gameTime, int runtime) {
+        return gi.addToLeaderboard(userName, gameTime, runtime);
+    }
+
+    public boolean isBloodLost() { return gi.isBloodLost();}
+
+    public String getDifficultyLevel() { return gi.getDifficultyLevel(); }
+
+    public HashMap<String, List<Integer>> getDifficultyMap() {return gi.getDifficultyMap();}
 }
